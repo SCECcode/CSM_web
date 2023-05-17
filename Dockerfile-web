@@ -1,0 +1,24 @@
+FROM amazonlinux:2
+
+WORKDIR /app
+
+COPY . /app
+
+COPY ./doc/csm.conf /etc/httpd/conf.d/
+COPY ./custom-php.ini /etc/php.d/custom-php.ini
+
+RUN yum install -y tar mkdir sudo whih git weget
+
+RUN yum install -y httpd && \
+	amazon-linux-extras install -y php7.2 && \
+	yum install -y php php-pgsql 
+
+## bring in the csm dataset in csv (1.5G)
+RUN cd /app/schema && \
+    mkdir -p data && \
+    cd data && \
+    wget -nv https://g-c662a6.a78b8.36fe.data.globus.org/cxm/models/csm/csm_csv.tar.gz && \
+    tar zxvf csm_csv.tar.gz
+
+CMD ["apachectl", "-D", "FOREGROUND"]
+
