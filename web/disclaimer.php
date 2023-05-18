@@ -12,7 +12,7 @@ $header = getHeader("Disclaimer");
     <link rel="stylesheet" href="css/vendor/bootstrap-grid.min.css">
     <link rel="stylesheet" href="css/vendor/jquery-ui.css">
     <link rel="stylesheet" href="css/vendor/glyphicons.css">
-    <link rel="stylesheet" href="css/cpd-ui.css">
+    <link rel="stylesheet" href="css/csm-ui.css">
     <link rel="stylesheet" href="css/sidebar.css">
 
     <script type='text/javascript' src='js/vendor/popper.min.js'></script>
@@ -29,9 +29,9 @@ $header = getHeader("Disclaimer");
     <h1>Disclaimer</h1>
 
     <div>
-		<p>The Community Paleoseismic Database(CPD) Viewer Tool is provided “as is” and without warranties of any kind. While <a href="https://www.scec.org">SCEC</a> and the <a href="https://www.scec.org/research/cpd">the CPD development team</a> have made every effort to provide data from reliable sources or methodologies, SCEC and the CPD development team do not make any representations or warranties as to the accuracy, completeness, reliability, currency, or quality of any data provided herein. SCEC and the CPD development team do not intend the results provided by this tool to replace the sound judgment of a competent professional, who has knowledge and experience in the appropriate field(s) of practice. By using this tool, you accept to release SCEC and the CPD development team of any and all liability.</p>
+		<p>The Community Stress Model(CSM) Viewer Tool is provided “as is” and without warranties of any kind. While <a href="https://www.scec.org">SCEC</a> and the <a href="https://www.scec.org/research/csm">the CSM development team</a> have made every effort to provide data from reliable sources or methodologies, SCEC and the CSM development team do not make any representations or warranties as to the accuracy, completeness, reliability, currency, or quality of any data provided herein. SCEC and the CSM development team do not intend the results provided by this tool to replace the sound judgment of a competent professional, who has knowledge and experience in the appropriate field(s) of practice. By using this tool, you accept to release SCEC and the CSM development team of any and all liability.</p>
 
-		<p>More information about the CPD can be found at: <a href="https://www.scec.org/research/cpd">https://www.scec.org/research/cpd</a>.</p>
+		<p>More information about the CSM can be found at: <a href="https://www.scec.org/research/csm">https://www.scec.org/research/csm</a>.</p>
 	</div>
 </div>
 </body>

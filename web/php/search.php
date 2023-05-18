@@ -1,7 +1,7 @@
 <?php
-require_once("CPD_SLIPRATE.php");
+require_once("CSM.php");
 
-$cpd_sliprate = new SLIPRATE();
+$csm = new CSM();
 
 $type = $_REQUEST["t"];
 $criteria = json_decode($_REQUEST["q"]);
@@ -17,7 +17,7 @@ if (is_object($criteria[0])) {
 //print_r($criteria);exit;
 
 try {
-    print $cpd_sliprate->search($type, $criteria)->outputJSON();
+    print $csm->search($type, $criteria)->outputJSON();
 } catch (BadFunctionCallException $e) {
-    print "cpd_sliprate search error";
+    print "csm search error";
 }
