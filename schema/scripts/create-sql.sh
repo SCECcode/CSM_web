@@ -1,5 +1,6 @@
 #!/bin/sh
-
+##
+## create-sql.sh
 ##
 ## create db specific sql files
 ##
@@ -15,13 +16,13 @@ mkdir ../sql
 cp sql_template/setup_meta_schema.sql ../sql/setup_schema.sql
 
 for file in ../data/*csv ; do
-    [ -e "$file" ] || continue
 
     filename=${file##*/}
     CSMTB=${filename%.csv}
     echo $CSMTB
 
-    cat $file | sed "s/,NaN,/,,/g" > ../data/$filename
+    cat $file | sed "s/,NaN,/,,/g" > ../data/new-$filename
+    mv ../data/new-$filename ../data/$filename
 
     cat sql_template/linkup_traces.sql | sed "s/%%CSMTB%/${CSMTB}/" >> ../sql/linkup_traces.sql
     cat sql_template/setup_schema.sql | sed "s/%%CSMTB%/${CSMTB}/" >> ../sql/setup_schema.sql

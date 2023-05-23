@@ -14,11 +14,14 @@ RUN yum install -y httpd && \
 	yum install -y php php-pgsql 
 
 ## bring in the csm dataset in csv (1.5G)
+## and build up the data/sql directory
 RUN cd /app/schema && \
-    mkdir -p data && \
-    cd data && \
     wget -nv https://g-c662a6.a78b8.36fe.data.globus.org/cxm/models/csm/csm_csv.tar.gz && \
-    tar zxvf csm_csv.tar.gz
+    tar zxvf csm_csv.tar.gz && \
+    cd scripts && \
+    ./process-csv.sh && \
+    ./collect-meta.py && \
+    ./create-sql.sh
 
 CMD ["apachectl", "-D", "FOREGROUND"]
 

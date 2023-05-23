@@ -1,4 +1,9 @@
 #!/usr/bin/env python
+##
+## collect-meta.py
+##
+## collect meta data for each dataset from the csv
+##
 
 import sys
 from os import walk
