@@ -7,7 +7,7 @@ COPY . /app
 COPY ./doc/csm.conf /etc/httpd/conf.d/
 COPY ./custom-php.ini /etc/php.d/custom-php.ini
 
-RUN yum install -y tar mkdir sudo whih git weget
+RUN yum install -y tar mkdir sudo which git wget
 
 RUN yum install -y httpd && \
 	amazon-linux-extras install -y php7.2 && \
