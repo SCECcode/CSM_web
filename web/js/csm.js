@@ -1,9 +1,11 @@
 /***
-   cpd_sliprate.js
+   csm.js
+
+   needs to track the 'depths' per dataset ??
 ***/
 
-var CPD_SLIPRATE = new function () {
-    window.console.log("in CPD_SLIPRATE..");
+var CSM = new function () {
+    window.console.log("in CSM..");
 
     // complete set of sliprate layers, one marker layer for one site, 
     // setup once from viewer.php

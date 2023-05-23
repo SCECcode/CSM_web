@@ -3,6 +3,8 @@
 #####  iterate through all csv within the data file 
 #####  (make sure all  ,NaN, turn into ,,
 #####
+#####    ./process-csv.sh
+#####    ./collect-meta.py
 #####    ./create-sql.sh
 
 PWD=`pwd`
