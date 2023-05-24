@@ -1,7 +1,7 @@
 /***
-   cpd_leaflet.js
+   csm_leaflet.js
 
-This is leaflet specific utilities for CPD
+This is leaflet specific utilities for CSM
 ***/
 
 var init_map_zoom_level = 10;
@@ -114,7 +114,7 @@ function setup_viewer()
   currentLayer = esri_topographic;
 
 // ==> mymap <==
-  mymap = L.map('CPD_plot', { drawControl:false, layers: [esri_topographic, basemap], zoomControl:true} );
+  mymap = L.map('CSM_plot', { drawControl:false, layers: [esri_topographic, basemap], zoomControl:true} );
   mymap.setView(init_map_coordinates, init_map_zoom_level);
   mymap.attributionControl.addAttribution(scecAttribution);
 
@@ -155,7 +155,7 @@ function setup_viewer()
 // mymap.on('click', onMapClick);
 
   function onMapMouseOver(e) {
-    if(CPD_SLIPRATE.toDraw()) {
+    if(CSM.toDraw()) {
       drawRectangle();
     }
   }
@@ -187,7 +187,7 @@ function setup_viewer()
 // like hand inputed rectangle. Maybe some property needs to be set
 // For now, just redraw the rectangle
 	    //
-        CPD_SLIPRATE.searchLatlon(1,latlngs);        
+        CSM.searchLatlon(1,latlngs);        
     }
   });
 
