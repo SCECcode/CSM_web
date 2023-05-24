@@ -1,4 +1,4 @@
-CREATE TABLE %%CSMTB%_tb (
+CREATE TABLE %%csmtb%_tb (
    gid           serial PRIMARY KEY,
    meta_gid      integer DEFAULT NULL,
 
@@ -47,6 +47,6 @@ CREATE TABLE %%CSMTB%_tb (
    V2azi      float NOT NULL,
    V3azi      float NOT NULL
 );
-SELECT AddGeometryColumn('','%%CSMTB%_tb','geom','0','POINT',2);
+SELECT AddGeometryColumn('','%%csmtb%_tb','geom','0','POINT',2);
 
 
