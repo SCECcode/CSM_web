@@ -13,7 +13,7 @@ rm -rf ../sql
 mkdir ../sql
 
 ## add meta_table
-cp sql_template/setup_meta_schema.sql ../sql/setup_schema.sql
+cp sql_template/setup_meta_schema.sql ../sql/setup_meta_schema.sql
 
 for file in ../data/*csv ; do
 
