@@ -85,7 +85,7 @@ for f in file_list:
   Overall_Alphi_range= [Overall_Alphi_min, Overall_Alphi_max]
 
 #  {
-#      "LovelessMeade": {
+#      "meta": {
 #          "dataCount": 974704,
 #          "dataByDEP": [ {'dep': 1.0, 'alphi_min': 0.078, 'alphi_max': 2.975, 'cnt': 72325}, 
 #                         {'dep': 3.0, 'alphi_min': 0.079, 'alphi_max': 2.936, 'cnt': 72325}, 
@@ -122,9 +122,9 @@ for f in file_list:
 #  print("Overall Alphi range:",Overall_Alphi_range)
 
   f = open('../data/'+f_wo_ext+'_meta.json', 'w')
-  jblob=json.loads('{ "'+f_wo_ext+'": { "dataCount": '+str(Overall_data_total)+' } }')
-  jblob[f_wo_ext]['alphiRange']=Overall_Alphi_range
-  jblob[f_wo_ext]['dataByDEP']=DEP_range
+  jblob=json.loads('{ "model":"'+f_wo_ext+'", "meta": { "dataCount": '+str(Overall_data_total)+' } }')
+  jblob['meta']['alphiRange']=Overall_Alphi_range
+  jblob['meta']['dataByDEP']=DEP_range
 #  jstr=json.dumps(jblob, indent=2)
   jstr=json.dumps(jblob)
   f.write(jstr)

@@ -1,6 +1,5 @@
 CREATE TABLE %%csmtb%_tb (
    gid           serial PRIMARY KEY,
-   meta_gid      integer DEFAULT NULL,
 
    LON     float DEFAULT 0.0,
    LAT     float DEFAULT 0.0,
