@@ -8,15 +8,17 @@
 var CSM = new function () {
     window.console.log("in CSM..");
 
-    // complete set of sliprate layers, one marker layer for one site, 
+// 1 model = 1+ layers
+
+    // complete set of csm layers, one marker layer for one site, 
     // setup once from viewer.php
-    this.cpd_layers;
-    this.cpd_markerLocations = [];
+    this.csm_layers;
+    this.csm_markerLocations = [];
 
     // searched layers being actively looked at -- result of a search
-    this.cpd_active_layers= new L.FeatureGroup();
-    this.cpd_markerLocations = [];
-    this.cpd_active_gid = [];
+    this.csm_active_layers= new L.FeatureGroup();
+    this.csm_markerLocations = [];
+    this.csm_active_gid = [];
 
     // selected some layers from active layers
     // to be displayed at the metadata_table
