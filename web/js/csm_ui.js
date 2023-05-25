@@ -1,5 +1,5 @@
 /***
-   cpd_ui.js
+   csm_ui.js
 ***/
 
 var showing_key = false;
@@ -18,7 +18,7 @@ window.console.log("calling showing key");
     let min=Math.round(minv * 100) / 100;
     let max=Math.round(maxv * 100) / 100;
 
-    $("#CPD_plot").prepend($("#plot-range-key-container").html());
+    $("#CSM_plot").prepend($("#plot-range-key-container").html());
     $("#plot-range-key span.min").html(min);
     $("#plot-range-key span.max").html(max);
 }
@@ -26,7 +26,7 @@ window.console.log("calling showing key");
 function removeKey() {
 window.console.log("calling removing key");
     if(showing_key) {
-      $("#CPD_plot #plot-range-key").remove();
+      $("#CSM_plot #plot-range-key").remove();
       showing_key = false;
     }
 }
@@ -42,7 +42,7 @@ let h=576+c_height;
 
 $('#top-intro').css("display", "none");
 $('#searchResult').css("display", "none");
-$('#CPD_plot').css("height", h);
+$('#CSM_plot').css("height", h);
 $('#infoData').removeClass('col-5').addClass('col-0');
 $('#top-map').removeClass('col-7').addClass('row');
 $('#top-map').removeClass('pl-1').addClass('pl-0');
@@ -68,8 +68,8 @@ let h = height - c_height-4.5;
 let w = width - 15;
 //window.console.log( "height: %d, %d > %d \n",height, c_height,h);
 //window.console.log( "width: %d, %d  \n",width, w);
-$('#CPD_plot').css("height", h);
-$('#CPD_plot').css("width", w);
+$('#CSM_plot').css("height", h);
+$('#CSM_plot').css("width", w);
 resize_map();
 }
 
@@ -77,8 +77,8 @@ function _toNormalView()
 {
 $('#top-control').css("display", "");
 $('#top-select').css("display", "");
-$('#CPD_plot').css("height", "576px");
-$('#CPD_plot').css("width", "635px");
+$('#CSM_plot').css("height", "576px");
+$('#CSM_plot').css("width", "635px");
 $('.navbar').css("margin-bottom", "20px");
 $('.container').css("max-width", "1140px");
 $('.container').css("padding-left", "15px");
@@ -208,7 +208,7 @@ function saveAsJSONBlobFile(data, timestamp)
 {
 //http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
 //   var rnd= Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    var fname="CPD_metadata_"+timestamp+".json";
+    var fname="CSM_metadata_"+timestamp+".json";
     var blob = new Blob([data], {
         type: "text/plain;charset=utf-8"
     });
@@ -220,7 +220,7 @@ function saveAsCSVBlobFile(data, timestamp)
 {
 //http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
 //   var rnd= Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    var fname="CPD_metadata_"+timestamp+".csv";
+    var fname="CSM_metadata_"+timestamp+".csv";
     var blob = new Blob([data], {
         type: "text/plain;charset=utf-8"
     });
@@ -231,7 +231,7 @@ function saveAsCSVBlobFile(data, timestamp)
 function saveAsBlobFile(data)
 {
     let timestamp = $.now();
-    let fname="CPD_link_"+timestamp+".txt";
+    let fname="CSM_link_"+timestamp+".txt";
     let blob = new Blob([data], {
         type: "text/plain;charset=utf-8"
     });

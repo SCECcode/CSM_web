@@ -123,7 +123,7 @@ $csm = new CSM();
 <!-- top-intro -->
    <div id="top-intro" style="display:">
 <p>
-The sites of the <a href="https://www.scec.org/research/csm">SCEC Community Stress Model</a> are 
+NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community Stress Model</a> are 
 ...  See the <a href="guide">user guide</a> for more details and usage instructions.
 </p>
    </div>
@@ -147,18 +147,18 @@ The sites of the <a href="https://www.scec.org/research/csm">SCEC Community Stre
           <div id='model-options' class="form-check-inline">
             <div class="form-check form-check-inline">
                 <label class='form-check-label ml-1 mini-option'
-                               for="csm-model-cfm">
+                               for="cxm-model-cfm">
                 <input class='form-check-inline mr-1'
                                type="checkbox"
-			       id="csm-model-cfm" value="1" />CFM6.0
+			       id="cxm-model-cfm" value="1" />CFM6.0
                 </label>
             </div>
             <div class="form-check form-check-inline">
                 <label class='form-check-label ml-1 mini-option'
-                               for="csm-model-gfm">
+                               for="cxm-model-gfm">
                 <input class='form-check-inline mr-1'
                                type="checkbox"
-			       id="csm-model-gfm" value="1" />GFM
+			       id="cxm-model-gfm" value="1" />GFM
                 </label>
             </div>
           </div>
@@ -209,7 +209,7 @@ The sites of the <a href="https://www.scec.org/research/csm">SCEC Community Stre
         <div id="phpResponseTxt"></div>
       </div>
 
-      <div id="top-map" class="col-7 pl-1">
+      <div id="top-map" class="col-7 pl-1" style="border:solid 2px green">
         <div class="w-100 mb-1" id='CSM_plot'
              style="position:relative;border:solid 1px #ced4da; height:576px;">
              <div  id='wait-spinner' style="">
@@ -228,10 +228,10 @@ The sites of the <a href="https://www.scec.org/research/csm">SCEC Community Stre
          <div id="metadata-table-container" style="border:solid 1px #ced4da;overflow-x:hidden">
             <table id="metadata-table">
               <thead>
-              </thead>    
+              </thead>
               <tbody>
                 <tr id="placeholder-row">
-                  <td colspan="9">Metadata for selected sites will appear here. </td>
+                  <td colspan="9">Metadata for selected model will appear here. </td>
                 </tr>
             </table>
          </div>

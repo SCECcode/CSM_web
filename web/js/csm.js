@@ -1,7 +1,8 @@
 /***
    csm.js
 
-   needs to track the 'depths' per dataset ??
+   needs to track the 'depths' per models ??
+   also need to track different models
 ***/
 
 var CSM = new function () {

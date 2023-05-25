@@ -12,12 +12,12 @@ CREATE TABLE %%csmtb%_tb (
    Snu        float NOT NULL,
    Suu        float NOT NULL,
 
-   SHmax      float NOT NULL,
+   SHmax      float,
    SHmax_unc  float,
 
    phi        float,
    R          float,
-   Aphi       float NOT NULL,
+   Aphi       float,
    iso        float, 
    dif        float, 
    mss        float, 

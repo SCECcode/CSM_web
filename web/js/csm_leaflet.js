@@ -1,7 +1,7 @@
 /***
-   cpd_leaflet.js
+   csm_leaflet.js
 
-This is leaflet specific utilities for CPD
+This is leaflet specific utilities for CSM
 ***/
 
 var init_map_zoom_level = 10;
@@ -28,8 +28,8 @@ var rectangleDrawer;
 var mymap, baseLayers, layerControl, currentLayer;
 var mylegend;
 
-var cpd_latlon_area_list=[];
-var cpd_latlon_point_list=[];
+var csm_latlon_area_list=[];
+var csm_latlon_point_list=[];
 
 /*****************************************************************/
 
@@ -114,7 +114,7 @@ function setup_viewer()
   currentLayer = esri_topographic;
 
 // ==> mymap <==
-  mymap = L.map('CPD_plot', { drawControl:false, layers: [esri_topographic, basemap], zoomControl:true} );
+  mymap = L.map('CSM_plot', { drawControl:false, layers: [esri_topographic, basemap], zoomControl:true} );
   mymap.setView(init_map_coordinates, init_map_zoom_level);
   mymap.attributionControl.addAttribution(scecAttribution);
 
@@ -155,7 +155,7 @@ function setup_viewer()
 // mymap.on('click', onMapClick);
 
   function onMapMouseOver(e) {
-    if(CPD_SLIPRATE.toDraw()) {
+    if(CSM.toDraw()) {
       drawRectangle();
     }
   }
@@ -187,7 +187,7 @@ function setup_viewer()
 // like hand inputed rectangle. Maybe some property needs to be set
 // For now, just redraw the rectangle
 	    //
-        CPD_SLIPRATE.searchLatlon(1,latlngs);        
+        CSM.searchLatlon(1,latlngs);        
     }
   });
 
@@ -308,13 +308,13 @@ function add_bounding_rectangle(a,b,c,d) {
   remove_bounding_rectangle_layer();
   var layer=addRectangleLayer(a,b,c,d);
   var tmp={"layer":layer, "latlngs":[{"lat":a,"lon":b},{"lat":c,"lon":d}]};
-  cpd_latlon_area_list.push(tmp);
+  csm_latlon_area_list.push(tmp);
   return layer;
 }
 
 function remove_bounding_rectangle_layer() {
-   if(cpd_latlon_area_list.length == 1) {
-     var area=cpd_latlon_area_list.pop();
+   if(csm_latlon_area_list.length == 1) {
+     var area=csm_latlon_area_list.pop();
      var l=area["layer"];
      viewermap.removeLayer(l);
    }
@@ -325,7 +325,7 @@ function add_bounding_rectangle_layer(layer, a,b,c,d) {
   // remove old one and add a new one
   remove_bounding_rectangle_layer();
   var tmp={"layer":layer, "latlngs":[{"lat":a,"lon":b},{"lat":c,"lon":d}]};
-  cpd_latlon_area_list.push(tmp);
+  csm_latlon_area_list.push(tmp);
 }
 
 function add_marker_point(a,b) {
@@ -333,13 +333,13 @@ function add_marker_point(a,b) {
   remove_marker_point_layer();
   var layer=addMarkerLayer(a,b);
   var tmp={"layer":layer, "latlngs":[{"lat":a,"lon":b}]};
-  cpd_latlon_point_list.push(tmp);
+  csm_latlon_point_list.push(tmp);
   return layer;
 }
 
 function remove_marker_point_layer() {
-   if(cpd_latlon_point_list.length == 1) {
-     var point=cpd_latlon_point_list.pop();
+   if(csm_latlon_point_list.length == 1) {
+     var point=csm_latlon_point_list.pop();
      var l=point["layer"];
      viewermap.removeLayer(l);
    }
@@ -349,7 +349,7 @@ function add_marker_point_layer(layer, a,b) {
   // remove old one and add a new one
   remove_marker_point_layer();
   var tmp={"layer":layer, "latlngs":[{"lat":a,"lon":b}]};
-  cpd_latlon_point_list.push(tmp);
+  csm_latlon_point_list.push(tmp);
 }
 
 
