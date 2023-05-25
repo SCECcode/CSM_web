@@ -15,7 +15,7 @@ CREATE TABLE %%csmtb%_tb (
    SHmax      float NOT NULL,
    SHmax_unc  float,
 
-   phi        float NOT NULL,
+   phi        float,
    R          float NOT NULL,
    Aphi       float NOT NULL,
    iso        float, 

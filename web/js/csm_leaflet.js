@@ -28,8 +28,8 @@ var rectangleDrawer;
 var mymap, baseLayers, layerControl, currentLayer;
 var mylegend;
 
-var cpd_latlon_area_list=[];
-var cpd_latlon_point_list=[];
+var csm_latlon_area_list=[];
+var csm_latlon_point_list=[];
 
 /*****************************************************************/
 
@@ -308,13 +308,13 @@ function add_bounding_rectangle(a,b,c,d) {
   remove_bounding_rectangle_layer();
   var layer=addRectangleLayer(a,b,c,d);
   var tmp={"layer":layer, "latlngs":[{"lat":a,"lon":b},{"lat":c,"lon":d}]};
-  cpd_latlon_area_list.push(tmp);
+  csm_latlon_area_list.push(tmp);
   return layer;
 }
 
 function remove_bounding_rectangle_layer() {
-   if(cpd_latlon_area_list.length == 1) {
-     var area=cpd_latlon_area_list.pop();
+   if(csm_latlon_area_list.length == 1) {
+     var area=csm_latlon_area_list.pop();
      var l=area["layer"];
      viewermap.removeLayer(l);
    }
@@ -325,7 +325,7 @@ function add_bounding_rectangle_layer(layer, a,b,c,d) {
   // remove old one and add a new one
   remove_bounding_rectangle_layer();
   var tmp={"layer":layer, "latlngs":[{"lat":a,"lon":b},{"lat":c,"lon":d}]};
-  cpd_latlon_area_list.push(tmp);
+  csm_latlon_area_list.push(tmp);
 }
 
 function add_marker_point(a,b) {
@@ -333,13 +333,13 @@ function add_marker_point(a,b) {
   remove_marker_point_layer();
   var layer=addMarkerLayer(a,b);
   var tmp={"layer":layer, "latlngs":[{"lat":a,"lon":b}]};
-  cpd_latlon_point_list.push(tmp);
+  csm_latlon_point_list.push(tmp);
   return layer;
 }
 
 function remove_marker_point_layer() {
-   if(cpd_latlon_point_list.length == 1) {
-     var point=cpd_latlon_point_list.pop();
+   if(csm_latlon_point_list.length == 1) {
+     var point=csm_latlon_point_list.pop();
      var l=point["layer"];
      viewermap.removeLayer(l);
    }
@@ -349,7 +349,7 @@ function add_marker_point_layer(layer, a,b) {
   // remove old one and add a new one
   remove_marker_point_layer();
   var tmp={"layer":layer, "latlngs":[{"lat":a,"lon":b}]};
-  cpd_latlon_point_list.push(tmp);
+  csm_latlon_point_list.push(tmp);
 }
 
 
