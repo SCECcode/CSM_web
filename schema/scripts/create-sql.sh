@@ -29,7 +29,7 @@ for file in ../data/*csv ; do
     metafile="../data/"${CSMTB}"_meta.json"
     meta=$(<${metafile})
 
-    cat sql_template/setup_meta_tb.sql | sed "s/%%CSMTB%/${CSMTB}/g" | sed "s/%%csmtb%/${csmtb}/g" | sed "s/%%metab%/${meta}/g" >> ../sql/setup_model_tb.sql
-#    echo  "INSERT INTO CSM_meta (\"model_name\",\"table_name\",\"meta\",\"info\") VALUES ('"${CSMTB}"','"${csmtb}"_tb','"$meta"', '"${CSMTB}"'); " >> ../sql/setup_meta_tb.sql
+    cat sql_template/setup_meta_tb.sql | sed "s/%%CSMTB%/${CSMTB}/g" | sed "s/%%csmtb%/${csmtb}/g" | sed "s/%%meta%/${meta}/g" >> ../sql/setup_meta_tb.sql
+
 
 done
