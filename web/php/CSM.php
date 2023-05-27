@@ -63,4 +63,20 @@ class CSM extends SpatialData
       $this->php_result = "BAD";
       return $this;
   }
+
+  public function getAllMetaData()
+  {
+    $query = "SELECT * from csm_meta";
+	  
+    $result = pg_query($this->connection, $query);
+
+    $meta_data = array();
+
+    while($row = pg_fetch_object($result)) {
+      $meta_data[] = $row;
+    }
+
+    $this->php_result = $meta_data;
+    return $this;
+  }
 }
