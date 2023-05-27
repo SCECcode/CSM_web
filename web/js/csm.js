@@ -67,46 +67,16 @@ var CSM = new function () {
         latlon: 'latlon'
     };
 
-    var sliprate_csv_keys= {
-fault_name: 'Fault Name',
-fault_id: 'NSHM23 Fault ID',
-state: 'State',
-site_name: 'Site Name',
-cpd_id: 'CPD ID',
-sliprate_id: 'NSHM23 Slip Rate ID',
-longitude: 'Longitude',
-latitud: 'Latitude',
-dist_to_cfmfault: 'Distance To Nearest CFM Fault (km)',
-cfm6_objectname: 'CFM6.0 Object Name',
-data_type: 'Data Type',
-observation: 'Observation',
-pref_rate: 'Preferred Rate',
-low_rate: 'Low Rate',
-high_rate: 'High Rate',
-rate_unct: 'Rate Uncertainty',
-rate_type: 'Rate Type',
-rept_reint: 'ReptReint',
-offset_type: 'Offset Type',
-age_type: 'Age Type',
-num_events: 'Num Events',
-rate_age: 'Rate Age',
-q_bin_min: 'Qbin Min',
-q_bin_max: 'Qbin Max',
-reference: 'References'
-        };
-
     this.searchingType=this.searchType.none;
-
     var tablePlaceholderRow = `<tr id="placeholder-row">
                         <td colspan="9">Metadata for selected region will appear here.</td>
                     </tr>`;
 
 //???
     this.activateData = function() {
-        activeProduct = Products.SLIPRATE;
         this.showOnMap();
         $("div.control-container").hide();
-        $("#cpd-controls-container").show();
+        $("#csm-controls-container").show();
 
     };
 
@@ -134,30 +104,30 @@ window.console.log("HERE... processMeta");
 
 // recreate a new active_layers using a glist
 // glist is a sorted ascending list
-// this.cpd_layers should be also ascending
+// this.csm_layers should be also ascending
     this.createActiveLayerGroupWithGids = function(glist) {
 
         // remove the old ones and remove from result table
         this.clearAllSelections()
-        this.cpd_active_layers.remove();
-        this.cpd_active_layers= new L.FeatureGroup();
-        this.cpd_active_gid=[];
-        this.cpd_active_markerLocations = [];
+        this.csm_active_layers.remove();
+        this.csm_active_layers= new L.FeatureGroup();
+        this.csm_active_gid=[];
+        this.csm_active_markerLocations = [];
 
         let gsz=glist.length;
-        let lsz= this.cpd_layers.length;
+        let lsz= this.csm_layers.length;
         let i_start=0;
 
         for (let j=0; j<gsz; j++) {
           let gid=glist[j];
           for (let i=i_start; i< lsz; i++) {
-            let layer = this.cpd_layers[i];
+            let layer = this.csm_layers[i];
             if (layer.hasOwnProperty("scec_properties")) {
                if (gid == layer.scec_properties.gid) {
                   this.replaceColor(layer);
-                  this.cpd_active_layers.addLayer(layer);
-                  this.cpd_active_gid.push(gid);
-                  this.cpd_active_markerLocations.push(layer.getLatLng())                      
+                  this.csm_active_layers.addLayer(layer);
+                  this.csm_active_gid.push(gid);
+                  this.csm_active_markerLocations.push(layer.getLatLng())                      
                   i_start=i+1;
                   break;
                }
@@ -165,10 +135,10 @@ window.console.log("HERE... processMeta");
           }
         }
         replaceResultTableBodyWithGids(glist);
-        this.cpd_active_layers.addTo(viewermap);
+        this.csm_active_layers.addTo(viewermap);
 
-        if(this.cpd_active_markerLocations.length > 0) {
-          let bounds = L.latLngBounds(this.cpd_active_markerLocations);
+        if(this.csm_active_markerLocations.length > 0) {
+          let bounds = L.latLngBounds(this.csm_active_markerLocations);
 window.console.log("flyingBounds --new list");
           viewermap.flyToBounds(bounds);
         }
@@ -178,39 +148,39 @@ window.console.log("flyingBounds --new list");
 // original state  toOriginal use normal color
     this.recreateActiveLayerGroup = function(toOriginal) {
 
-        if(this.cpd_active_gid.length != this.cpd_layers.length 
+        if(this.csm_active_gid.length != this.csm_layers.length 
                || this.searchingType == this.searchType.minrate
                || this.searchingType == this.searchType.maxrate) {
-          this.cpd_active_layers= new L.FeatureGroup();
-          this.cpd_active_gid=[];
+          this.csm_active_layers= new L.FeatureGroup();
+          this.csm_active_gid=[];
         
-          for (let i=0; i< this.cpd_layers.length; i++) {
-            let marker = this.cpd_layers[i];
+          for (let i=0; i< this.csm_layers.length; i++) {
+            let marker = this.csm_layers[i];
             if (marker.hasOwnProperty("scec_properties")) {
                let gid = marker.scec_properties.gid;
                if(!toOriginal) {
                  this.replaceColor(marker);
                }
-               this.cpd_active_layers.addLayer(marker);
-               this.cpd_active_gid.push(gid);
-               this.cpd_active_markerLocations.push(marker.getLatLng())                      
+               this.csm_active_layers.addLayer(marker);
+               this.csm_active_gid.push(gid);
+               this.csm_active_markerLocations.push(marker.getLatLng())                      
             }
           }
-          replaceResultTableBodyWithGids(this.cpd_active_gid);
-          this.cpd_active_layers.addTo(viewermap);
+          replaceResultTableBodyWithGids(this.csm_active_gid);
+          this.csm_active_layers.addTo(viewermap);
           } else {
-            this.cpd_active_layers.addTo(viewermap);
+            this.csm_active_layers.addTo(viewermap);
        }
 window.console.log("flyingBounds --recreateActiveLayer");
-       let bounds = L.latLngBounds(this.cpd_active_markerLocations);
+       let bounds = L.latLngBounds(this.csm_active_markerLocations);
        viewermap.flyToBounds(bounds);
     }
 
 // search for a layer from master list by gid
     this.getLayerByGid = function(gid) {
         let foundLayer = false;
-        for (let i=0; i< this.cpd_layers.length; i++) {
-          let layer = this.cpd_layers[i];
+        for (let i=0; i< this.csm_layers.length; i++) {
+          let layer = this.csm_layers[i];
           if (layer.hasOwnProperty("scec_properties")) {
              if (gid == layer.scec_properties.gid) {
                  return layer;     
@@ -313,9 +283,9 @@ window.console.log("XX HERE moving table Row ???");
     this.toggleSelectAll = function() {
         var sliprate_object = this;
 
-        let $selectAllButton = $("#cpd-allBtn span");
+        let $selectAllButton = $("#csm-allBtn span");
         if (!$selectAllButton.hasClass('glyphicon-check')) {
-            this.cpd_active_layers.eachLayer(function(layer){
+            this.csm_active_layers.eachLayer(function(layer){
                 sliprate_object.selectSiteByLayer(layer);
             });
             $selectAllButton.addClass('glyphicon-check').removeClass('glyphicon-unchecked');
@@ -327,73 +297,73 @@ window.console.log("XX HERE moving table Row ???");
 // selectAll button  - clear
     this.clearSelectAll = function() {
         this.clearAllSelections();
-        let $selectAllButton = $("#cpd-allBtn span");
+        let $selectAllButton = $("#csm-allBtn span");
         $selectAllButton.removeClass('glyphicon-check').addClass('glyphicon-unchecked');
     };
 
 // unselect every active layer
     this.clearAllSelections = function() {
         var sliprate_object = this;
-        this.cpd_active_layers.eachLayer(function(layer){
+        this.csm_active_layers.eachLayer(function(layer){
             sliprate_object.unselectSiteByLayer(layer);
         });
-        let $selectAllButton = $("#cpd-allBtn span");
+        let $selectAllButton = $("#csm-allBtn span");
         $selectAllButton.removeClass('glyphicon-check').addClass('glyphicon-unchecked');
     };
 
     this.upSelectedCount = function(gid) {
-       let i=this.cpd_selected_gid.indexOf(gid); 
+       let i=this.csm_selected_gid.indexOf(gid); 
        if(i != -1) {
          window.console.log("this is bad.. already in selected list "+gid);
          return;
        }
        window.console.log("=====adding to list "+gid);
-       this.cpd_selected_gid.push(gid);
-       updateDownloadCounter(this.cpd_selected_gid.length);
+       this.csm_selected_gid.push(gid);
+       updateDownloadCounter(this.csm_selected_gid.length);
     };
 
     this.downSelectedCount = function(gid) {
-       if(this.cpd_selected_gid.length == 0) { // just ignore..
+       if(this.csm_selected_gid.length == 0) { // just ignore..
          return;
        }
-       let i=this.cpd_selected_gid.indexOf(gid); 
+       let i=this.csm_selected_gid.indexOf(gid); 
        if(i == -1) {
          window.console.log("this is bad.. not in selected list "+gid);
          return;
        }
        window.console.log("=====remove from list "+gid);
-       this.cpd_selected_gid.splice(i,1);
-       updateDownloadCounter(this.cpd_selected_gid.length);
+       this.csm_selected_gid.splice(i,1);
+       updateDownloadCounter(this.csm_selected_gid.length);
     };
 
     this.zeroSelectedCount = function() {
-       this.cpd_selected_gid = [];
+       this.csm_selected_gid = [];
        updateDownloadCounter(0);
     };
 
 
 /********** search/layer  functions *********************/
     this.showSearch = function (type) {
-        const $all_search_controls = $("#cpd-sliprate-search-control ul li");
+        const $all_search_controls = $("#csm-sliprate-search-control ul li");
         $all_search_controls.hide();
         switch (type) {
             case this.searchType.faultname:
-                $("#cpd-fault-name").show();
+                $("#csm-fault-name").show();
                 break;
             case this.searchType.sitename:
-                $("#cpd-site-name").show();
+                $("#csm-site-name").show();
                 break;
             case this.searchType.latlon:
-                $("#cpd-latlon").show();
+                $("#csm-latlon").show();
                 drawRectangle();
                 break;
             case this.searchType.minrate:
-                $("#cpd-minrate-slider").show();
-                showKey(cpd_minrate_min, cpd_minrate_max);
+                $("#csm-minrate-slider").show();
+                showKey(csm_minrate_min, csm_minrate_max);
                 break;
             case this.searchType.maxrate:
-                $("#cpd-maxrate-slider").show();
-                showKey(cpd_maxrate_min, cpd_maxrate_max);
+                $("#csm-maxrate-slider").show();
+                showKey(csm_maxrate_min, csm_maxrate_max);
                 break;
             default:
                 // no action
@@ -401,11 +371,11 @@ window.console.log("XX HERE moving table Row ???");
     };
 
     this.showOnMap = function () {
-        this.cpd_active_layers.addTo(viewermap);
+        this.csm_active_layers.addTo(viewermap);
     };
 
     this.hideOnMap = function () {
-        this.cpd_active_layers.remove();
+        this.csm_active_layers.remove();
     };
 
 // reset from the reset button
@@ -416,19 +386,19 @@ window.console.log("XX HERE moving table Row ???");
 window.console.log("calling reset");
         this.resetSearch();
 
-        if ($("#cpd-model-cfm").prop('checked')) {
+        if ($("#csm-model-cfm").prop('checked')) {
           CXM.showCFMFaults(viewermap);
           } else {
           CXM.hideCFMFaults(viewermap);
         }
 
-        if ($("#cpd-model-gfm").prop('checked')) {
+        if ($("#csm-model-gfm").prop('checked')) {
           CXM.showGFMRegions(viewermap);
           } else {
           CXM.hideGFMRegions(viewermap);
         }
 
-        $("#cpd-search-type").val("");
+        $("#csm-search-type").val("");
         this.searchingType = this.searchType.none;
 
         // go back to default view,
@@ -459,37 +429,37 @@ window.console.log("sliprate calling --->> resetSearch.");
 
         this.resetSearch();
 
-        const $all_search_controls = $("#cpd-controls-container ul li")
+        const $all_search_controls = $("#csm-controls-container ul li")
 window.console.log("sliprate --- calling freshSearch..");
         switch (t) {
             case "faultname": 
                this.searchingType = this.searchType.faultname;
                $all_search_controls.hide();
-               $("#cpd-fault-name").show();
+               $("#csm-fault-name").show();
                break;
             case "sitename": 
                this.searchingType = this.searchType.sitename;
                $all_search_controls.hide();
-               $("#cpd-site-name").show();
+               $("#csm-site-name").show();
                break;
             case "minrate": 
                this.searchingType = this.searchType.minrate;
                $all_search_controls.hide();
-               $("#cpd-minrate-slider").show();
-               showKey(cpd_minrate_min, cpd_minrate_max);
+               $("#csm-minrate-slider").show();
+               showKey(csm_minrate_min, csm_minrate_max);
                this.recreateActiveLayerGroup(false);
                break;
             case "maxrate": 
                this.searchingType = this.searchType.maxrate;
                $all_search_controls.hide();
-               $("#cpd-maxrate-slider").show();
-               showKey(cpd_maxrate_min, cpd_maxrate_max);
+               $("#csm-maxrate-slider").show();
+               showKey(csm_maxrate_min, csm_maxrate_max);
                this.recreateActiveLayerGroup(false);
                break;
             case "latlon": 
                this.searchingType = this.searchType.latlon;
                $all_search_controls.hide();
-               $("#cpd-latlon").show();
+               $("#csm-latlon").show();
                drawRectangle();
                break;
             default:
@@ -497,13 +467,13 @@ window.console.log("sliprate --- calling freshSearch..");
                break;
         }
 
-        if ($("#cpd-model-cfm").prop('checked')) {
+        if ($("#csm-model-cfm").prop('checked')) {
           CXM.showCFMFaults(viewermap);
           } else {
           CXM.hideCFMFaults(viewermap);
         }
 
-        if ($("#cpd-model-gfm").prop('checked')) {
+        if ($("#csm-model-gfm").prop('checked')) {
           CXM.showGFMRegions(viewermap);
           } else {
           CXM.hideGFMRegions(viewermap);
@@ -512,7 +482,7 @@ window.console.log("sliprate --- calling freshSearch..");
 
     this.getMarkerBySiteId = function (site_id) {
         for (const index in csm_meta_data) {
-            if (csm_meta_data[index].cpd_id == site_id) {
+            if (csm_meta_data[index].csm_id == site_id) {
                 return csm_meta_data[index];
             }
         }
@@ -546,11 +516,7 @@ window.console.log("sliprate --- calling freshSearch..");
 window.console.log("Did not find any PHP result");
             } else {
                 let tmp=JSON.parse(sliprate_result); 
-                if(type == CPD_SLIPRATE.searchType.faultname
-                     ||  type == CPD_SLIPRATE.searchType.sitename
-                     ||  type == CPD_SLIPRATE.searchType.minrate
-                     ||  type == CPD_SLIPRATE.searchType.maxrate
-                     ||  type == CPD_SLIPRATE.searchType.latlon) {
+                if(type == CSM.searchType.latlon) {
 //expected [{'gid':'2'},{'gid':'10'}]
                     let sz=tmp.length;
                     for(let i=0; i<sz; i++) {
@@ -561,7 +527,7 @@ window.console.log("Did not find any PHP result");
 window.console.log( "BAD, unknown search type \n");
                 }
             }
-            CPD_SLIPRATE.createActiveLayerGroupWithGids(glist);
+            CSM.createActiveLayerGroupWithGids(glist);
         });
     };
 
@@ -571,10 +537,10 @@ window.console.log( "BAD, unknown search type \n");
     this.searchLatlon = function (fromWhere, rect) {
         let criteria = [];
         if( fromWhere == 0) {
-            let lat1=$("#cpd-firstLatTxt").val();
-            let lon1=$("#cpd-firstLonTxt").val();
-            let lat2=$("#cpd-secondLatTxt").val();
-            let lon2=$("#cpd-secondLonTxt").val();
+            let lat1=$("#csm-firstLatTxt").val();
+            let lon1=$("#csm-firstLonTxt").val();
+            let lat2=$("#csm-secondLatTxt").val();
+            let lon2=$("#csm-secondLonTxt").val();
             if(lat1=='' || lon1=='' || lat2=='' || lon2=='') return;
             remove_bounding_rectangle_layer();
             add_bounding_rectangle(lat1,lon1,lat2,lon2);
@@ -591,13 +557,13 @@ window.console.log( "BAD, unknown search type \n");
                 criteria.push(ne['lat']);
                 criteria.push(ne['lng']);
 
-                $("#cpd-firstLatTxt").val(criteria[0]);
-                $("#cpd-firstLonTxt").val(criteria[1]);
-                $("#cpd-secondLatTxt").val(criteria[2]);
-                $("#cpd-secondLonTxt").val(criteria[3]);
+                $("#csm-firstLatTxt").val(criteria[0]);
+                $("#csm-firstLonTxt").val(criteria[1]);
+                $("#csm-secondLatTxt").val(criteria[2]);
+                $("#csm-secondLonTxt").val(criteria[3]);
         }
                  
-        this.search(CPD_SLIPRATE.searchType.latlon, criteria);
+        this.search(CSM.searchType.latlon, criteria);
 
         let markerLocations = [];
         markerLocations.push(L.latLng(criteria[0],criteria[1]));
@@ -643,7 +609,7 @@ faultname
 faultid
 state
 sitename
-cpdid
+csmid
 sliprateid
 longitude
 latitud
@@ -671,7 +637,7 @@ reference
         meta.fault_id = properties.faultid;
         meta.state = properties.state;
         meta.site_name = properties.sitename;
-        meta.cpd_id= properties.cpdid;
+        meta.csm_id= properties.csmid;
         meta.sliprate_id= properties.sliprateid;
         meta.longitude = properties.longitude;
         meta.latitude = properties.latitude;
@@ -716,8 +682,8 @@ reference
 
         html += `<tr sliprate-metadata-gid="${layer.scec_properties.gid}">`;
 
-        html += `<td><button class=\"btn btn-sm cxm-small-btn\" id=\"button_meta_${layer.scec_properties.gid}\" title=\"remove the site\" onclick=CPD_SLIPRATE.unselectSiteByGid("${layer.scec_properties.gid}");><span id=\"sliprate_metadata_${layer.scec_properties.gid}\" class=\"glyphicon glyphicon-trash\"></span></button></td>`;
-        html += `<td class="meta-data">${layer.scec_properties.cpd_id}</td>`;
+        html += `<td><button class=\"btn btn-sm cxm-small-btn\" id=\"button_meta_${layer.scec_properties.gid}\" title=\"remove the site\" onclick=CSM.unselectSiteByGid("${layer.scec_properties.gid}");><span id=\"sliprate_metadata_${layer.scec_properties.gid}\" class=\"glyphicon glyphicon-trash\"></span></button></td>`;
+        html += `<td class="meta-data">${layer.scec_properties.csm_id}</td>`;
         html += `<td class="meta-data">${layer.scec_properties.fault_name} </td>`;
         html += `<td class="meta-data">${layer.scec_properties.site_name}</td>`;
         html += `<td class="meta-data">${layer.scec_properties.latitude} </td>`;
@@ -750,7 +716,7 @@ window.console.log("generateMetadataTable..");
 <!--download all -->
                 <div class="btn-group download-now">
                     <button id="download-all" type="button" class="btn btn-dark" value="metadata"
-                            onclick="CPD_SLIPRATE.downloadURLsAsZip(this.value);" disabled>
+                            onclick="CSM.downloadURLsAsZip(this.value);" disabled>
                             DOWNLOAD&nbsp<span id="download-counter"></span>
                     </button>
 <!--
@@ -760,7 +726,7 @@ window.console.log("generateMetadataTable..");
                     </button>
                     <div class="dropdown-menu dropdown-menu-right">
                        <button class="dropdown-item" type="button" value="metadata"
-                            onclick="CPD_SLIPRATE.downloadURLsAsZip(this.value);">metadata
+                            onclick="CSM.downloadURLsAsZip(this.value);">metadata
                        </button>
                     </div>
 -->
@@ -811,43 +777,43 @@ window.console.log("generateMetadataTable..");
 
         this.resetLatLon = function () {
           if( this.searchingType != this.searchType.latlon) return;
-          $("#cpd-firstLatTxt").val("");
-          $("#cpd-firstLonTxt").val("");
-          $("#cpd-secondLatTxt").val("");
-          $("#cpd-scecondLonTxt").val("");
+          $("#csm-firstLatTxt").val("");
+          $("#csm-firstLonTxt").val("");
+          $("#csm-secondLatTxt").val("");
+          $("#csm-scecondLonTxt").val("");
           skipRectangle();
           remove_bounding_rectangle_layer();
-          $("#cpd-latlon").hide();
+          $("#csm-latlon").hide();
         }
 
         this.resetFaultname = function () {
           if( this.searchingType != this.searchType.faultname) return;
-          $("#cpd-faultnameTxt").val("");
-          $("#cpd-fault-name").hide();
+          $("#csm-faultnameTxt").val("");
+          $("#csm-fault-name").hide();
         }
         this.resetSitename = function () {
           if( this.searchingType != this.searchType.sitename) return;
-          $("#cpd-sitenameTxt").val("");
-          $("#cpd-site-name").hide();
+          $("#csm-sitenameTxt").val("");
+          $("#csm-site-name").hide();
         }
 
         this.resetMinrate = function () {
           this.resetMinrateSlider();
-          resetMinrateRangeColor(cpd_minrate_min, cpd_minrate_max);
+          resetMinrateRangeColor(csm_minrate_min, csm_minrate_max);
           removeKey(); 
-	  $("#cpd-minrate-slider").hide();
+	  $("#csm-minrate-slider").hide();
         }
 
         this.resetMaxrate = function () {
           this.resetMaxrateSlider();
-          resetMaxrateRangeColor(cpd_maxrate_min, cpd_maxrate_max);
+          resetMaxrateRangeColor(csm_maxrate_min, csm_maxrate_max);
           removeKey();
-	  $("#cpd-maxrate-slider").hide();
+	  $("#csm-maxrate-slider").hide();
         }
 
         var resetMinrateRangeColor = function (target_min, target_max){
-          let minRGB= makeRGB(target_min, cpd_minrate_max, cpd_minrate_min );
-          let maxRGB= makeRGB(target_max, cpd_minrate_max, cpd_minrate_min );
+          let minRGB= makeRGB(target_min, csm_minrate_max, csm_minrate_min );
+          let maxRGB= makeRGB(target_max, csm_minrate_max, csm_minrate_min );
           let myColor="linear-gradient(to right, "+minRGB+","+maxRGB+")";
           $("#slider-minrate-range .ui-slider-range" ).css( "background", myColor );
         }
@@ -855,14 +821,14 @@ window.console.log("generateMetadataTable..");
         this.resetMinrateSlider = function () {
           if( this.searchingType != this.searchType.minrate) return;
           $("#slider-minrate-range").slider('values', 
-                              [cpd_minrate_min, cpd_minrate_max]);
-          $("#cpd-minMinrateSliderTxt").val(cpd_minrate_min);
-          $("#cpd-maxMinrateSliderTxt").val(cpd_minrate_max);
+                              [csm_minrate_min, csm_minrate_max]);
+          $("#csm-minMinrateSliderTxt").val(csm_minrate_min);
+          $("#csm-maxMinrateSliderTxt").val(csm_minrate_max);
         }
 
         var resetMaxrateRangeColor = function (target_min, target_max){
-          let minRGB= makeRGB(target_min, cpd_maxrate_max, cpd_maxrate_min );
-          let maxRGB= makeRGB(target_max, cpd_maxrate_max, cpd_maxrate_min );
+          let minRGB= makeRGB(target_min, csm_maxrate_max, csm_maxrate_min );
+          let maxRGB= makeRGB(target_max, csm_maxrate_max, csm_maxrate_min );
           let myColor="linear-gradient(to right, "+minRGB+","+maxRGB+")";
           $("#slider-maxrate-range .ui-slider-range" ).css( "background", myColor );
         }
@@ -870,23 +836,23 @@ window.console.log("generateMetadataTable..");
         this.resetMaxrateSlider = function () {
           if( this.searchingType != this.searchType.maxrate) return;
           $("#slider-maxrate-range").slider('values', 
-                              [cpd_maxrate_min, cpd_maxrate_max]);
-          $("#cpd-minMaxrateSliderTxt").val(cpd_maxrate_min);
-          $("#cpd-maxMaxrateSliderTxt").val(cpd_maxrate_max);
+                              [csm_maxrate_min, csm_maxrate_max]);
+          $("#csm-minMaxrateSliderTxt").val(csm_maxrate_min);
+          $("#csm-maxMaxrateSliderTxt").val(csm_maxrate_max);
         }
 
         this.refreshMaxrateSlider = function () {
           if( this.searchingType != this.searchType.maxrate) return;
-          let maxrate_min=$("#cpd-minMaxrateSliderTxt").val();
-          let maxrate_max=$("#cpd-maxMaxrateSliderTxt").val();
+          let maxrate_min=$("#csm-minMaxrateSliderTxt").val();
+          let maxrate_max=$("#csm-maxMaxrateSliderTxt").val();
           $("#slider-maxrate-range").slider('values', 
                               [maxrate_min, maxrate_max]);
         }
 
         this.refreshMinrateSlider = function () {
           if( this.searchingType != this.searchType.minrate) return;
-          let minrate_min=$("#cpd-minMinrateSliderTxt").val();
-          let minrate_max=$("#cpd-maxMinrateSliderTxt").val();
+          let minrate_min=$("#csm-minMinrateSliderTxt").val();
+          let minrate_max=$("#csm-maxMinrateSliderTxt").val();
           $("#slider-minrate-range").slider('values', 
                               [minrate_min, minrate_max]);
         }
@@ -895,13 +861,13 @@ window.console.log("generateMetadataTable..");
 // marker.scec_properties.high_rate_color, marker.sce_properties.low_rate_color
 // toMake == 1, set the scec_properties color values
         this.makeLayerColors = function() {
-            let lsz = this.cpd_layers.length;
+            let lsz = this.csm_layers.length;
             for(let i=0; i<lsz; i++) {
-                let layer=this.cpd_layers[i];
+                let layer=this.csm_layers[i];
                 let hr = layer.scec_properties.high_rate;
                 let lr = layer.scec_properties.low_rate;
-                layer.scec_properties.low_rate_color = makeRGB(lr, cpd_minrate_max, cpd_minrate_min );
-                layer.scec_properties.high_rate_color = makeRGB(hr, cpd_maxrate_max, cpd_maxrate_min );
+                layer.scec_properties.low_rate_color = makeRGB(lr, csm_minrate_max, csm_minrate_min );
+                layer.scec_properties.high_rate_color = makeRGB(hr, csm_maxrate_max, csm_maxrate_min );
             }
         }
 
@@ -923,16 +889,16 @@ window.console.log("generateMetadataTable..");
        }
 
        this.resetActiveLayerColor = function () {
-            this.cpd_active_layers.remove();
+            this.csm_active_layers.remove();
 
 window.console.log(" ==> here in replace color");
-            let layers=this.cpd_active_layers;
+            let layers=this.csm_active_layers;
 
             layers.eachLayer(function(layer) {
               layer.resetStyle();
             });
 
-            this.cpd_active_layers.addTo(viewermap);
+            this.csm_active_layers.addTo(viewermap);
        }
 
 
@@ -951,8 +917,8 @@ window.console.log(" ==> here in replace color");
             let elt=document.getElementById("dataset_sliprate");
             elt.click();
 
-            $("#cpd-controlers-container").css('display','');
-            $("#cpd-sliprate-controlers-container").css('display','none');
+            $("#csm-controlers-container").css('display','');
+            $("#csm-sliprate-controlers-container").css('display','none');
 
             $("div.mapData div.map-container").css('padding-left','30px');
 
@@ -969,58 +935,58 @@ window.console.log(" ==> here in replace color");
             this.activateData();
 
             viewermap.invalidateSize();
-            let bounds = L.latLngBounds(this.cpd_markerLocations);
+            let bounds = L.latLngBounds(this.csm_markerLocations);
             viewermap.fitBounds(bounds);
 
 /* setup  sliders */
             $("#slider-minrate-range").slider({ 
-                  range:true, step:0.01, min:cpd_minrate_min, max:cpd_minrate_max, values:[cpd_minrate_min, cpd_minrate_max],
+                  range:true, step:0.01, min:csm_minrate_min, max:csm_minrate_max, values:[csm_minrate_min, csm_minrate_max],
               slide: function( event, ui ) {
-                           $("#cpd-minMinrateSliderTxt").val(ui.values[0]);
-                           $("#cpd-maxMinrateSliderTxt").val(ui.values[1]);
+                           $("#csm-minMinrateSliderTxt").val(ui.values[0]);
+                           $("#csm-maxMinrateSliderTxt").val(ui.values[1]);
                            resetMinrateRangeColor(ui.values[0],ui.values[1]);
                      },
               change: function( event, ui ) {
-                           $("#cpd-minMinrateSliderTxt").val(ui.values[0]);
-                           $("#cpd-maxMinrateSliderTxt").val(ui.values[1]);
+                           $("#csm-minMinrateSliderTxt").val(ui.values[0]);
+                           $("#csm-maxMinrateSliderTxt").val(ui.values[1]);
                            resetMinrateRangeColor(ui.values[0],ui.values[1]);
                      },
               stop: function( event, ui ) {
-                           let searchType = CPD_SLIPRATE.searchType.minrate;
-                           CPD_SLIPRATE.search(searchType, ui.values);
+                           let searchType = CSM.searchType.minrate;
+                           CSM.search(searchType, ui.values);
                      },
               create: function() {
-                          $("#cpd-minMinrateSliderTxt").val(cpd_minrate_min);
-                          $("#cpd-maxMinrateSliderTxt").val(cpd_minrate_max);
+                          $("#csm-minMinrateSliderTxt").val(csm_minrate_min);
+                          $("#csm-maxMinrateSliderTxt").val(csm_minrate_max);
                     }
             });
-            $('#slider-minrate-range').slider("option", "min", cpd_minrate_min);
-            $('#slider-minrate-range').slider("option", "max", cpd_minrate_max);
+            $('#slider-minrate-range').slider("option", "min", csm_minrate_min);
+            $('#slider-minrate-range').slider("option", "max", csm_minrate_max);
 
 /* setup  sliders */
             $("#slider-maxrate-range").slider({ 
-                  range:true, step:0.01, min:cpd_maxrate_min, max:cpd_maxrate_max, values:[cpd_maxrate_min, cpd_maxrate_max],
+                  range:true, step:0.01, min:csm_maxrate_min, max:csm_maxrate_max, values:[csm_maxrate_min, csm_maxrate_max],
               slide: function( event, ui ) {
-                           $("#cpd-minMaxrateSliderTxt").val(ui.values[0]);
-                           $("#cpd-maxMaxrateSliderTxt").val(ui.values[1]);
+                           $("#csm-minMaxrateSliderTxt").val(ui.values[0]);
+                           $("#csm-maxMaxrateSliderTxt").val(ui.values[1]);
                            resetMaxrateRangeColor(ui.values[0],ui.values[1]);
                      },
               change: function( event, ui ) {
-                           $("#cpd-minMaxrateSliderTxt").val(ui.values[0]);
-                           $("#cpd-maxMaxrateSliderTxt").val(ui.values[1]);
+                           $("#csm-minMaxrateSliderTxt").val(ui.values[0]);
+                           $("#csm-maxMaxrateSliderTxt").val(ui.values[1]);
                            resetMaxrateRangeColor(ui.values[0],ui.values[1]);
                      },
               stop: function( event, ui ) {
-                           let searchType = CPD_SLIPRATE.searchType.maxrate;
-                           CPD_SLIPRATE.search(searchType, ui.values);
+                           let searchType = CSM.searchType.maxrate;
+                           CSM.search(searchType, ui.values);
                      },
               create: function() {
-                          $("#cpd-minMaxrateSliderTxt").val(cpd_maxrate_min);
-                          $("#cpd-maxMaxrateSliderTxt").val(cpd_maxrate_max);
+                          $("#csm-minMaxrateSliderTxt").val(csm_maxrate_min);
+                          $("#csm-maxMaxrateSliderTxt").val(csm_maxrate_max);
                     }
             });
-            $('#slider-maxrate-range').slider("option", "min", cpd_maxrate_min);
-            $('#slider-maxrate-range').slider("option", "max", cpd_maxrate_max);
+            $('#slider-maxrate-range').slider("option", "min", csm_maxrate_min);
+            $('#slider-maxrate-range').slider("option", "max", csm_maxrate_max);
     };
 
 /******************  Result table functions **************************/
@@ -1034,7 +1000,7 @@ window.console.log(" ==> here in replace color");
            var s=json[i];
            var gid=parseInt(s.gid);
            var name=s.faultname + " | " +s.sitename;
-           var t="<tr id=\"row_"+gid+"\"><td style=\"width:25px\"><button class=\"btn btn-sm cxm-small-btn\" id=\"button_"+gid+"\" title=\"highlight the fault\" onclick=CPD_SLIPRATE.toggleSiteSelectedByGid("+gid+")><span id=\"sliprate-result-gid_"+gid+"\" class=\"glyphicon glyphicon-unchecked\"></span></button></td><td><label for=\"button_"+gid+"\">" + name + "</label></td></tr>";
+           var t="<tr id=\"row_"+gid+"\"><td style=\"width:25px\"><button class=\"btn btn-sm cxm-small-btn\" id=\"button_"+gid+"\" title=\"highlight the fault\" onclick=CSM.toggleSiteSelectedByGid("+gid+")><span id=\"sliprate-result-gid_"+gid+"\" class=\"glyphicon glyphicon-unchecked\"></span></button></td><td><label for=\"button_"+gid+"\">" + name + "</label></td></tr>";
            tmp=tmp+t;
         }
         html=html+ tmp + "</tbody>";
@@ -1049,11 +1015,11 @@ window.console.log(" ==> here in replace color");
 
         for( var i=0; i< sz; i++) {
            let gid=glist[i];
-           let layer=CPD_SLIPRATE.getLayerByGid(gid);
+           let layer=CSM.getLayerByGid(gid);
            let s=layer.scec_properties;
            let name= s.fault_name + " | " +s.site_name;
 
-           var t="<tr id=\"row_"+gid+"\"><td style=\"width:25px\"><button class=\"btn btn-sm cxm-small-btn\" id=\"button_"+gid+"\" title=\"highlight the fault\" onclick=CPD_SLIPRATE.toggleSiteSelectedByGid("+gid+")><span id=\"sliprate-result-gid_"+gid+"\" class=\"glyphicon glyphicon-unchecked\"></span></button></td><td><label for=\"button_"+gid+"\">" + name + "</label></td></tr>";
+           var t="<tr id=\"row_"+gid+"\"><td style=\"width:25px\"><button class=\"btn btn-sm cxm-small-btn\" id=\"button_"+gid+"\" title=\"highlight the fault\" onclick=CSM.toggleSiteSelectedByGid("+gid+")><span id=\"sliprate-result-gid_"+gid+"\" class=\"glyphicon glyphicon-unchecked\"></span></button></td><td><label for=\"button_"+gid+"\">" + name + "</label></td></tr>";
            html=html+t;
         }
 
@@ -1066,7 +1032,7 @@ window.console.log(" ==> here in replace color");
         html+=`
 <thead>
 <tr>
-   <th class='text-center'><button id=\"cpd-allBtn\" class=\"btn btn-sm cxm-small-btn\" title=\"select all visible sliprate sites\" onclick=\"CPD_SLIPRATE.toggleSelectAll();\"><span class=\"glyphicon glyphicon-unchecked\"></span></button></th>
+   <th class='text-center'><button id=\"csm-allBtn\" class=\"btn btn-sm cxm-small-btn\" title=\"select all visible sliprate sites\" onclick=\"CSM.toggleSelectAll();\"><span class=\"glyphicon glyphicon-unchecked\"></span></button></th>
 <th class='myheader'>CPD Site Location ( fault | site )</th>
 </tr>
 </thead>`;
@@ -1079,7 +1045,7 @@ window.console.log(" ==> here in replace color");
 /********************** zip utilities functions *************************/
     this.downloadURLsAsZip = function(ftype) {
         var nzip=new JSZip();
-        var layers=CPD_SLIPRATE.cpd_active_layers.getLayers();
+        var layers=CSM.csm_active_layers.getLayers();
         let timestamp=$.now();
         let mlist=[];
       
@@ -1099,7 +1065,7 @@ window.console.log(" ==> here in replace color");
       
 /***** this is for downloading some generated file from the result directory..
           if(ftype == "extra") {
-            let downloadURL = getDataDownloadURL(layer.scec_properties.cpd_id);
+            let downloadURL = getDataDownloadURL(layer.scec_properties.csm_id);
             let dname=downloadURL.substring(downloadURL.lastIndexOf('/')+1);
             let promise = $.get(downloadURL);
             nzip.file(dname,promise);
@@ -1108,7 +1074,7 @@ window.console.log(" ==> here in replace color");
         }
 
 /**
-        var zipfname="CPD_SLIPRATE_"+timestamp+".zip"; 
+        var zipfname="CSM_"+timestamp+".zip"; 
         nzip.generateAsync({type:"blob"}).then(function (content) {
           // see FileSaver.js
           saveAs(content, zipfname);
