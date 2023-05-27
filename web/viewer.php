@@ -270,6 +270,12 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
     </div> <!--Content-->
   </div>
 </div> <!--Modal: modalkmlselect-->
+
+<!--call php directly-->
+    <script type="text/javascript">
+            csm_meta_data = <?php print $csm->getAllMetaData()->outputJSON(); ?>;
+    </script>
+
 </body>
 </html>
 

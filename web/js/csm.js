@@ -8,8 +8,6 @@
 var CSM = new function () {
     window.console.log("in CSM..");
 
-// 1 model = 1+ layers
-
     // complete set of csm layers, one marker layer for one site, 
     // setup once from viewer.php
     this.csm_layers;
@@ -22,13 +20,11 @@ var CSM = new function () {
 
     // selected some layers from active layers
     // to be displayed at the metadata_table
-    this.cpd_selected_gid = [];
+    this.csm_selected_gid = [];
 
     // locally used, floats
-    var cpd_minrate_min=undefined;
-    var cpd_minrate_max=undefined;
-    var cpd_maxrate_min=undefined;
-    var cpd_maxrate_max=undefined;
+    var csm_depth_min=undefined;
+    var csm_depth_max=undefined;
 
     var site_colors = {
         normal: '#006E90',
@@ -63,16 +59,12 @@ var CSM = new function () {
 // coordinates: [34.28899, -118.399],
     this.defaultMapView = {
         coordinates: [37.73, -119.9],
-        zoom: 10 
+        zoom: 8 
     };
 
     this.searchType = {
         none: 'none',
-        faultname: 'faultname',
-        sitename: 'sitename',
-        latlon: 'latlon',
-        minrate: 'minrate',
-        maxrate: 'maxrate'
+        latlon: 'latlon'
     };
 
     var sliprate_csv_keys= {
@@ -106,9 +98,10 @@ reference: 'References'
     this.searchingType=this.searchType.none;
 
     var tablePlaceholderRow = `<tr id="placeholder-row">
-                        <td colspan="9">Metadata for selected sliprate sites will appear here.</td>
+                        <td colspan="9">Metadata for selected region will appear here.</td>
                     </tr>`;
 
+//???
     this.activateData = function() {
         activeProduct = Products.SLIPRATE;
         this.showOnMap();
@@ -119,101 +112,24 @@ reference: 'References'
 
 /********** show layer/select functions *********************/
 
-// cpd_sliprate_site_data is from viewer.php, which is the JSON 
-// result from calling php getAllSiteData script
-    this.generateLayers = function () {
-
-window.console.log( "generate the initial cpd_layers");
-        this.cpd_layers = [];
-        this.cpd_markerLocations = [];
-        this.cpd_active_markerLocations = [];
-
-// SELECT * FROM tb ORDER BY gid ASC;
-        for (const index in cpd_sliprate_site_data) {
-          if (cpd_sliprate_site_data.hasOwnProperty(index)) {
-                let gid = cpd_sliprate_site_data[index].gid;
-                let cpd_id = cpd_sliprate_site_data[index].cpdid;
-                let sliprate_id = cpd_sliprate_site_data[index].sliprateid;
-                let longitude = parseFloat(cpd_sliprate_site_data[index].longitude);
-                let latitude = parseFloat(cpd_sliprate_site_data[index].latitude);
-                let fault_name = cpd_sliprate_site_data[index].faultname;
-                let state = cpd_sliprate_site_data[index].state;
-                let site_name = cpd_sliprate_site_data[index].sitename;
-                let low_rate = parseFloat(cpd_sliprate_site_data[index].lowrate);
-                let high_rate = parseFloat(cpd_sliprate_site_data[index].highrate);
-
-                let marker = L.circleMarker([latitude, longitude], site_marker_style.normal);
-
-                let site_info = `${fault_name}`;
-                marker.bindTooltip(site_info).openTooltip();
+// csm_meta_data is from viewer.php, which is the JSON 
+// result from calling php getAllMetaData script
+    this.processMeta = function () {
+window.console.log("HERE... processMeta");
+        for (const index in csm_meta_data) {
+          if (csm_meta_data.hasOwnProperty(index)) {
+                let gid = csm_meta_data[index].gid;
+                var marker;
 
                 marker.scec_properties = {
                     idx: index,
                     active: true,
                     selected: false,
                     gid: gid,
-                    cpd_id: cpd_id,
-                    sliprate_id:sliprate_id,
-                    longitude: longitude,
-                    latitude: latitude,
-                    fault_name: fault_name,
-                    state: state,
-                    site_name: site_name,
-                    low_rate: low_rate,
-                    high_rate: high_rate,
                 };
 
-// all layers
-                this.cpd_layers.push(marker);
-                this.cpd_markerLocations.push(marker.getLatLng())                      
-// current active layers
-                this.cpd_active_layers.addLayer(marker);
-                this.cpd_active_gid.push(gid);
-                this.cpd_active_markerLocations.push(marker.getLatLng())                      
-
-                if(cpd_minrate_min == undefined) {
-                   cpd_minrate_min = low_rate;
-                   cpd_minrate_max = low_rate;
-                  } else {
-                    if(low_rate < cpd_minrate_min) {
-                      cpd_minrate_min=low_rate;  
-                    }
-                    if(low_rate > cpd_minrate_max) {
-                      cpd_minrate_max=low_rate;
-                    }
-                }
-                if(cpd_maxrate_min == undefined) {
-                   cpd_maxrate_min = high_rate;
-                   cpd_maxrate_max = high_rate;
-                  } else {
-                    if(high_rate < cpd_maxrate_min) {
-                      cpd_maxrate_min=high_rate;  
-                    }
-                    if(high_rate > cpd_maxrate_max) {
-                      cpd_maxrate_max=high_rate;
-                    }
-                }
             }
         }
-
-        this.cpd_active_layers.on('click', function(event) {
-            if(activeProduct == Products.SLIPRATE) { 
-               CPD_SLIPRATE.toggleSiteSelected(event.layer, true);
-            }
-        });
-
-        this.cpd_active_layers.on('mouseover', function(event) {
-            let layer = event.layer;
-            layer.setRadius(site_marker_style.hover.radius);
-        });
-
-        this.cpd_active_layers.on('mouseout', function(event) {
-            let layer = event.layer;
-            layer.setRadius(site_marker_style.normal.radius);
-        });
-
-        // now update the scec_properties's color
-        this.makeLayerColors(1);
     };
 
 // recreate a new active_layers using a glist
@@ -595,9 +511,9 @@ window.console.log("sliprate --- calling freshSearch..");
     };
 
     this.getMarkerBySiteId = function (site_id) {
-        for (const index in cpd_sliprate_site_data) {
-            if (cpd_sliprate_site_data[index].cpd_id == site_id) {
-                return cpd_sliprate_site_data[index];
+        for (const index in csm_meta_data) {
+            if (csm_meta_data[index].cpd_id == site_id) {
+                return csm_meta_data[index];
             }
         }
 
@@ -1025,7 +941,7 @@ window.console.log(" ==> here in replace color");
 
             var $result_table = $('#result-table');
             $result_table.floatThead('destroy');
-            $("#result-table").html(makeResultTable(cpd_sliprate_site_data));
+            $("#result-table").html(makeResultTable(csm_meta_data));
             $result_table.floatThead({
                  scrollContainer: function ($table) {
                      return $table.closest('div#result-table-container');
@@ -1177,7 +1093,7 @@ window.console.log(" ==> here in replace color");
 
           if(ftype == "metadata" || ftype == "all") {
           // create metadata from layer.scec_properties
-            let m=createMetaData(cpd_sliprate_site_data[layer.scec_properties.idx]);
+            let m=createMetaData(csm_meta_data[layer.scec_properties.idx]);
             mlist.push(m);
           }
       

@@ -6,6 +6,8 @@ var initial_page_load = true;
 var csm_site_data=null;
 var viewermap;
 
+var csm_meta_data=null;
+
 jQuery(document).ready(function() {
 
   frameHeight=window.innerHeight;
