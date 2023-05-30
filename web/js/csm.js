@@ -8,6 +8,11 @@
 var CSM = new function () {
     window.console.log("in CSM..");
 
+    // complete set of csm models
+    // include the meta data info
+    // { "gid":gid, "name":xx" } 
+    this.csm_models = [];
+
     // complete set of csm layers, one marker layer for one site, 
     // setup once from viewer.php
     this.csm_layers;
@@ -88,16 +93,16 @@ var CSM = new function () {
 window.console.log("HERE... processMeta");
         for (const index in csm_meta_data) {
           if (csm_meta_data.hasOwnProperty(index)) {
-                let gid = csm_meta_data[index].gid;
-                var marker;
+		let tmp = csm_meta_data[index];
+                let jmeta = JSON.parse(tmp.meta);
 
-                marker.scec_properties = {
+                let meta = {
                     idx: index,
-                    active: true,
-                    selected: false,
-                    gid: gid,
+                    gid: tmp.gid,
+                    name: tmp.model_name,
+                    model_meta: jtmp.meta
                 };
-
+                this.csm_models.push(meta);
             }
         }
     };
