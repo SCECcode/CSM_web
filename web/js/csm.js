@@ -100,7 +100,7 @@ window.console.log("HERE... processMeta");
                     idx: index,
                     gid: tmp.gid,
                     name: tmp.model_name,
-                    model_meta: jtmp.meta
+                    model_meta: jmeta
                 };
                 this.csm_models.push(meta);
             }
