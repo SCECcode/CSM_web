@@ -139,7 +139,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
    <div id="top-control" class="row">
       <div id="csm-controls-container" class="col" >
 <!-- control-row-1 -->
-        <div id="top-control-row-1" class="col-12">
+        <div id="top-control-row-1" class="col-12" >
         </div>
 <!-- top-control-row 2 -->
         <div id="top-control-row-2" class="row justify-content-end mb-1">
@@ -197,15 +197,15 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
 
 <!-- map space -->
     <div id="mapDataBig" class="row mapData">
-      <div id="infoData" class="col-5 button-container d-flex flex-column pr-0" style="overflow:hidden">
-	<div id="searchResult" style="overflow:hidden; display:" class="mb-1">
-          <div id="result-table-container" style="border:solid 1px #ced4da;overflow-x:hidden">
-            <table id="result-table">
-              <thead>
-              </thead>
-            </table>
-          </div> 
+      <div id="infoData" class="col-5 button-container d-flex flex-column pr-0" style="overflow:hidden;border:solid 2px red">
+
+        <div class="input-group filters mb-1">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="modelType" >Select Model Type</label>
+                </div>
+		<select id="modelType" class="custom-select"></select>
         </div>
+
         <div id="phpResponseTxt"></div>
       </div>
 
@@ -244,9 +244,12 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
     <div id="plot-range-key" class="row" style="opacity:0.8">
         <div class="col" style="width:110px;height:24px;">
            <span class="min" style="width:1rem"></span>
-           <span class="ui-slider-range" style="border:1px solid grey; width:60px;height:20px;"></span>
+           <span class="ui-slider-range" style="border:1px solid grey; width:60px;height:15px;"></span>
            <span class="max"></span>
         </div>
+    </div>
+    <div id="plot-range-label" class="row" style="display:;opacity:0.8">
+        <label><span id="plot-range-label-string"></span></label>
     </div>
 </div>
 

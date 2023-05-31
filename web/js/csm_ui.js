@@ -7,7 +7,7 @@ var big_map=0; // 0,1(some control),2(none)
 
 /************************************************************************************/
 
-function showKey(minv,maxv) {
+function showKey(minv,maxv,label) {
 window.console.log("calling showing key");
     if (showing_key) {
         removeKey();
@@ -21,12 +21,16 @@ window.console.log("calling showing key");
     $("#CSM_plot").prepend($("#plot-range-key-container").html());
     $("#plot-range-key span.min").html(min);
     $("#plot-range-key span.max").html(max);
+    let elt = document.getElementById('plot-range-label-string');
+    elt.innerHTML=label;
+
 }
 
 function removeKey() {
 window.console.log("calling removing key");
     if(showing_key) {
       $("#CSM_plot #plot-range-key").remove();
+      $("#CSM_plot #plot-range-label").remove();
       showing_key = false;
     }
 }

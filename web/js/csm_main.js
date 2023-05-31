@@ -81,7 +81,7 @@ jQuery(document).ready(function() {
 // MAIN SETUP
 
 // load the data from backend and setup layers
-  CSM.processMeta();
+  CSM.processModelMeta();
 // setup the interface 
 //  CSM.setupCSMInterface();
 

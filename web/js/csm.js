@@ -10,22 +10,8 @@ var CSM = new function () {
 
     // complete set of csm models
     // include the meta data info
-    // { "gid":gid, "name":xx" } 
+    // { "gid":gid, "model_name":mn, "table_name":tn, "meta":meta } 
     this.csm_models = [];
-
-    // complete set of csm layers, one marker layer for one site, 
-    // setup once from viewer.php
-    this.csm_layers;
-    this.csm_markerLocations = [];
-
-    // searched layers being actively looked at -- result of a search
-    this.csm_active_layers= new L.FeatureGroup();
-    this.csm_markerLocations = [];
-    this.csm_active_gid = [];
-
-    // selected some layers from active layers
-    // to be displayed at the metadata_table
-    this.csm_selected_gid = [];
 
     // locally used, floats
     var csm_depth_min=undefined;
@@ -35,30 +21,6 @@ var CSM = new function () {
         normal: '#006E90',
         selected: '#B02E0C',
         abnormal: '#00FFFF',
-    };
-
-    var site_marker_style = {
-        normal: {
-            color: site_colors.normal,
-            fillColor: site_colors.normal,
-            fillOpacity: 0.5,
-            radius: 3,
-            riseOnHover: true,
-            weight: 1,
-        },
-        selected: {
-            color: site_colors.selected,
-            fillColor: site_colors.selected,
-            fillOpacity: 1,
-            radius: 3,
-            riseOnHover: true,
-            weight: 1,
-        },
-        hover: {
-            fillOpacity: 1,
-            radius: 10,
-            weight: 2,
-        },
     };
 
 // coordinates: [34.28899, -118.399],
@@ -77,7 +39,6 @@ var CSM = new function () {
                         <td colspan="9">Metadata for selected region will appear here.</td>
                     </tr>`;
 
-//???
     this.activateData = function() {
         this.showOnMap();
         $("div.control-container").hide();
@@ -89,27 +50,29 @@ var CSM = new function () {
 
 // csm_meta_data is from viewer.php, which is the JSON 
 // result from calling php getAllMetaData script
-    this.processMeta = function () {
-window.console.log("HERE... processMeta");
+    this.processModelMeta = function () {
         for (const index in csm_meta_data) {
           if (csm_meta_data.hasOwnProperty(index)) {
 		let tmp = csm_meta_data[index];
                 let jmeta = JSON.parse(tmp.meta);
 
-                let meta = {
+                let term = {
                     idx: index,
                     gid: tmp.gid,
-                    name: tmp.model_name,
-                    model_meta: jmeta
+                    model_name: tmp.model_name,
+                    table_name: tmp.table_name,
+                    meta: jmeta,
                 };
-                this.csm_models.push(meta);
+                this.csm_models.push(term);
             }
         }
     };
 
-// recreate a new active_layers using a glist
-// glist is a sorted ascending list
-// this.csm_layers should be also ascending
+    // create a all model layer with circle markers with
+    //  with table_name, depth, "alphi" 
+    //  lat,lon,val
+    // ie. meta_data,
+    // aphi_max, alphi_min,dep
     this.createActiveLayerGroupWithGids = function(glist) {
 
         // remove the old ones and remove from result table
@@ -149,238 +112,19 @@ window.console.log("flyingBounds --new list");
         }
     };
 
-// recreate the original map state
-// original state  toOriginal use normal color
-    this.recreateActiveLayerGroup = function(toOriginal) {
-
-        if(this.csm_active_gid.length != this.csm_layers.length 
-               || this.searchingType == this.searchType.minrate
-               || this.searchingType == this.searchType.maxrate) {
-          this.csm_active_layers= new L.FeatureGroup();
-          this.csm_active_gid=[];
-        
-          for (let i=0; i< this.csm_layers.length; i++) {
-            let marker = this.csm_layers[i];
-            if (marker.hasOwnProperty("scec_properties")) {
-               let gid = marker.scec_properties.gid;
-               if(!toOriginal) {
-                 this.replaceColor(marker);
-               }
-               this.csm_active_layers.addLayer(marker);
-               this.csm_active_gid.push(gid);
-               this.csm_active_markerLocations.push(marker.getLatLng())                      
-            }
-          }
-          replaceResultTableBodyWithGids(this.csm_active_gid);
-          this.csm_active_layers.addTo(viewermap);
-          } else {
-            this.csm_active_layers.addTo(viewermap);
-       }
-window.console.log("flyingBounds --recreateActiveLayer");
-       let bounds = L.latLngBounds(this.csm_active_markerLocations);
-       viewermap.flyToBounds(bounds);
-    }
-
-// search for a layer from master list by gid
-    this.getLayerByGid = function(gid) {
-        let foundLayer = false;
-        for (let i=0; i< this.csm_layers.length; i++) {
-          let layer = this.csm_layers[i];
-          if (layer.hasOwnProperty("scec_properties")) {
-             if (gid == layer.scec_properties.gid) {
-                 return layer;     
-             }
-          }
-       }
-       return foundLayer;
-    };
-
-// select from currently active sites
-    this.toggleSiteSelected = function(layer, clickFromMap=false) {
-
-if(clickFromMap) {
-window.console.log("toggleSiteSlected from map");             
-} else {
-window.console.log("toggleSiteSlected from tables");             
-}
-        if (typeof layer.scec_properties.selected === 'undefined') {
-            layer.scec_properties.selected = true;
-        } else {
-            layer.scec_properties.selected = !layer.scec_properties.selected;
-        }
-        if (layer.scec_properties.selected) {
-            this.selectSiteByLayer(layer, clickFromMap);
-                
-            if(!clickFromMap) {  // click from Table, lets fly over
-              let markerLocations = [];
-              markerLocations.push(layer.getLatLng())                      
-              let bounds = L.latLngBounds(markerLocations);
-window.console.log("flyingBounds --click site");
-              viewermap.flyToBounds(bounds);
-            }
-
-        } else {
-            this.unselectSiteByLayer(layer);
-        }
-        return layer.scec_properties.selected;
-    };
-
-    this.toggleSiteSelectedByGid = function(gid) {
-        let layer = this.getLayerByGid(gid);
-        return this.toggleSiteSelected(layer, false);
-    };
-
-    this.selectSiteByLayer = function (layer, moveTableRow=false) {
-        layer.scec_properties.selected = true;
-        layer.setStyle(site_marker_style.selected);
-        let gid = layer.scec_properties.gid;
-
-        this.upSelectedCount(gid);
-
-        // metatable table
-        let $row = $(`tr[sliprate-metadata-gid='${gid}'`);
-        let rowHTML = "";
-        if ($row.length == 0) {
-           this.addToMetadataTable(layer);
-        }
-        // move row to top
-        if (moveTableRow) {
-window.console.log("XX HERE moving table Row ???");
-            let $rowHTML = $row.prop('outerHTML');
-            $row.remove();
-            $("#metadata-table.sliprate tbody").prepend($rowHTML);
-        }
-
-        // search result table 
-        let label="sliprate-result-gid_"+gid;
-        let $elt=$(`#${label}`);
-        if ($elt) {
-            $elt.addClass('glyphicon-check').removeClass('glyphicon-unchecked');
-        }
-    };
-
-    this.unselectSiteByLayer = function (layer) {
-        layer.scec_properties.selected = false;
-        layer.setStyle(site_marker_style.normal);
-
-        let gid = layer.scec_properties.gid;
-
-        this.downSelectedCount(gid);
-
-        let $row = $(`tr[sliprate-metadata-gid='${gid}'`);
-        if ($row.length != 0) {
-           this.removeFromMetadataTable(gid);
-        }
-
-        let label="sliprate-result-gid_"+gid;
-        let $elt=$(`#${label}`);
-        if ($elt) {
-            $elt.addClass('glyphicon-unchecked').removeClass('glyphicon-check');
-        }
-    };
-
-    this.unselectSiteByGid = function (gid) {
-        let layer = this.getLayerByGid(gid);
-        return this.unselectSiteByLayer(layer);
-    };
-
-// selectAll button - toggle
-    this.toggleSelectAll = function() {
-        var sliprate_object = this;
-
-        let $selectAllButton = $("#csm-allBtn span");
-        if (!$selectAllButton.hasClass('glyphicon-check')) {
-            this.csm_active_layers.eachLayer(function(layer){
-                sliprate_object.selectSiteByLayer(layer);
-            });
-            $selectAllButton.addClass('glyphicon-check').removeClass('glyphicon-unchecked');
-        } else {
-            this.clearSelectAll();
-        }
-    };
-
-// selectAll button  - clear
-    this.clearSelectAll = function() {
-        this.clearAllSelections();
-        let $selectAllButton = $("#csm-allBtn span");
-        $selectAllButton.removeClass('glyphicon-check').addClass('glyphicon-unchecked');
-    };
-
-// unselect every active layer
-    this.clearAllSelections = function() {
-        var sliprate_object = this;
-        this.csm_active_layers.eachLayer(function(layer){
-            sliprate_object.unselectSiteByLayer(layer);
-        });
-        let $selectAllButton = $("#csm-allBtn span");
-        $selectAllButton.removeClass('glyphicon-check').addClass('glyphicon-unchecked');
-    };
-
-    this.upSelectedCount = function(gid) {
-       let i=this.csm_selected_gid.indexOf(gid); 
-       if(i != -1) {
-         window.console.log("this is bad.. already in selected list "+gid);
-         return;
-       }
-       window.console.log("=====adding to list "+gid);
-       this.csm_selected_gid.push(gid);
-       updateDownloadCounter(this.csm_selected_gid.length);
-    };
-
-    this.downSelectedCount = function(gid) {
-       if(this.csm_selected_gid.length == 0) { // just ignore..
-         return;
-       }
-       let i=this.csm_selected_gid.indexOf(gid); 
-       if(i == -1) {
-         window.console.log("this is bad.. not in selected list "+gid);
-         return;
-       }
-       window.console.log("=====remove from list "+gid);
-       this.csm_selected_gid.splice(i,1);
-       updateDownloadCounter(this.csm_selected_gid.length);
-    };
-
-    this.zeroSelectedCount = function() {
-       this.csm_selected_gid = [];
-       updateDownloadCounter(0);
-    };
-
 
 /********** search/layer  functions *********************/
     this.showSearch = function (type) {
-        const $all_search_controls = $("#csm-sliprate-search-control ul li");
+        const $all_search_controls = $("#csm-search-control ul li");
         $all_search_controls.hide();
         switch (type) {
-            case this.searchType.faultname:
-                $("#csm-fault-name").show();
-                break;
-            case this.searchType.sitename:
-                $("#csm-site-name").show();
-                break;
             case this.searchType.latlon:
                 $("#csm-latlon").show();
                 drawRectangle();
                 break;
-            case this.searchType.minrate:
-                $("#csm-minrate-slider").show();
-                showKey(csm_minrate_min, csm_minrate_max);
-                break;
-            case this.searchType.maxrate:
-                $("#csm-maxrate-slider").show();
-                showKey(csm_maxrate_min, csm_maxrate_max);
-                break;
             default:
                 // no action
         }
-    };
-
-    this.showOnMap = function () {
-        this.csm_active_layers.addTo(viewermap);
-    };
-
-    this.hideOnMap = function () {
-        this.csm_active_layers.remove();
     };
 
 // reset from the reset button
@@ -403,9 +147,6 @@ window.console.log("calling reset");
           CXM.hideGFMRegions(viewermap);
         }
 
-        $("#csm-search-type").val("");
-        this.searchingType = this.searchType.none;
-
         // go back to default view,
 window.console.log("call setView.. default");
         viewermap.setView(this.defaultMapView.coordinates, this.defaultMapView.zoom);
@@ -413,20 +154,8 @@ window.console.log("call setView.. default");
 
 // reset just the search only
     this.resetSearch = function (){
-
-window.console.log("sliprate calling --->> resetSearch.");
-
-        this.clearAllSelections();
-
-        this.resetMinrate();
-        this.resetMaxrate();
-        this.resetLatLon();
-        this.resetFaultname();
-        this.resetSitename();
-
-        this.hideOnMap();
-        this.recreateActiveLayerGroup(true);
-
+window.console.log("calling --->> resetSearch.");
+        this.resetLatLonSearch();
     };
 
 // a complete fresh search
@@ -435,32 +164,8 @@ window.console.log("sliprate calling --->> resetSearch.");
         this.resetSearch();
 
         const $all_search_controls = $("#csm-controls-container ul li")
-window.console.log("sliprate --- calling freshSearch..");
+window.console.log("calling freshSearch..");
         switch (t) {
-            case "faultname": 
-               this.searchingType = this.searchType.faultname;
-               $all_search_controls.hide();
-               $("#csm-fault-name").show();
-               break;
-            case "sitename": 
-               this.searchingType = this.searchType.sitename;
-               $all_search_controls.hide();
-               $("#csm-site-name").show();
-               break;
-            case "minrate": 
-               this.searchingType = this.searchType.minrate;
-               $all_search_controls.hide();
-               $("#csm-minrate-slider").show();
-               showKey(csm_minrate_min, csm_minrate_max);
-               this.recreateActiveLayerGroup(false);
-               break;
-            case "maxrate": 
-               this.searchingType = this.searchType.maxrate;
-               $all_search_controls.hide();
-               $("#csm-maxrate-slider").show();
-               showKey(csm_maxrate_min, csm_maxrate_max);
-               this.recreateActiveLayerGroup(false);
-               break;
             case "latlon": 
                this.searchingType = this.searchType.latlon;
                $all_search_controls.hide();
@@ -485,16 +190,8 @@ window.console.log("sliprate --- calling freshSearch..");
         }
     };
 
-    this.getMarkerBySiteId = function (site_id) {
-        for (const index in csm_meta_data) {
-            if (csm_meta_data[index].csm_id == site_id) {
-                return csm_meta_data[index];
-            }
-        }
-
-        return [];
-    };
-
+    // search with table_name, depth, type (ie. alphi)
+    // expect at most 80k lat/lon/val
     this.search = function(type, criteria) {
 
         if(type != this.searchingType)
@@ -510,30 +207,24 @@ window.console.log("sliprate --- calling freshSearch..");
 
         let JSON_criteria = JSON.stringify(criteria);
 
-// not used:        $("#wait-spinner").show();
-
         $.ajax({
             url: "php/search.php",
             data: {t: type, q: JSON_criteria},
-        }).done(function(sliprate_result) {
-            let glist=[];
-            if(sliprate_result === "[]") {
+        }).done(function(search_result) {
+            let latlist;
+            let lonlist;
+            let vallist;
+            if(search_result === "[]") {
 window.console.log("Did not find any PHP result");
             } else {
-                let tmp=JSON.parse(sliprate_result); 
-                if(type == CSM.searchType.latlon) {
-//expected [{'gid':'2'},{'gid':'10'}]
-                    let sz=tmp.length;
-                    for(let i=0; i<sz; i++) {
-                        let gid= parseInt(tmp[i]['gid']); 
-                        glist.push(gid);
-                    }
-                    } else {
-window.console.log( "BAD, unknown search type \n");
-                }
+                let tmp=JSON.parse(search_result); 
+                latlist=tmp['lat'];
+                lonlist=tmp['lon'];
+                vallist=tmp['val'];
+                return(latlist,lonlist,vallist);
             }
-            CSM.createActiveLayerGroupWithGids(glist);
         });
+        return([],[],[]);
     };
 
     // special case, Latlon can be from text inputs or from the map
@@ -568,109 +259,23 @@ window.console.log( "BAD, unknown search type \n");
                 $("#csm-secondLonTxt").val(criteria[3]);
         }
                  
+        // get latlist, lonlist, valist);
         this.search(CSM.searchType.latlon, criteria);
 
-        let markerLocations = [];
-        markerLocations.push(L.latLng(criteria[0],criteria[1]));
-        markerLocations.push(L.latLng(criteria[2],criteria[3]));
-        let bounds = L.latLngBounds(markerLocations);
+        let regionLocations = [];
+        regionLocations.push(L.latLng(criteria[0],criteria[1]));
+        regionLocations.push(L.latLng(criteria[2],criteria[3]));
+        let bounds = L.latLngBounds(regionLocations);
 window.console.log("flyingBounds --latlon");
         viewermap.flyToBounds(bounds);
-//        setTimeout(skipRectangle, 500);
     };
 
-/********** metadata  functions *********************/
-// create a metadata list using selected gid list
-/*
-gid
-sliprate_id
-longitude
-latitude
-fault_name
-fault_id
-state
-site_name
-data_type
-dist_to_cfmfault
-cfm6_objectname
-observation
-pref_rate
-low_rate
-high_rate
-rate_unct
-rate_type
-rept_reint
-offset_type
-age_type
-num_events
-rate_age
-q_bin_min
-q_bin_max
-reference
-**
-FaultName,FaultID,State,SiteName,CPDId,SliprateId,Longitude,Latitude,DistToCFMFault,CFM6ObjectName,DataType,Observation,PrefRate,LowRate,HighRate,RateUnct,RateType,ReptReint,OffsetType,AgeType,NumEvents,RateAge,QbinMin,QbinMax,Reference
-gid
-faultname
-faultid
-state
-sitename
-csmid
-sliprateid
-longitude
-latitud
-disttocfmfault
-cfm6objectname
-datatype
-observation
-prefrate
-lowrate
-highrate
-rateunct
-ratetype
-reptreint
-offsettype
-agetype
-numevents
-rateage
-qbinmin
-qbinmax
-reference
-*/
-    function createMetaData(properties) {
-        var meta={};
-        meta.fault_name = properties.faultname;
-        meta.fault_id = properties.faultid;
-        meta.state = properties.state;
-        meta.site_name = properties.sitename;
-        meta.csm_id= properties.csmid;
-        meta.sliprate_id= properties.sliprateid;
-        meta.longitude = properties.longitude;
-        meta.latitude = properties.latitude;
-        meta.dist_to_cfmfault = properties.disttocfmfault;
-        meta.cfm6_objectname = properties.cfm6objectname;
-        meta.data_type = properties.datatype;
-        meta.observation = properties.observation;
-        meta.pref_rate = properties.prefrate;
-        meta.low_rate = properties.lowrate;
-        meta.high_rate = properties.highrate;
-        meta.rate_unct = properties.rateunct;
-        meta.rate_type = properties.ratetype;
-        meta.rept_reint = properties.reptreint;
-        meta.offset_type = properties.offsettype;
-        meta.age_type = properties.agetype;
-        meta.num_events = properties.numevents;
-        meta.rate_age = properties.rateage;
-        meta.q_bin_min = properties.qbinmin;
-        meta.q_bin_max = properties.qbinmax;
-        meta.reference = properties.reference;
-
-        return meta;
-    }
-
+/********** metadata  table functions *********************/
+// with info about mode, depth, type 
     this.addToMetadataTable = function(layer) {
-        let $table = $("#metadata-table.sliprate tbody");
+        let $table = $("#metadata-table tbody");
         let gid = layer.scec_properties.gid;
-        if ($(`tr[sliprate-metadata-gid='${gid}'`).length > 0) {
+        if ($(`tr[csm-metadata-gid='${gid}'`).length > 0) {
             return;
         }
         let html = generateMetadataTableRow(layer);
@@ -678,16 +283,16 @@ reference
     };
 
     this.removeFromMetadataTable = function (gid) {
-        $(`#metadata-table tbody tr[sliprate-metadata-gid='${gid}']`).remove();
+        $(`#metadata-table tbody tr[csm-metadata-gid='${gid}']`).remove();
     };
 
     var generateMetadataTableRow = function(layer) {
         let $table = $("#metadata-table");
         let html = "";
 
-        html += `<tr sliprate-metadata-gid="${layer.scec_properties.gid}">`;
+        html += `<tr csm-metadata-gid="${layer.scec_properties.gid}">`;
 
-        html += `<td><button class=\"btn btn-sm cxm-small-btn\" id=\"button_meta_${layer.scec_properties.gid}\" title=\"remove the site\" onclick=CSM.unselectSiteByGid("${layer.scec_properties.gid}");><span id=\"sliprate_metadata_${layer.scec_properties.gid}\" class=\"glyphicon glyphicon-trash\"></span></button></td>`;
+        html += `<td><button class=\"btn btn-sm cxm-small-btn\" id=\"button_meta_${layer.scec_properties.gid}\" title=\"remove the site\" onclick=CSM.unselectSiteByGid("${layer.scec_properties.gid}");><span id=\"csm_metadata_${layer.scec_properties.gid}\" class=\"glyphicon glyphicon-trash\"></span></button></td>`;
         html += `<td class="meta-data">${layer.scec_properties.csm_id}</td>`;
         html += `<td class="meta-data">${layer.scec_properties.fault_name} </td>`;
         html += `<td class="meta-data">${layer.scec_properties.site_name}</td>`;
@@ -791,12 +396,7 @@ window.console.log("generateMetadataTable..");
           $("#csm-latlon").hide();
         }
 
-        this.resetFaultname = function () {
-          if( this.searchingType != this.searchType.faultname) return;
-          $("#csm-faultnameTxt").val("");
-          $("#csm-fault-name").hide();
-        }
-        this.resetSitename = function () {
+        this.reseteitename = function () {
           if( this.searchingType != this.searchType.sitename) return;
           $("#csm-sitenameTxt").val("");
           $("#csm-site-name").hide();
@@ -907,24 +507,10 @@ window.console.log(" ==> here in replace color");
        }
 
 
-/********************* sliprate INTERFACE function **************************/
-        this.setupCPDInterface = function() {
-
-            var $result_table = $('#result-table');
-            $result_table.floatThead('destroy');
-            $("#result-table").html(makeResultTable(csm_meta_data));
-            $result_table.floatThead({
-                 scrollContainer: function ($table) {
-                     return $table.closest('div#result-table-container');
-                 },
-            });
-
-            let elt=document.getElementById("dataset_sliprate");
-            elt.click();
+/********************* csm INTERFACE function **************************/
+       this.setupCPDInterface = function() {
 
             $("#csm-controlers-container").css('display','');
-            $("#csm-sliprate-controlers-container").css('display','none');
-
             $("div.mapData div.map-container").css('padding-left','30px');
 
             var $download_queue_table = $('#metadata-table');
@@ -937,115 +523,36 @@ window.console.log(" ==> here in replace color");
                  },
             });
 
-            this.activateData();
+            // setup the modelType list from this.csm_models,
+	    let cnt=this.csm_mfor 
+            for (const term in this.csm_models) {
+window.console.log("HERE");
+		    /*
+                    idx: index,
+                    gid: tmp.gid,
+                    model_name: tmp.model_name,
+                    table_name: tmp.table_name,
+                    meta: jmeta,
+		    */
+               
+	    var elt=document.getElementById('modelType');
+            let option = document.createElement("option");
+            option.text = term.model_name;
+            option.label = term.table_name;
+            option.value= term.gid;
+            sel.add(option);
 
-            viewermap.invalidateSize();
-            let bounds = L.latLngBounds(this.csm_markerLocations);
-            viewermap.fitBounds(bounds);
+		    /*
+	    var elt=document.getElementById('modelType');
+            let option = document.createElement("option");
+            option.text = mname;
+            option.label = mname;
+            option.value= aname;
+            sel.add(option);
+	           */
+            }
 
-/* setup  sliders */
-            $("#slider-minrate-range").slider({ 
-                  range:true, step:0.01, min:csm_minrate_min, max:csm_minrate_max, values:[csm_minrate_min, csm_minrate_max],
-              slide: function( event, ui ) {
-                           $("#csm-minMinrateSliderTxt").val(ui.values[0]);
-                           $("#csm-maxMinrateSliderTxt").val(ui.values[1]);
-                           resetMinrateRangeColor(ui.values[0],ui.values[1]);
-                     },
-              change: function( event, ui ) {
-                           $("#csm-minMinrateSliderTxt").val(ui.values[0]);
-                           $("#csm-maxMinrateSliderTxt").val(ui.values[1]);
-                           resetMinrateRangeColor(ui.values[0],ui.values[1]);
-                     },
-              stop: function( event, ui ) {
-                           let searchType = CSM.searchType.minrate;
-                           CSM.search(searchType, ui.values);
-                     },
-              create: function() {
-                          $("#csm-minMinrateSliderTxt").val(csm_minrate_min);
-                          $("#csm-maxMinrateSliderTxt").val(csm_minrate_max);
-                    }
-            });
-            $('#slider-minrate-range').slider("option", "min", csm_minrate_min);
-            $('#slider-minrate-range').slider("option", "max", csm_minrate_max);
-
-/* setup  sliders */
-            $("#slider-maxrate-range").slider({ 
-                  range:true, step:0.01, min:csm_maxrate_min, max:csm_maxrate_max, values:[csm_maxrate_min, csm_maxrate_max],
-              slide: function( event, ui ) {
-                           $("#csm-minMaxrateSliderTxt").val(ui.values[0]);
-                           $("#csm-maxMaxrateSliderTxt").val(ui.values[1]);
-                           resetMaxrateRangeColor(ui.values[0],ui.values[1]);
-                     },
-              change: function( event, ui ) {
-                           $("#csm-minMaxrateSliderTxt").val(ui.values[0]);
-                           $("#csm-maxMaxrateSliderTxt").val(ui.values[1]);
-                           resetMaxrateRangeColor(ui.values[0],ui.values[1]);
-                     },
-              stop: function( event, ui ) {
-                           let searchType = CSM.searchType.maxrate;
-                           CSM.search(searchType, ui.values);
-                     },
-              create: function() {
-                          $("#csm-minMaxrateSliderTxt").val(csm_maxrate_min);
-                          $("#csm-maxMaxrateSliderTxt").val(csm_maxrate_max);
-                    }
-            });
-            $('#slider-maxrate-range').slider("option", "min", csm_maxrate_min);
-            $('#slider-maxrate-range').slider("option", "max", csm_maxrate_max);
-    };
-
-/******************  Result table functions **************************/
-    function makeResultTableBody(json) {
-
-        var html="<tbody id=\"result-table-body\">";
-        var sz=json.length;
-
-        var tmp="";
-        for( var i=0; i< sz; i++) {
-           var s=json[i];
-           var gid=parseInt(s.gid);
-           var name=s.faultname + " | " +s.sitename;
-           var t="<tr id=\"row_"+gid+"\"><td style=\"width:25px\"><button class=\"btn btn-sm cxm-small-btn\" id=\"button_"+gid+"\" title=\"highlight the fault\" onclick=CSM.toggleSiteSelectedByGid("+gid+")><span id=\"sliprate-result-gid_"+gid+"\" class=\"glyphicon glyphicon-unchecked\"></span></button></td><td><label for=\"button_"+gid+"\">" + name + "</label></td></tr>";
-           tmp=tmp+t;
-        }
-        html=html+ tmp + "</tbody>";
-
-        return html;
-    }
-
-    function replaceResultTableBodyWithGids(glist) {
-
-        var html="";
-        var sz=glist.length;
-
-        for( var i=0; i< sz; i++) {
-           let gid=glist[i];
-           let layer=CSM.getLayerByGid(gid);
-           let s=layer.scec_properties;
-           let name= s.fault_name + " | " +s.site_name;
-
-           var t="<tr id=\"row_"+gid+"\"><td style=\"width:25px\"><button class=\"btn btn-sm cxm-small-btn\" id=\"button_"+gid+"\" title=\"highlight the fault\" onclick=CSM.toggleSiteSelectedByGid("+gid+")><span id=\"sliprate-result-gid_"+gid+"\" class=\"glyphicon glyphicon-unchecked\"></span></button></td><td><label for=\"button_"+gid+"\">" + name + "</label></td></tr>";
-           html=html+t;
-        }
-
-        document.getElementById("result-table-body").innerHTML = html;
-    }
-
-
-    function makeResultTable(json) {
-        var html="";
-        html+=`
-<thead>
-<tr>
-   <th class='text-center'><button id=\"csm-allBtn\" class=\"btn btn-sm cxm-small-btn\" title=\"select all visible sliprate sites\" onclick=\"CSM.toggleSelectAll();\"><span class=\"glyphicon glyphicon-unchecked\"></span></button></th>
-<th class='myheader'>CPD Site Location ( fault | site )</th>
-</tr>
-</thead>`;
-        var body=makeResultTableBody(json);
-        html=html+ "<tbody>" + body + "</tbody>";
-
-        return html;
-    }
+       };
 
 /********************** zip utilities functions *************************/
     this.downloadURLsAsZip = function(ftype) {

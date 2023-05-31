@@ -13,13 +13,23 @@
     text-align: center;
     line-height: 1.2em;
 }   
+
+#plot-range-label {
+    z-index: 8000;
+    position: absolute;
+    right: 50px;
+    top: 25px;
+    background-color: transparent;
+    padding-left: 5px;
+    padding-right: 5px;
+}
     
 #plot-range-key {
     z-index: 8000;
     position: absolute;
     right: 30px;
     top: 10px;
-    background-color: #F2F2F2;
+    background-color: transparent;
     padding-left: 5px;
     padding-right: 5px;
 }
