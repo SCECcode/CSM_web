@@ -292,15 +292,8 @@ window.console.log("flyingBounds --latlon");
         html += `<tr csm-metadata-gid="${layer.scec_properties.gid}">`;
 
         html += `<td><button class=\"btn btn-sm cxm-small-btn\" id=\"button_meta_${layer.scec_properties.gid}\" title=\"remove the site\" onclick=CSM.unselectSiteByGid("${layer.scec_properties.gid}");><span id=\"csm_metadata_${layer.scec_properties.gid}\" class=\"glyphicon glyphicon-trash\"></span></button></td>`;
-        html += `<td class="meta-data">${layer.scec_properties.csm_id}</td>`;
-        html += `<td class="meta-data">${layer.scec_properties.fault_name} </td>`;
-        html += `<td class="meta-data">${layer.scec_properties.site_name}</td>`;
-        html += `<td class="meta-data">${layer.scec_properties.latitude} </td>`;
-        html += `<td class="meta-data">${layer.scec_properties.longitude} </td>`;
-
-        html += `<td class="meta-data" align='center' >${layer.scec_properties.low_rate} </td>`;
-        html += `<td class="meta-data" align='center' >${layer.scec_properties.high_rate}</td>`;
-
+        html += `<td class="meta-data">${layer.scec_properties.depth}</td>`;
+        html += `<td class="meta-data">${layer.scec_properties.note} </td>`;
         html += `<td class="meta-data">......</td>`;
         html += `</tr>`;
         return html;
@@ -315,12 +308,9 @@ window.console.log("generateMetadataTable..");
         <th class="text-center button-container" style="width:2rem">
         </th>
         <th class="hoverColor" style="width:5rem" >Id&nbsp<span></span></th>
-        <th class="hoverColor" onClick="sortMetadataTableByRow(2,'a')">Fault Name&nbsp<span id='sortCol_2' class="fas fa-angle-down"></span></th>
-        <th class="hoverColor" onClick="sortMetadataTableByRow(3,'a')">Site Name&nbsp<span id='sortCol_3' class="fas fa-angle-down"></span></th>
-        <th class="hoverColor" onClick="sortMetadataTableByRow(4,'n')" style="width:9rem">X&nbsp<span id='sortCol_4' class="fas fa-angle-down"></span></th>
-        <th class="hoverColor" onClick="sortMetadataTableByRow(5,'n')" style="width:9rem">Y&nbsp<span id='sortCol_5' class="fas fa-angle-down"></span></th>
-        <th class="hoverColor" onClick="sortMetadataTableByRow(6,'n')" style="width:5rem">Low<br>Rate&nbsp<span id='sortCol_6' class="fas fa-angle-down"></span></th>
-        <th class="hoverColor" onClick="sortMetadataTableByRow(7,'n')" style="width:5rem">High<br>Rate&nbsp<span id='sortCol_7' class="fas fa-angle-down"></span></th>
+        <th class="hoverColor" onClick="sortMetadataTableByRow(2,'a')">Dataset Name&nbsp<span id='sortCol_2' class="fas fa-angle-down"></span></th>
+        <th class="hoverColor" onClick="sortMetadataTableByRow(3,'n')">Depth&nbsp<span id='sortCol_3' class="fas fa-angle-down"></span></th>
+        <th class="hoverColor">Note&nbsp</th>
         <th style="width:20%;"><div class="col text-center">
 <!--download all -->
                 <div class="btn-group download-now">
@@ -328,17 +318,6 @@ window.console.log("generateMetadataTable..");
                             onclick="CSM.downloadURLsAsZip(this.value);" disabled>
                             DOWNLOAD&nbsp<span id="download-counter"></span>
                     </button>
-<!--
-                    <button id="download-all" type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false" disabled>
-                            DOWNLOAD&nbsp<span id="download-counter"></span>
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-right">
-                       <button class="dropdown-item" type="button" value="metadata"
-                            onclick="CSM.downloadURLsAsZip(this.value);">metadata
-                       </button>
-                    </div>
--->
                 </div>
         </th>
 </tr>
@@ -507,7 +486,7 @@ window.console.log(" ==> here in replace color");
 
 
 /********************* csm INTERFACE function **************************/
-       this.setupCPDInterface = function() {
+       this.setupCSMInterface = function() {
 
             $("#csm-controlers-container").css('display','');
             $("div.mapData div.map-container").css('padding-left','30px');
@@ -523,8 +502,8 @@ window.console.log(" ==> here in replace color");
             });
 
             // setup the modelType list from this.csm_models,
-	    let cnt=this.csm_mfor 
-            for (const term in this.csm_models) {
+            for (const idx in this.csm_models) {
+               let term=this.csm_models[idx];
 window.console.log("HERE");
 		    /*
                     idx: index,
@@ -534,12 +513,12 @@ window.console.log("HERE");
                     meta: jmeta,
 		    */
                
-	    var elt=document.getElementById('modelType');
-            let option = document.createElement("option");
-            option.text = term.model_name;
-            option.label = term.table_name;
-            option.value= term.gid;
-            sel.add(option);
+	      var elt=document.getElementById('modelType');
+              let option = document.createElement("option");
+              option.text = term.model_name;
+              option.label = term.model_name;
+              option.value= term.idx;
+              elt.add(option);
 
 		    /*
 	    var elt=document.getElementById('modelType');

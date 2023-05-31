@@ -136,47 +136,84 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
    </div>
 
 <!-- top-control -->
-   <div id="top-control" class="row">
-      <div id="csm-controls-container" class="col" >
-<!-- control-row-1 -->
-        <div id="top-control-row-1" class="col-12" >
-        </div>
-<!-- top-control-row 2 -->
-        <div id="top-control-row-2" class="row justify-content-end mb-1">
+   <div id="top-control">
+      <div id="csm-controls-container" class="row d-flex mb-0" style="display:">
 
-          <div id='model-options' class="form-check-inline">
-            <div class="form-check form-check-inline">
+<!-- top-control-row-1 -->
+        <div id="top-control-row-1" class="col-12">
+<!-- model select -->
+          <div class="input-group input-group-sm custom-control-inline">
+            <div class="input-group-prepend">
+                <label style='border-bottom:1;' class="input-group-text" for="modelType">Select CSM Model</label>
+            </div>
+            <select id="mapLayer" class="custom-select custom-select-sm"></select>
+          </div> <!-- model select -->
+        </div> <!-- top-control-row-1 -->
+
+<!-- top-control-row-2 -->
+        <div id="top-control-row-2" class="col-12">
+
+          <div class="row justify-content-end mb-1" style="border:solid 1px orange">
+            <div id='model-options' class="form-check-inline">
+              <div class="form-check form-check-inline">
                 <label class='form-check-label ml-1 mini-option'
                                for="cxm-model-cfm">
                 <input class='form-check-inline mr-1'
                                type="checkbox"
 			       id="cxm-model-cfm" value="1" />CFM6.0
                 </label>
-            </div>
-            <div class="form-check form-check-inline">
+              </div>
+              <div class="form-check form-check-inline">
                 <label class='form-check-label ml-1 mini-option'
                                for="cxm-model-gfm">
                 <input class='form-check-inline mr-1'
                                type="checkbox"
 			       id="cxm-model-gfm" value="1" />GFM
                 </label>
+              </div>
             </div>
-          </div>
 
 <!-- KML/KMZ overlay -->
-          <div id="kml-row" class="col-2 custom-control-inline">
-             <input id="fileKML" type='file' multiple onchange='uploadKMLFile(this.files)' style='display:none;'></input>
-             <button id="kmlBtn" class="btn"
+            <div id="kml-row" class="col-2 custom-control-inline">
+              <input id="fileKML" type='file' multiple onchange='uploadKMLFile(this.files)' style='display:none;'></input>
+              <button id="kmlBtn" class="btn"
                       onclick='javascript:document.getElementById("fileKML").click();'
                       title="Upload your own kml/kmz file to be displayed on the map interface. We currently support points, lines, paths, polygons, and image overlays (kmz only)."
                       style="color:#395057;background-color:#f2f2f2;border:1px solid #ced4da;border-radius:0.2rem;padding:0.15rem 0.5rem;"><span>Upload kml/kmz</span></button>
-             <button id="kmlSelectBtn" class="btn cxm-small-no-btn"
+              <button id="kmlSelectBtn" class="btn cxm-small-no-btn"
                       title="Show/Hide uploaded kml/kmz files"
                       style="display:none;" data-toggle="modal" data-target="#modalkmlselect">
                       <span id="eye_kml"  class="glyphicon glyphicon-eye-open"></span></button>
-          </div> <!-- kml-row -->
+            </div> <!-- end of kml -->
 
-          <div class="input-group input-group-sm custom-control-inline" id="map-controls" style="margin-right:15px">
+<!-- seismicity -->
+            <div class="col-3" style="display:;">
+              <div id="loadSeismicity" class="row" style="width:20rem;">
+                <button id="quakesBtn" class="btn" onClick="loadSeismicity()" title="This loads the updated Hauksson et al. (2012) and Ross et al. (2019) relocated earthquake catalogs and provides a pull-down menu with options to color by depth, magnitude, or time. Significant historical events (1900-2021 >M6.0) are shown with red dots. These can be turned on/off by clicking on the button on the right which appears here once the catalogs have been loaded" style="color:#395057;background-color:#f2f2f2;border:1px solid #ced4da;border-radius:0.2rem;padding:0.15rem 0.5rem;display:;">Load relocated seismicity</button>
+              </div>
+ 
+              <div id="showSeismicity" class="row" style="width:20rem; display:none;">
+                <select id="seismicitySelect" onchange="changePixiOverlay(this.value)"
+                class="custom-select custom-select-sm" style="width:auto;min-width:14rem;">
+		   <option value="none">Hide relocated seismicity</option>
+                   <option selected value="haukssondepth">Hauksson et al. by depth</option>
+                   <option value="haukssonmag">Hauksson et al. by magnitude</option>
+                   <option value="haukssontime">Hauksson et al. by time</option>
+                   <option value="rossdepth">Ross et al. by depth</option>
+                   <option value="rossmag">Ross et al. by magnitude</option>
+                   <option value="rosstime">Ross et al. by time</option>
+                <!--
+                   <option value="historicaldepth">Historical by depth</option>
+                   <option value="historicalmag">Historical by magitude</option>
+                   <option value="historicaltime">Historical by time</option>
+                -->
+                </select>
+                <button id="toggleHistoricalBtn" class="btn btn-sm cfm-small-btn" title="Show/Hide significant historic earthquakes (M6+) since 1900" onclick="toggleHistorical()"><span id="eye_historical" class="glyphicon glyphicon-eye-open"></span></button>
+               </div>
+            </div> <!-- end of seismicity -->
+
+<!-- basemap -->
+            <div class="input-group input-group-sm custom-control-inline" id="map-controls" style="margin-right:15px">
               <div class="input-group-prepend">
                 <label style='border-bottom:1;' class="input-group-text" for="mapLayer">Select Map Type</label>
               </div>
@@ -189,24 +226,18 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                   <option value="osm street">OSM Street</option>
                   <option value="shaded relief">Shaded Relief</option>
               </select>
-          </div>
-        </div> <!-- top-control-row-2 -->
+            </div> <!-- end of basemap -->
+
+          </div> <!-- row -->
+        </div> <!-- top-control-row2 -->
 
       </div> <!-- csm-controls-container -->
     </div> <!-- top-control -->
 
 <!-- map space -->
     <div id="mapDataBig" class="row mapData">
-      <div id="infoData" class="col-5 button-container d-flex flex-column pr-0" style="overflow:hidden;border:solid 2px red">
-
-        <div class="input-group filters mb-1">
-                <div class="input-group-prepend">
-                    <label class="input-group-text" for="modelType" >Select Model Type</label>
-                </div>
-		<select id="modelType" class="custom-select"></select>
-        </div>
-
-        <div id="phpResponseTxt"></div>
+       <div id="metricData" class="col-5 button-container d-flex flex-column pr-0" style="overflow:hidden;border:solid 2px red">
+          <div id="phpResponseTxt"></div>
       </div>
 
       <div id="top-map" class="col-7 pl-1" style="border:solid 2px green">

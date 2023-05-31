@@ -45,9 +45,8 @@ let c_height = elt.clientHeight+(celt.clientHeight/2);
 let h=576+c_height;
 
 $('#top-intro').css("display", "none");
-$('#searchResult').css("display", "none");
 $('#CSM_plot').css("height", h);
-$('#infoData').removeClass('col-5').addClass('col-0');
+$('#metricData').removeClass('col-5').addClass('col-0');
 $('#top-map').removeClass('col-7').addClass('row');
 $('#top-map').removeClass('pl-1').addClass('pl-0');
 $('#mapDataBig').addClass('col-12').removeClass('row');
@@ -89,8 +88,7 @@ $('.container').css("padding-left", "15px");
 $('.container').css("padding-right", "15px");
 
 $('#top-intro').css("display", "");
-$('#searchResult').css("display", "");
-$('#infoData').addClass('col-5').removeClass('col-0');
+$('#metricData').addClass('col-5').removeClass('col-0');
 $('#top-map').removeClass('row').addClass('col-7');
 $('#top-map').removeClass('pl-1').addClass('pl-0');
 $('#mapDataBig').removeClass('col-12').addClass('row');
