@@ -83,7 +83,8 @@ jQuery(document).ready(function() {
 // load the data from backend and setup layers
   CSM.processModelMeta();
 // setup the interface 
-//  CSM.setupCSMInterface();
+  CSM.setupCSMInterface();
+window.console.log("after main");
 
 }); // end of MAIN
 

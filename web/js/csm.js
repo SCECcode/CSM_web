@@ -6,7 +6,6 @@
 ***/
 
 var CSM = new function () {
-    window.console.log("in CSM..");
 
     // complete set of csm models
     // include the meta data info
