@@ -91,7 +91,8 @@ for f in file_list:
 #                         {'dep': 3.0, 'alphi_min': 0.079, 'alphi_max': 2.936, 'cnt': 72325}, 
 #                         ...
 #                       ],
-#          "alphiRange" : [0.001, 2.998]
+#          "alphiRange" : [0.001, 2.998],
+#          "metric" : [ 'alpha' ]
 #          }
 #  }
 
@@ -125,6 +126,7 @@ for f in file_list:
   jblob=json.loads('{ "model":"'+f_wo_ext+'", "meta": { "dataCount": '+str(Overall_data_total)+' } }')
   jblob['meta']['alphiRange']=Overall_Alphi_range
   jblob['meta']['dataByDEP']=DEP_range
+  jblob['metric'] = [ 'alphi' ] 
 #  jstr=json.dumps(jblob, indent=2)
   jstr=json.dumps(jblob)
   f.write(jstr)

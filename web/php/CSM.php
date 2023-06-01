@@ -9,18 +9,26 @@ class CSM extends SpatialData
     if (!$this->connection) { die('Could not connect'); }
   }
 
-  public function search($type, $criteria="")
+  public function search($type, $spec="", $criteria="")
   {
     $query = "";
+
+    if (!is_array($spec)) {
+      $spec = array($spec);
+    }
     if (!is_array($criteria)) {
       $criteria = array($criteria);
     }
     $error = false;
 
     switch ($type) {
-      case "latlon":
+      case "layer":
 
-//XXX  need to get the dataset name
+// need dataset, depth, metric 
+        break;
+
+      case "latlon":
+// need to get the dataset, depth, metric
 
         if (count($criteria) !== 4) {
           $this->php_result = "BAD";

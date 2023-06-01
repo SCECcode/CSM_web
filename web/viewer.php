@@ -74,6 +74,13 @@ $csm = new CSM();
     <script type="text/javascript" src="js/csm_leaflet.js?v=1"></script>
     <script type="text/javascript" src="js/csm_ui.js?v=1"></script>
 
+<!-- pixi pixiOverlay -->
+    <script type="text/javascript" src="js/vendor/pixi.js"></script>
+    <script type="text/javascript" src="js/vendor/pixiOverlay/L.PixiOverlay.js"></script>
+    <script type="text/javascript" src="js/vendor/pixiOverlay/MarkerContainer.js"></script>
+    <script type="text/javascript" src="js/vendor/pixiOverlay/bezier-easing.js"></script>
+    <script type="text/javascript" src="js/cxm_pixi.js"></script>
+
 <!-- cxm js -->
     <script type="text/javascript" src="js/cxm_kml.js?v=1"></script>
     <script type="text/javascript" src="js/cxm_model_util.js?v=1"></script>
@@ -211,7 +218,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                    <option value="historicaltime">Historical by time</option>
                 -->
                 </select>
-                <button id="toggleHistoricalBtn" class="btn btn-sm cfm-small-btn" title="Show/Hide significant historic earthquakes (M6+) since 1900" onclick="toggleHistorical()"><span id="eye_historical" class="glyphicon glyphicon-eye-open"></span></button>
+                <button id="toggleHistoricalBtn" class="btn btn-sm cxm-small-btn" title="Show/Hide significant historic earthquakes (M6+) since 1900" onclick="toggleHistorical()"><span id="eye_historical" class="glyphicon glyphicon-eye-open"></span></button>
                </div>
             </div> <!-- end of seismicity -->
 
@@ -239,13 +246,34 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
 
 <!-- map space -->
     <div id="mapDataBig" class="row mapData">
+
        <div id="metricData" class="col-5 button-container d-flex flex-column pr-0" style="overflow:hidden;border:solid 2px red">
 
-          <div id="phpResponseTxt"></div>
-      </div>
+<button id="toSearch" class="btn cxm-small-btn"  onClick="toSearch()"> <span class="glyphicon glyphicon-share"></span> SEARCH</button>
 
-      <div id="top-map" class="col-7 pl-1">
-        <div class="w-100 mb-1" id='CSM_plot'
+<!-- model depth list -->
+         <div id="modelDepth" class="form-check-inline mt-2" style="border:solid 1px green">
+	   <div id="modelDepth-options" class="form-check"></div>
+         </div>
+
+<!-- metric list -->
+         <div id="modelMetric" class="form-check-inline mt-2" style="border:solid 1px blue">
+	   <div id="modelMetric-options" class="form-check"> </div>
+         </div>
+
+<!-- result parking location -->
+         <div id="parkingLot" style="display:none">
+<!--  metric range for model/depth/metric combo  -->
+            <input type="text" id="parkingMaxMetricVal" value='' onchange="reset_maxMetric()">
+            <input type="text" id="parkingMinMetricVal" value='' onchange="reset_minMetric()">
+            <div id="phpResponseTxt"></div>
+         </div>
+
+       </div> <!-- metricData -->
+
+<!-- leaflet 2D map -->
+       <div id="top-map" class="col-7 pl-1">
+          <div class="w-100 mb-1" id='CSM_plot'
              style="position:relative;border:solid 1px #ced4da; height:576px;">
              <div  id='wait-spinner' style="">
                <div class="d-flex justify-content-center" >
@@ -254,9 +282,10 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                  </div>
                </div>
              </div>
-        </div>
-      </div>
-    </div>
+          </div>
+       </div>
+
+    </div> <!-- mapDataBig -->
 
     <div id="top-select" class="row mb-2">
       <div class="col-12">
@@ -290,7 +319,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
 
 <div id="expand-view-key-container" style="display:none;">
   <div id="expand-view-key" class="row" style="opacity:0.8; height:1.4rem;">
-    <button id="bigMapBtn" class="btn cfm-small-btn" title="Expand into a larger map" style="color:black;background-color:rgb(255,255,255);padding: 0rem 0.3rem 0rem 0.3rem" onclick="toggleBigMap()"><span class="fas fa-expand"></span>
+    <button id="bigMapBtn" class="btn cxm-small-btn" title="Expand into a larger map" style="color:black;background-color:rgb(255,255,255);padding: 0rem 0.3rem 0rem 0.3rem" onclick="toggleBigMap()"><span class="fas fa-expand"></span>
     </button>
   </div>
 </div>

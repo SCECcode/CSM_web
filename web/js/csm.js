@@ -10,7 +10,16 @@ var CSM = new function () {
     // complete set of csm models
     // include the meta data info
     // { "gid":gid, "model_name":mn, "table_name":tn, "meta":meta } 
+    // and,
+    //   meta's format
+    //   { "model": mn,
+    //     "meta": { "dataCount": cnt, "dataByDEP": [ { "dep":d, "cnt":lcnt,  "alphi_max":max, "alphi_min":min}..] },
+    //     "alphiRange": [mmax, mmin] }
     this.csm_models = [];
+
+    // tracking the global stress layer  --  to avoid generate these repeatly
+    // { "gid":gid, "layers": { "alphi_local": layer, "alphi_global":layer,...} }
+    this.csm_layers = [];
 
     // locally used, floats
     var csm_depth_min=undefined;
@@ -504,7 +513,6 @@ window.console.log(" ==> here in replace color");
             // setup the modelType list from this.csm_models,
             for (const idx in this.csm_models) {
                let term=this.csm_models[idx];
-window.console.log("HERE");
 		    /*
                     idx: index,
                     gid: tmp.gid,
@@ -513,24 +521,82 @@ window.console.log("HERE");
                     meta: jmeta,
 		    */
                
-	      var elt=document.getElementById('modelType');
-              let option = document.createElement("option");
-              option.text = term.model_name;
-              option.label = term.model_name;
-              option.value= term.idx;
-              elt.add(option);
-
-		    /*
-	    var elt=document.getElementById('modelType');
-            let option = document.createElement("option");
-            option.text = mname;
-            option.label = mname;
-            option.value= aname;
-            sel.add(option);
-	           */
+	        var elt=document.getElementById('modelType');
+                let option = document.createElement("option");
+                option.text = term.model_name;
+                option.label = term.model_name;
+                option.value= term.idx;
+                elt.add(option);
             }
+/* create the default model depth list to 1st one for model */
+            _setModelDepth(this.csm_models,0);
+            _setModelMetric(this.csm_models,0);
+    };
 
-       };
+    /* 
+       meta json :
+       {"model": "SHELLS", "meta": {"dataCount": 968679, 
+       "metric": [ 'alphi' ],
+       "alphiRange": [0.0, 3.0], 
+       "dataByDEP": [
+       {"dep": 1.0, "alphi_min": 0.0, "alphi_max": 3.0, "cnt": 66300}, 
+       {"dep": 3.0, "alphi_min": 0.081, "alphi_max": 3.0, "cnt": 72325},
+       ...
+    */
+    function _setModelMetric(mlist,model_idx) {
+//      let meta=mlist[model_idx]['metric'];
+      let dlist= ['alphi'];
+      let sz=dlist.length;
+      let html="";
+      for(let i=0;i<sz;i++) {  
+         let label=dlist[i];
+         let h=_metricoption(label,i);
+         html=html+h;
+         if( (i+1) % 4 === 0 ) {
+            html=html+"<br>";
+         }		  
+       }
+      $("#modelMetric-options").html(html);
+    };
+
+    function _metricoption(label,idx) {
+      var html = "<input class='form-check-inline mr-1' type=\"checkbox\" id=\"modelMetric_"+idx+"\" value="+label+">";
+          html=html+"<label class='form-check-label mr-2 mini-option' for=\"modelMetric_"+idx+"\">";
+          html=html+"<span id=\"modelMetric_"+idx+"_string\">"+label+"</span></label>";
+      return html;
+    }
+
+
+    function _setModelDepth(mlist,model_idx) {
+      let meta=mlist[model_idx]['meta'];
+      let dlist=meta['meta']['dataByDEP'];
+      let sz=dlist.length;
+      let html="";
+
+      for(let i=0;i<sz;i++) {  
+         let term=dlist[i];
+         let label=term['dep'];
+         let h=_depthoption(label,i);
+         html=html+h;
+         if( (i+1) % 4 === 0 ) {
+            html=html+"<br>";
+         }		  
+       }
+      $("#modelDepth-options").html(html);
+    };
+
+    /*
+        <input class='form-check-inline mr-1'
+            type="checkbox" id="modelDepth_1" value=1>
+        <label class='form-check-label mr-2 mini-option' for="modelDepth_1">
+            <span id="modelDepth_1_string">place_holder</span></label>
+    */
+    function _depthoption(label,idx) {
+      var html = "<input class='form-check-inline mr-1' type=\"checkbox\" id=\"modelDepth_"+idx+"\" value="+idx+">";
+          html=html+"<label class='form-check-label mr-2 mini-option' for=\"modelDepth_"+idx+"\">";
+	  html=html+"<span id=\"modelDepth_"+idx+"_string\">"+label+" km</span></label>";
+      return html;
+    }
 
 /********************** zip utilities functions *************************/
     this.downloadURLsAsZip = function(ftype) {
