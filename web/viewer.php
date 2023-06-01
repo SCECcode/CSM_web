@@ -144,16 +144,16 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
 <!-- model select -->
           <div class="input-group input-group-sm custom-control-inline">
             <div class="input-group-prepend">
-                <label style='border-bottom:1;' class="input-group-text" for="modelType">Select CSM Model</label>
+                <label class="input-group-text" for="modelType">Select CSM Model</label>
             </div>
-            <select id="mapLayer" class="custom-select custom-select-sm"></select>
+            <select id="modelType" class="custom-select custom-select-sm"></select>
           </div> <!-- model select -->
         </div> <!-- top-control-row-1 -->
 
 <!-- top-control-row-2 -->
-        <div id="top-control-row-2" class="col-12">
+        <div id="top-control-row-2" class="col-12 mb-1" style="border:solid 0px green">
 
-          <div class="row justify-content-end mb-1" style="border:solid 1px orange">
+          <div class="row justify-content-end">
             <div id='model-options' class="form-check-inline">
               <div class="form-check form-check-inline">
                 <label class='form-check-label ml-1 mini-option'
@@ -174,7 +174,8 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
             </div>
 
 <!-- KML/KMZ overlay -->
-            <div id="kml-row" class="col-2 custom-control-inline">
+            <div id="kml-row" class="col-2" style="border:solid 0px green">
+<div class="row" style="width:20rem;">
               <input id="fileKML" type='file' multiple onchange='uploadKMLFile(this.files)' style='display:none;'></input>
               <button id="kmlBtn" class="btn"
                       onclick='javascript:document.getElementById("fileKML").click();'
@@ -184,12 +185,14 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                       title="Show/Hide uploaded kml/kmz files"
                       style="display:none;" data-toggle="modal" data-target="#modalkmlselect">
                       <span id="eye_kml"  class="glyphicon glyphicon-eye-open"></span></button>
+</div>
             </div> <!-- end of kml -->
 
 <!-- seismicity -->
-            <div class="col-3" style="display:;">
+            <div class="col-3" style="border:solid 0px blue">
               <div id="loadSeismicity" class="row" style="width:20rem;">
-                <button id="quakesBtn" class="btn" onClick="loadSeismicity()" title="This loads the updated Hauksson et al. (2012) and Ross et al. (2019) relocated earthquake catalogs and provides a pull-down menu with options to color by depth, magnitude, or time. Significant historical events (1900-2021 >M6.0) are shown with red dots. These can be turned on/off by clicking on the button on the right which appears here once the catalogs have been loaded" style="color:#395057;background-color:#f2f2f2;border:1px solid #ced4da;border-radius:0.2rem;padding:0.15rem 0.5rem;display:;">Load relocated seismicity</button>
+		<button id="quakesBtn" class="btn" 
+                        onClick="loadSeismicity()" title="This loads the updated Hauksson et al. (2012) and Ross et al. (2019) relocated earthquake catalogs and provides a pull-down menu with options to color by depth, magnitude, or time. Significant historical events (1900-2021 >M6.0) are shown with red dots. These can be turned on/off by clicking on the button on the right which appears here once the catalogs have been loaded" style="color:#395057;background-color:#f2f2f2;border:1px solid #ced4da;border-radius:0.2rem;padding:0.15rem 0.5rem;display:;">Load relocated seismicity</button>
               </div>
  
               <div id="showSeismicity" class="row" style="width:20rem; display:none;">
@@ -237,10 +240,11 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
 <!-- map space -->
     <div id="mapDataBig" class="row mapData">
        <div id="metricData" class="col-5 button-container d-flex flex-column pr-0" style="overflow:hidden;border:solid 2px red">
+
           <div id="phpResponseTxt"></div>
       </div>
 
-      <div id="top-map" class="col-7 pl-1" style="border:solid 2px green">
+      <div id="top-map" class="col-7 pl-1">
         <div class="w-100 mb-1" id='CSM_plot'
              style="position:relative;border:solid 1px #ced4da; height:576px;">
              <div  id='wait-spinner' style="">
@@ -286,7 +290,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
 
 <div id="expand-view-key-container" style="display:none;">
   <div id="expand-view-key" class="row" style="opacity:0.8; height:1.4rem;">
-    <button id="bigMapBtn" class="btn cfm-small-btn" title="Expand into a larger map" style="color:black;padding: 0rem 0.3rem 0rem 0.3rem" onclick="toggleBigMap()"><span class="fas fa-expand"></span>
+    <button id="bigMapBtn" class="btn cfm-small-btn" title="Expand into a larger map" style="color:black;background-color:rgb(255,255,255);padding: 0rem 0.3rem 0rem 0.3rem" onclick="toggleBigMap()"><span class="fas fa-expand"></span>
     </button>
   </div>
 </div>
