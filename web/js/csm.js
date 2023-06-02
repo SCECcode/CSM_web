@@ -9,9 +9,9 @@ var CSM = new function () {
 
     // complete set of csm models
     // include the meta data info
-    // { "gid":gid, "model_name":mn, "table_name":tn, "meta":meta } 
+    // { "gid":gid, "model_name":mn, "table_name":tn, "blob":blob } 
     // and,
-    //   meta's format
+    //   blob's format
     //   { "model": mn,
     //     "meta": { "dataCount": cnt, "dataByDEP": [ { "dep":d, "cnt":lcnt,  "alphi_max":max, "alphi_min":min}..] },
     //     "alphiRange": [mmax, mmin] }
@@ -20,6 +20,8 @@ var CSM = new function () {
     // tracking the global stress layer  --  to avoid generate these repeatly
     // { "gid":gid, "layers": { "alphi_local": layer, "alphi_global":layer,...} }
     this.csm_layers = [];
+    
+    this.current_modelDepth_idx=0; 
 
     // locally used, floats
     var csm_depth_min=undefined;
@@ -166,8 +168,25 @@ window.console.log("calling --->> resetSearch.");
         this.resetLatLonSearch();
     };
 
-// a complete fresh search
     this.freshSearch = function (t){
+window.console.log("XX new freshSearch...",t);
+      // retrieve model's database table name
+      // depth value  
+      // which metric type
+      let midx=$("#modelType").val();
+      let model=this.csm_models[midx];
+      window.console.log("name is ", model['table_name']);
+      let didx=this.current_modelDepth_idx; 
+      window.console.log("modelDepth_idx is ", didx);
+//     "meta": { "dataCount": cnt, "dataByDEP": [ { "dep":d, "cnt":lcnt,  "alphi_max":max, "alphi_min":min}..] },
+     let d=model['meta']['meta'];
+     let dd=d['dataByDEP'];
+     let ddd=dd[0];
+      window.console.log("modelDepth is ", model['meta']['dataByDEP'][didx]["dep"]);
+    };
+
+// a complete fresh search
+    this.freshSearch2 = function (t){
 
         this.resetSearch();
 
@@ -582,7 +601,7 @@ window.console.log(" ==> here in replace color");
             html=html+"<br>";
          }		  
        }
-      $("#modelDepth-options").html(html);
+      $("#modelDepth").html(html);
     };
 
     /*
@@ -592,11 +611,15 @@ window.console.log(" ==> here in replace color");
             <span id="modelDepth_1_string">place_holder</span></label>
     */
     function _depthoption(label,idx) {
-      var html = "<input class='form-check-inline mr-1' type=\"checkbox\" id=\"modelDepth_"+idx+"\" value="+idx+">";
-          html=html+"<label class='form-check-label mr-2 mini-option' for=\"modelDepth_"+idx+"\">";
-	  html=html+"<span id=\"modelDepth_"+idx+"_string\">"+label+" km</span></label>";
+      var html = "<input type=\"radio\" class='mr-1' id=\"modelDepth_"+idx+"\" name=\"modelDepth_idx\" onclick=\"CSM.toModelDepth("+idx+")\">";
+          html=html+"<label class='form-check-label mr-2 mini-option' for=\"modelDepth_\"+idx+\"><span>"+label+" km</span></label>";
       return html;
     }
+
+   this.toModelDepth = function(v) {
+        window.console.log("clicked on modelDepth_idx..",v);
+        this.current_modelDepth_idx=v; 
+   };
 
 /********************** zip utilities functions *************************/
     this.downloadURLsAsZip = function(ftype) {

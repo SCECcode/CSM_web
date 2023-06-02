@@ -26,10 +26,10 @@ for file in ../data/*csv ; do
     cat sql_template/setup_model_tb.sql | sed "s/%%CSMTB%/${CSMTB}/g" | sed "s/%%csmtb%/${csmtb}/g" >> ../sql/setup_model_tb.sql
 
 ## process the metadata
-    metafile="../data/"${CSMTB}"_meta.json"
-    meta=$(<${metafile})
+    jmetafile="../data/"${CSMTB}"_meta.json"
+    jmeta=$(<${jmetafile})
 
-    cat sql_template/setup_meta_tb.sql | sed "s/%%CSMTB%/${CSMTB}/g" | sed "s/%%csmtb%/${csmtb}/g" | sed "s/%%meta%/${meta}/g" >> ../sql/setup_meta_tb.sql
+    cat sql_template/setup_meta_tb.sql | sed "s/%%CSMTB%/${CSMTB}/g" | sed "s/%%csmtb%/${csmtb}/g" | sed "s/%%jblob%/${jmeta}/g" >> ../sql/setup_meta_tb.sql
 
 
 done
