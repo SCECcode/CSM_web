@@ -28,7 +28,7 @@ for f in file_list:
 
   print("file:",f) 
 
-# index = 2,  [ { 'dep': val, 'alphi_min': val, 'alphi_max': val, 'cnt': val }, ...]
+# index = 2,  [ { 'dep': val, 'aphi_min': val, 'aphi_max': val, 'cnt': val }, ...]
   DEP_range = []
 # index = 13
   Overall_data_total = 0
@@ -50,26 +50,26 @@ for f in file_list:
 ## DEP
             if (len(DEP_range) == 0) : # first one
               found=1
-              nitem={ 'dep': DEP, 'alphi_min': Alphi, 'alphi_max': Alphi, 'cnt': 1 }
+              nitem={ 'dep': DEP, 'aphi_min': Alphi, 'aphi_max': Alphi, 'cnt': 1 }
               DEP_range.append(nitem)
             else:  # iterate through and see where to fit them
               found=0
               for item in DEP_range:
                  dep=item['dep']
-                 alphi_min=item['alphi_min']
-                 alphi_max=item['alphi_max']
+                 aphi_min=item['aphi_min']
+                 aphi_max=item['aphi_max']
                  cnt = item['cnt']
                  if(dep == DEP) :
                     found=1
                     item['cnt'] = cnt+1;
                     if(Alphi != None) :
-                      if (alphi_min == None or Alphi < alphi_min) :
-                         item['alphi_min'] = Alphi;
-                      if (alphi_max == None or Alphi > alphi_max) :
-                         item['alphi_max'] = Alphi;
+                      if (aphi_min == None or Alphi < aphi_min) :
+                         item['aphi_min'] = Alphi;
+                      if (aphi_max == None or Alphi > aphi_max) :
+                         item['aphi_max'] = Alphi;
                     break
             if(found == 0) :
-              nitem={ 'dep': DEP, 'alphi_min': Alphi, 'alphi_max': Alphi, 'cnt': 1  }
+              nitem={ 'dep': DEP, 'aphi_min': Alphi, 'aphi_max': Alphi, 'cnt': 1  }
               DEP_range.append(nitem)
 ## Alphi
             if(Overall_Alphi_min == None):
@@ -87,29 +87,29 @@ for f in file_list:
 #  {
 #      "meta": {
 #          "dataCount": 974704,
-#          "dataByDEP": [ {'dep': 1.0, 'alphi_min': 0.078, 'alphi_max': 2.975, 'cnt': 72325}, 
-#                         {'dep': 3.0, 'alphi_min': 0.079, 'alphi_max': 2.936, 'cnt': 72325}, 
+#          "dataByDEP": [ {'dep': 1.0, 'aphi_min': 0.078, 'aphi_max': 2.975, 'cnt': 72325}, 
+#                         {'dep': 3.0, 'aphi_min': 0.079, 'aphi_max': 2.936, 'cnt': 72325}, 
 #                         ...
 #                       ],
-#          "alphiRange" : [0.001, 2.998],
+#          "aphiRange" : [0.001, 2.998],
 #          "metric" : [ 'alpha' ]
 #          }
 #  }
 
 ## break it up
   dep_list = []
-  alphi_min_list = []
-  alphi_max_list = []
+  aphi_min_list = []
+  aphi_max_list = []
   cnt_list = []
   verify_total = 0
   for item in DEP_range:
     dep=item['dep']
-    alphi_min=item['alphi_min']
-    alphi_max=item['alphi_max']
+    aphi_min=item['aphi_min']
+    aphi_max=item['aphi_max']
     cnt=item['cnt']
     dep_list.append(dep)
-    alphi_min_list.append(alphi_min)
-    alphi_max_list.append(alphi_max)
+    aphi_min_list.append(aphi_min)
+    aphi_max_list.append(aphi_max)
     cnt_list.append(cnt)
     verify_total = verify_total + cnt;
 
@@ -117,16 +117,16 @@ for f in file_list:
 #  print("verify total data:", verify_total)
 #  print("DEP range:", DEP_range)
 #  print("dep_list ->", dep_list)
-#  print("alphi_min_list ->", alphi_min_list)
-#  print("alphi_max_list ->", alphi_max_list)
+#  print("aphi_min_list ->", aphi_min_list)
+#  print("aphi_max_list ->", aphi_max_list)
 #  print("cnt_list ->", cnt_list)
 #  print("Overall Alphi range:",Overall_Alphi_range)
 
   f = open('../data/'+f_wo_ext+'_meta.json', 'w')
   jblob=json.loads('{ "model":"'+f_wo_ext+'", "meta": { "dataCount": '+str(Overall_data_total)+' } }')
-  jblob['meta']['alphiRange']=Overall_Alphi_range
+  jblob['meta']['aphiRange']=Overall_Alphi_range
   jblob['meta']['dataByDEP']=DEP_range
-  jblob['metric'] = [ 'alphi' ] 
+  jblob['metric'] = [ 'aphi' ] 
 #  jstr=json.dumps(jblob, indent=2)
   jstr=json.dumps(jblob)
   f.write(jstr)
