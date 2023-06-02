@@ -13,15 +13,16 @@ var CSM = new function () {
     // and,
     //   jblob's format
     //   { "model": mn,
-    //     "meta": { "dataCount": cnt, "dataByDEP": [ { "dep":d, "cnt":lcnt,  "alphi_max":max, "alphi_min":min}..] },
-    //     "alphiRange": [mmax, mmin] }
+    //     "meta": { "dataCount": cnt, "dataByDEP": [ { "dep":d, "cnt":lcnt,  "aphi_max":max, "aphi_min":min}..] },
+    //     "aphiRange": [mmax, mmin] }
     this.csm_models = [];
 
     // tracking the global stress layer  --  to avoid generate these repeatly
-    // { "gid":gid, "layers": { "alphi_local": layer, "alphi_global":layer,...} }
+    // { "gid":gid, "layers": { "aphi_local": layer, "aphi_global":layer,...} }
     this.csm_layers = [];
     
-    this.current_modelDepth_idx=0; 
+    this.current_modelDepth_idx=undefined; 
+    this.current_modelMetric_idx=undefined; 
 
     // locally used, floats
     var csm_depth_min=undefined;
@@ -40,11 +41,11 @@ var CSM = new function () {
     };
 
     this.searchType = {
-        none: 'none',
+        all: 'all',
         latlon: 'latlon'
     };
 
-    this.searchingType=this.searchType.none;
+    this.searchingType=this.searchType.all;
     var tablePlaceholderRow = `<tr id="placeholder-row">
                         <td colspan="9">Metadata for selected region will appear here.</td>
                     </tr>`;
@@ -63,7 +64,7 @@ var CSM = new function () {
     this.processModelMeta = function () {
         for (const index in csm_meta_data) {
           if (csm_meta_data.hasOwnProperty(index)) {
-		let tmp = csm_meta_data[index];
+          let tmp = csm_meta_data[index];
                 let jblob = JSON.parse(tmp.jblob);
 
                 let term = {
@@ -79,10 +80,10 @@ var CSM = new function () {
     };
 
     // create a all model layer with circle markers with
-    //  with table_name, depth, "alphi" 
+    //  with table_name, depth, "aphi" 
     //  lat,lon,val
     // ie. meta_data,
-    // aphi_max, alphi_min,dep
+    // aphi_max, aphi_min,dep
     this.createActiveLayerGroupWithGids = function(glist) {
 
         // remove the old ones and remove from result table
@@ -168,21 +169,35 @@ window.console.log("calling --->> resetSearch.");
         this.resetLatLonSearch();
     };
 
+
+
     this.freshSearch = function (t){
+
 window.console.log("XX new freshSearch...",t);
+
       // retrieve model's database table name
       // depth value  
       // which metric type
-      let midx=$("#modelType").val();
-      let model=this.csm_models[midx];
+         
+      let tidx=$("#modelType").val();
+      let model=this.csm_models[tidx];
+      let tmodel=model['table_name'];
       window.console.log("name is ", model['table_name']);
+
       let didx=this.current_modelDepth_idx; 
-      window.console.log("modelDepth_idx is ", didx);
-//     "meta": { "dataCount": cnt, "dataByDEP": [ { "dep":d, "cnt":lcnt,  "alphi_max":max, "alphi_min":min}..] },
-     let d=model['jblob']['meta'];
-     let dd=d['dataByDEP'];
-     let ddd=dd[0];
-      window.console.log("modelDepth is ", ddd["dep"]);
+      let d=model['jblob']['meta'];
+      let dd=d['dataByDEP'];
+      let ddd=dd[didx];
+      let ddepth=ddd["dep"];
+      window.console.log("modelDepth_idx is "+didx+"("+ddepth+"km)");
+
+      let midx=this.current_modelMetric_idx; 
+      let m=model['jblob']['metric'];
+      let mmetric=m[midx];
+      window.console.log("modelMetric_idx is "+midx+"("+mmetric+")");
+
+      let spec = [ tmodel, ddepth, mmetric ];
+      this.search(this.searchType.all, spec, []);
     };
 
 // a complete fresh search
@@ -200,7 +215,7 @@ window.console.log("calling freshSearch..");
                drawRectangle();
                break;
             default:
-               this.searchingType = this.searchType.none;
+               this.searchingType = this.searchType.all;
                break;
         }
 
@@ -217,26 +232,25 @@ window.console.log("calling freshSearch..");
         }
     };
 
-    // search with table_name, depth, type (ie. alphi)
+    // search with table_name, depth, type (ie. aphi)
     // expect at most 80k lat/lon/val
-    this.search = function(type, criteria) {
+    this.search = function(type, spec, criteria) {
+
+        window.console.log("HERE...");
 
         if(type != this.searchingType)
           return;
 
-        $searchResult = $("#searchResult");
-        if (!type || !criteria) {
-            $searchResult.html("");
-        }
         if (!Array.isArray(criteria)) {
             criteria = [criteria];
         }
 
         let JSON_criteria = JSON.stringify(criteria);
+        let JSON_spec = JSON.stringify(spec);
 
         $.ajax({
             url: "php/search.php",
-            data: {t: type, q: JSON_criteria},
+            data: {t: type, s: JSON_spec, q: JSON_criteria},
         }).done(function(search_result) {
             let latlist;
             let lonlist;
@@ -244,11 +258,17 @@ window.console.log("calling freshSearch..");
             if(search_result === "[]") {
 window.console.log("Did not find any PHP result");
             } else {
+window.console.log(search_result);
+                let tmp=JSON.parse(search_result); 
+                let gidlist=tmp['gid'];
+                return(gidlist);
+/*
                 let tmp=JSON.parse(search_result); 
                 latlist=tmp['lat'];
                 lonlist=tmp['lon'];
                 vallist=tmp['val'];
                 return(latlist,lonlist,vallist);
+*/
             }
         });
         return([],[],[]);
@@ -259,6 +279,7 @@ window.console.log("Did not find any PHP result");
     // fromWhere=1 from drawRectangle call
     this.searchLatlon = function (fromWhere, rect) {
         let criteria = [];
+        let spec = [];
         if( fromWhere == 0) {
             let lat1=$("#csm-firstLatTxt").val();
             let lon1=$("#csm-firstLonTxt").val();
@@ -285,9 +306,11 @@ window.console.log("Did not find any PHP result");
                 $("#csm-secondLatTxt").val(criteria[2]);
                 $("#csm-secondLonTxt").val(criteria[3]);
         }
+
+     // push  XX      
                  
         // get latlist, lonlist, valist);
-        this.search(CSM.searchType.latlon, criteria);
+        this.search(CSM.searchType.latlon, spec, criteria);
 
         let regionLocations = [];
         regionLocations.push(L.latLng(criteria[0],criteria[1]));
@@ -402,72 +425,6 @@ window.console.log("generateMetadataTable..");
           $("#csm-latlon").hide();
         }
 
-        this.reseteitename = function () {
-          if( this.searchingType != this.searchType.sitename) return;
-          $("#csm-sitenameTxt").val("");
-          $("#csm-site-name").hide();
-        }
-
-        this.resetMinrate = function () {
-          this.resetMinrateSlider();
-          resetMinrateRangeColor(csm_minrate_min, csm_minrate_max);
-          removeKey(); 
-	  $("#csm-minrate-slider").hide();
-        }
-
-        this.resetMaxrate = function () {
-          this.resetMaxrateSlider();
-          resetMaxrateRangeColor(csm_maxrate_min, csm_maxrate_max);
-          removeKey();
-	  $("#csm-maxrate-slider").hide();
-        }
-
-        var resetMinrateRangeColor = function (target_min, target_max){
-          let minRGB= makeRGB(target_min, csm_minrate_max, csm_minrate_min );
-          let maxRGB= makeRGB(target_max, csm_minrate_max, csm_minrate_min );
-          let myColor="linear-gradient(to right, "+minRGB+","+maxRGB+")";
-          $("#slider-minrate-range .ui-slider-range" ).css( "background", myColor );
-        }
-
-        this.resetMinrateSlider = function () {
-          if( this.searchingType != this.searchType.minrate) return;
-          $("#slider-minrate-range").slider('values', 
-                              [csm_minrate_min, csm_minrate_max]);
-          $("#csm-minMinrateSliderTxt").val(csm_minrate_min);
-          $("#csm-maxMinrateSliderTxt").val(csm_minrate_max);
-        }
-
-        var resetMaxrateRangeColor = function (target_min, target_max){
-          let minRGB= makeRGB(target_min, csm_maxrate_max, csm_maxrate_min );
-          let maxRGB= makeRGB(target_max, csm_maxrate_max, csm_maxrate_min );
-          let myColor="linear-gradient(to right, "+minRGB+","+maxRGB+")";
-          $("#slider-maxrate-range .ui-slider-range" ).css( "background", myColor );
-        }
-
-        this.resetMaxrateSlider = function () {
-          if( this.searchingType != this.searchType.maxrate) return;
-          $("#slider-maxrate-range").slider('values', 
-                              [csm_maxrate_min, csm_maxrate_max]);
-          $("#csm-minMaxrateSliderTxt").val(csm_maxrate_min);
-          $("#csm-maxMaxrateSliderTxt").val(csm_maxrate_max);
-        }
-
-        this.refreshMaxrateSlider = function () {
-          if( this.searchingType != this.searchType.maxrate) return;
-          let maxrate_min=$("#csm-minMaxrateSliderTxt").val();
-          let maxrate_max=$("#csm-maxMaxrateSliderTxt").val();
-          $("#slider-maxrate-range").slider('values', 
-                              [maxrate_min, maxrate_max]);
-        }
-
-        this.refreshMinrateSlider = function () {
-          if( this.searchingType != this.searchType.minrate) return;
-          let minrate_min=$("#csm-minMinrateSliderTxt").val();
-          let minrate_max=$("#csm-maxMinrateSliderTxt").val();
-          $("#slider-minrate-range").slider('values', 
-                              [minrate_min, minrate_max]);
-        }
-
 /********************* marker color function **************************/
 // marker.scec_properties.high_rate_color, marker.sce_properties.low_rate_color
 // toMake == 1, set the scec_properties color values
@@ -532,15 +489,15 @@ window.console.log(" ==> here in replace color");
             // setup the modelType list from this.csm_models,
             for (const idx in this.csm_models) {
                let term=this.csm_models[idx];
-		    /*
+              /*
                     idx: index,
                     gid: tmp.gid,
                     model_name: tmp.model_name,
                     table_name: tmp.table_name,
                     jblob: jblob,
-		    */
+              */
                
-	        var elt=document.getElementById('modelType');
+             var elt=document.getElementById('modelType');
                 let option = document.createElement("option");
                 option.text = term.model_name;
                 option.label = term.model_name;
@@ -548,23 +505,24 @@ window.console.log(" ==> here in replace color");
                 elt.add(option);
             }
 /* create the default model depth list to 1st one for model */
-            _setModelDepth(this.csm_models,0);
-            _setModelMetric(this.csm_models,0);
+            _setupModelDepth(this.csm_models,0);
+            _setupModelMetric(this.csm_models,0);
     };
 
     /* 
        jblob :
-       {"model": "SHELLS", "meta": {"dataCount": 968679, 
-       "metric": [ 'alphi' ],
-       "alphiRange": [0.0, 3.0], 
-       "dataByDEP": [
-       {"dep": 1.0, "alphi_min": 0.0, "alphi_max": 3.0, "cnt": 66300}, 
-       {"dep": 3.0, "alphi_min": 0.081, "alphi_max": 3.0, "cnt": 72325},
-       ...
+
+       {"model": "SHELLS", 
+        "metric": [ 'aphi' ],
+        "meta": {"dataCount": 968679, 
+                 "aphiRange": [0.0, 3.0], 
+                 "dataByDEP": [
+             {"dep": 1.0, "aphi_min": 0.0, "aphi_max": 3.0, "cnt": 66300}, 
+             {"dep": 3.0, "aphi_min": 0.081, "aphi_max": 3.0, "cnt": 72325},
+             ...
     */
-    function _setModelMetric(mlist,model_idx) {
-//      let dlist=mlist[model_idx]['metric'];
-      let dlist= ['alphi'];
+    function _setupModelMetric(mlist,model_idx) {
+      let dlist=mlist[model_idx]['jblob']['metric'];
       let sz=dlist.length;
       let html="";
       for(let i=0;i<sz;i++) {  
@@ -573,20 +531,20 @@ window.console.log(" ==> here in replace color");
          html=html+h;
          if( (i+1) % 4 === 0 ) {
             html=html+"<br>";
-         }		  
-       }
+         }            
+      }
+
       $("#modelMetric-options").html(html);
+      $("#modelMetric_0").click();
     };
 
     function _metricoption(label,idx) {
-      var html = "<input class='form-check-inline mr-1' type=\"checkbox\" id=\"modelMetric_"+idx+"\" value="+label+">";
-          html=html+"<label class='form-check-label mr-2 mini-option' for=\"modelMetric_"+idx+"\">";
-          html=html+"<span id=\"modelMetric_"+idx+"_string\">"+label+"</span></label>";
+      var html = "<input type=\"radio\" class='mr-1' id=\"modelMetric_"+idx+"\" name=\"modelMetric_idx\" onclick=\"CSM.changeModelMetric("+idx+")\">";
+          html=html+"<label class='form-check-label mr-2 mini-option' for=\"modelMetric_\"+idx+\"><span>"+label+"</span></label>";
       return html;
     }
 
-
-    function _setModelDepth(mlist,model_idx) {
+    function _setupModelDepth(mlist,model_idx) {
       let jblob=mlist[model_idx]['jblob'];
       let dlist=jblob['meta']['dataByDEP'];
       let sz=dlist.length;
@@ -599,9 +557,11 @@ window.console.log(" ==> here in replace color");
          html=html+h;
          if( (i+1) % 4 === 0 ) {
             html=html+"<br>";
-         }		  
+         }            
        }
-      $("#modelDepth").html(html);
+
+      $("#modelDepth-options").html(html);
+      $("#modelDepth_0").click();
     };
 
     /*
@@ -611,14 +571,18 @@ window.console.log(" ==> here in replace color");
             <span id="modelDepth_1_string">place_holder</span></label>
     */
     function _depthoption(label,idx) {
-      var html = "<input type=\"radio\" class='mr-1' id=\"modelDepth_"+idx+"\" name=\"modelDepth_idx\" onclick=\"CSM.toModelDepth("+idx+")\">";
+      var html = "<input type=\"radio\" class='mr-1' id=\"modelDepth_"+idx+"\" name=\"modelDepth_idx\" onclick=\"CSM.changeModelDepth("+idx+")\">";
           html=html+"<label class='form-check-label mr-2 mini-option' for=\"modelDepth_\"+idx+\"><span>"+label+" km</span></label>";
       return html;
     }
 
-   this.toModelDepth = function(v) {
+   this.changeModelDepth = function(v) {
         window.console.log("clicked on modelDepth_idx..",v);
         this.current_modelDepth_idx=v; 
+   };
+   this.changeModelMetric = function(v) {
+        window.console.log("clicked on modelMetric_idx..",v);
+        this.current_modelMetric_idx=v; 
    };
 
 /********************** zip utilities functions *************************/
@@ -709,5 +673,5 @@ window.console.log(" ==> here in replace color");
 //http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
         return csvblob;
     }
-	      
+           
 };

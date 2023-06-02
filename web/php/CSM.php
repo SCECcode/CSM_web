@@ -72,6 +72,39 @@ class CSM extends SpatialData
       return $this;
   }
 
+
+  public function searchForAll($type, $spec="")
+  { $query = "";
+
+    if (!is_array($spec)) {
+      $spec = array($spec);
+    }
+    $error = false;
+
+// need to get the dataset, depth, metric
+    if (count($spec) !== 3) {
+      $this->php_result = "BAD";
+      return $this;
+    }
+
+    list($model_tb, $depth, $metric) = $spec;
+
+    $query = "SELECT lat,lon,".$metric." from ".$model_tb." WHERE dep = ".$depth." limit 2";
+    print("=====");
+    print($query);
+    print("=====");
+    $result = pg_query($this->connection, $query);
+
+    $csm_result = array();
+
+    while($row = pg_fetch_object($result)) {
+      $csm_result[] = $row;
+    }
+
+    $this->php_result = $csm_result;
+    return $this;
+  }
+
   public function getAllMetaData()
   {
     $query = "SELECT * from csm_meta";
