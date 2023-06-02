@@ -9,9 +9,9 @@ var CSM = new function () {
 
     // complete set of csm models
     // include the meta data info
-    // { "gid":gid, "model_name":mn, "table_name":tn, "blob":blob } 
+    // { "gid":gid, "model_name":mn, "table_name":tn, "jblob":jblob } 
     // and,
-    //   blob's format
+    //   jblob's format
     //   { "model": mn,
     //     "meta": { "dataCount": cnt, "dataByDEP": [ { "dep":d, "cnt":lcnt,  "alphi_max":max, "alphi_min":min}..] },
     //     "alphiRange": [mmax, mmin] }
@@ -64,14 +64,14 @@ var CSM = new function () {
         for (const index in csm_meta_data) {
           if (csm_meta_data.hasOwnProperty(index)) {
 		let tmp = csm_meta_data[index];
-                let jmeta = JSON.parse(tmp.meta);
+                let jblob = JSON.parse(tmp.jblob);
 
                 let term = {
                     idx: index,
                     gid: tmp.gid,
                     model_name: tmp.model_name,
                     table_name: tmp.table_name,
-                    meta: jmeta,
+                    jblob: jblob,
                 };
                 this.csm_models.push(term);
             }
@@ -179,10 +179,10 @@ window.console.log("XX new freshSearch...",t);
       let didx=this.current_modelDepth_idx; 
       window.console.log("modelDepth_idx is ", didx);
 //     "meta": { "dataCount": cnt, "dataByDEP": [ { "dep":d, "cnt":lcnt,  "alphi_max":max, "alphi_min":min}..] },
-     let d=model['meta']['meta'];
+     let d=model['jblob']['meta'];
      let dd=d['dataByDEP'];
      let ddd=dd[0];
-      window.console.log("modelDepth is ", model['meta']['dataByDEP'][didx]["dep"]);
+      window.console.log("modelDepth is ", ddd["dep"]);
     };
 
 // a complete fresh search
@@ -537,7 +537,7 @@ window.console.log(" ==> here in replace color");
                     gid: tmp.gid,
                     model_name: tmp.model_name,
                     table_name: tmp.table_name,
-                    meta: jmeta,
+                    jblob: jblob,
 		    */
                
 	        var elt=document.getElementById('modelType');
@@ -553,7 +553,7 @@ window.console.log(" ==> here in replace color");
     };
 
     /* 
-       meta json :
+       jblob :
        {"model": "SHELLS", "meta": {"dataCount": 968679, 
        "metric": [ 'alphi' ],
        "alphiRange": [0.0, 3.0], 
@@ -563,7 +563,7 @@ window.console.log(" ==> here in replace color");
        ...
     */
     function _setModelMetric(mlist,model_idx) {
-//      let meta=mlist[model_idx]['metric'];
+//      let dlist=mlist[model_idx]['metric'];
       let dlist= ['alphi'];
       let sz=dlist.length;
       let html="";
@@ -587,8 +587,8 @@ window.console.log(" ==> here in replace color");
 
 
     function _setModelDepth(mlist,model_idx) {
-      let meta=mlist[model_idx]['meta'];
-      let dlist=meta['meta']['dataByDEP'];
+      let jblob=mlist[model_idx]['jblob'];
+      let dlist=jblob['meta']['dataByDEP'];
       let sz=dlist.length;
       let html="";
 
