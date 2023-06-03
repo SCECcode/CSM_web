@@ -195,6 +195,73 @@ function toggleMarkerContainer(pixi,target_segment) {
   }
 }
 
+
+// order everything into a sorted array
+// break up data into buckets (one per segment)
+// input : latlist, lonlist, vallist
+// returns :
+//    {"gid":gid,"data":[ [{"lat":lat,"lng":lng},...], ...] }
+function _loadup_data_list(gid,latlist,lonlist,vallist) {
+
+   DATA_max_v=null;
+   DATA_min_v=null;
+   DATA_count=0;
+
+   let rawlist=[];
+   let pixiLatlngList;
+   let datalist=[];
+   
+   for(var i=0; i<DATA_SEGMENT_COUNT; i++) {
+      datalist.push([]);
+   }
+
+   let sz=latlist.length;
+   window.console.log("size of tmp is "+sz);
+
+   for(let i=0; i<sz; i++) {
+      let lon=lonlist[i];
+      let lat=latlist[i];
+      let val=vallist[i];
+      if(Number.isNaN(val) || val == "nan") {
+          continue;
+      }
+      rawlist.push([val,lat,lon]);
+      if(DATA_max_v == null) {
+          DATA_max_v = val;
+	  DATA_min_v = val;  
+          } else {
+              if(val > DATA_max_v)
+                DATA_max_v=val;
+              if(val < DATA_min_v)
+                DATA_min_v=val;
+      }
+   }
+   // sort datalist
+   let sorted_rawlist = rawlist.sort((a,b) => {
+          return b[0] - a[0];
+   });
+   let sorted_vlist=sorted_rawlist.map(function(value,index){ return value[0]; });
+
+   DATA_count=sorted_rawlist.length;
+   for(let i=0; i<DATA_count; i++ ) {
+      let item=sorted_rawlist[i];
+      let lon=item[2];
+      let lat=item[1];
+      let val=item[0];
+      let idx=getRangeIdx(val, DATA_max_v, DATA_min_v);
+      updateMarkerLatlng(datalist,idx,lat,lon);
+   }
+   pixiLatlngList= {"gid":gid,"data":datalist} ; 
+
+   window.console.log("Using lists: total data:"+DATA_count+"("+DATA_min_v+","+DATA_max_v+")");
+   return pixiLatlngList;
+}
+
+function makePixiOverlayLayerWithList(gid,latlist,lonlist,vallist) {
+    var pixiLatlngList=_loadup_data_list(gid,latlist,lonlist,vallist);
+    return makePixiOverlayLayer(gid,pixiLatlongList);
+}
+
 // order everything into a sorted array
 // break up data into buckets (one per segment)
 // input : lon lat vel
@@ -270,12 +337,15 @@ function _loadup_data_url(gid,url) {
 }
 
 function makePixiOverlayLayerWithFile(gid,file) {
+    var pixiLatlngList=_loadup_data_url(gid,file)
+    return makePixiOverlayLayer(gid,pixiLatlongList);
+}
+
+function makePixiOverlayLayer(gid,pixiLatlongList) {
     let zoomChangeTs = null;
 
     let pixiContainer = new PIXI.Container();
     let pContainers=[]; //particle container
-
-    let pixiLatlngList=_loadup_data_url(gid,file)
 
     for(var i=0; i<DATA_SEGMENT_COUNT; i++) {
       var length=getMarkerCount(pixiLatlngList,i);
