@@ -74,7 +74,7 @@ class CSM extends SpatialData
 
 
   public function searchForAll($type, $spec="")
-  { $query = "";
+  { 
 
     if (!is_array($spec)) {
       $spec = array($spec);
@@ -89,19 +89,25 @@ class CSM extends SpatialData
 
     list($model_tb, $depth, $metric) = $spec;
 
-    $query = "SELECT lat,lon,".$metric." from ".$model_tb." WHERE dep = ".$depth." limit 2";
-    print("=====");
-    print($query);
-    print("=====");
+    $query = "SELECT lat,lon,".$metric." from ".$model_tb." WHERE dep = ".$depth;
     $result = pg_query($this->connection, $query);
 
-    $csm_result = array();
+    $latlist = array();
+    $lonlist = array();
+    $vallist = array();
 
-    while($row = pg_fetch_object($result)) {
-      $csm_result[] = $row;
+    while($row = pg_fetch_row($result)) {
+      array_push($latlist,$row[0]);
+      array_push($lonlist,$row[1]);
+      array_push($vallist,$row[2]);
     }
 
-    $this->php_result = $csm_result;
+    $resultarray = new \stdClass();
+    $resultarray->lat = $latlist;
+    $resultarray->lon = $lonlist;
+    $resultarray->val = $vallist;
+
+    $this->php_result = $resultarray;
     return $this;
   }
 

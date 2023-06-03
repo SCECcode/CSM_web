@@ -236,8 +236,6 @@ window.console.log("calling freshSearch..");
     // expect at most 80k lat/lon/val
     this.search = function(type, spec, criteria) {
 
-        window.console.log("HERE...");
-
         if(type != this.searchingType)
           return;
 
@@ -258,17 +256,12 @@ window.console.log("calling freshSearch..");
             if(search_result === "[]") {
 window.console.log("Did not find any PHP result");
             } else {
-window.console.log(search_result);
-                let tmp=JSON.parse(search_result); 
-                let gidlist=tmp['gid'];
-                return(gidlist);
-/*
                 let tmp=JSON.parse(search_result); 
                 latlist=tmp['lat'];
                 lonlist=tmp['lon'];
                 vallist=tmp['val'];
                 return(latlist,lonlist,vallist);
-*/
+
             }
         });
         return([],[],[]);
