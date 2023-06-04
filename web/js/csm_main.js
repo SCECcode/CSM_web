@@ -86,9 +86,15 @@ window.console.log("Calling toSearch..");
 
 // load the data from backend and setup layers
   CSM.processModelMeta();
+
+  setup_pixi();
+
 // setup the interface 
   CSM.setupCSMInterface();
+
 window.console.log("after main");
+
+window.console.log("current zoom ", viewermap.getZoom());
 
 }); // end of MAIN
 

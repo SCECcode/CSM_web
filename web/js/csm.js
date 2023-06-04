@@ -37,7 +37,7 @@ var CSM = new function () {
 // coordinates: [34.28899, -118.399],
     this.defaultMapView = {
         coordinates: [37.73, -119.9],
-        zoom: 8 
+        zoom: 6 
     };
 
     this.searchType = {
@@ -260,8 +260,11 @@ window.console.log("Did not find any PHP result");
                 latlist=tmp['lat'];
                 lonlist=tmp['lon'];
                 vallist=tmp['val'];
-                return(latlist,lonlist,vallist);
+		    // XXX
+		    //
+		let pixi=makePixiOverlayLayerWithList(0,latlist,lonlist,vallist);
 
+                return(latlist,lonlist,vallist);
             }
         });
         return([],[],[]);

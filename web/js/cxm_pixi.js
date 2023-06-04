@@ -10,7 +10,7 @@ try {
 }
 
 /* marker's resizing size's zoom threshold */
-var vs_zoom_threshold=7;
+var vs_zoom_threshold=5;
 
 // pixi, Leafle.overlayLayer.js
 /* data sections, to matching marker name markerN_icon.png */
@@ -21,11 +21,6 @@ var DATA_min_v=null;
 var DATA_count=0;
 
 /********************************************/
-const INSAR_D071=0;
-const INSAR_D173=1;
-const INSAR_A064=2;
-const INSAR_A166=3;
-
 /* a place to park all the pixiOverlay from the session */
 /* [ {"gid":gid, "vis":true, "layer": overlay,         */
 /*    "top":pixiContainer,"inner":[ {"container":c0, "vis":1 }, ...]} ] */
@@ -259,7 +254,7 @@ function _loadup_data_list(gid,latlist,lonlist,vallist) {
 
 function makePixiOverlayLayerWithList(gid,latlist,lonlist,vallist) {
     var pixiLatlngList=_loadup_data_list(gid,latlist,lonlist,vallist);
-    return makePixiOverlayLayer(gid,pixiLatlongList);
+    return makePixiOverlayLayer(gid,pixiLatlngList);
 }
 
 // order everything into a sorted array
@@ -338,10 +333,10 @@ function _loadup_data_url(gid,url) {
 
 function makePixiOverlayLayerWithFile(gid,file) {
     var pixiLatlngList=_loadup_data_url(gid,file)
-    return makePixiOverlayLayer(gid,pixiLatlongList);
+    return makePixiOverlayLayer(gid,pixiLatlngList);
 }
 
-function makePixiOverlayLayer(gid,pixiLatlongList) {
+function makePixiOverlayLayer(gid,pixiLatlngList) {
     let zoomChangeTs = null;
 
     let pixiContainer = new PIXI.Container();
@@ -369,7 +364,7 @@ function makePixiOverlayLayer(gid,pixiLatlongList) {
       var getScale = utils.getScale;
       var invScale = 1 / getScale();
 
-//window.console.log("in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>"+getScale()+" invScale"+invScale);
+window.console.log("in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>"+getScale()+" invScale"+invScale);
 
       if (event.type === 'add') {
 
@@ -416,13 +411,17 @@ function makePixiOverlayLayer(gid,pixiLatlongList) {
      }
 
       // change size of the marker after zoomin and zoomout
+window.console.log("event type", event.type);
      if (event.type === 'zoomanim') {
         var targetZoom = event.zoom;
+window.console.log("in zoomaim.., threshold", vs_zoom_threshold);
+window.console.log("in zoomaim.., targetZoom", targetZoom);
+window.console.log("in zoomaim.., zoom", zoom);
         if (targetZoom >= vs_zoom_threshold || zoom >= vs_zoom_threshold) {
           zoomChangeTs = 0;
           var targetScale = targetZoom >= vs_zoom_threshold ? (1 / getScale(event.zoom))/10  : initialScale;
 
-//window.console.log(" ZOOManim.. new targetScale "+targetScale);
+window.console.log(" ZOOManim.. new targetScale "+targetScale);
 
           pContainers.forEach(function(innerContainer) {
             innerContainer.currentScale = innerContainer.localScale;
