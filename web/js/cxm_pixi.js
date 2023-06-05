@@ -364,7 +364,8 @@ function makePixiOverlayLayer(gid,pixiLatlngList) {
       var renderer = utils.getRenderer();
       pixi_project = utils.latLngToLayerPoint;
       var getScale = utils.getScale;
-      var invScale = 1 / getScale();
+      var invScale = 1 / getScale(utils.getMap().getZoom());
+//      var invScale = 1 / getScale();
 
 window.console.log("in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>"+getScale()+" invScale"+invScale);
 
