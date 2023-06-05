@@ -34,10 +34,9 @@ var CSM = new function () {
         abnormal: '#00FFFF',
     };
 
-// coordinates: [34.28899, -118.399],
     this.defaultMapView = {
-        coordinates: [37.73, -119.9],
-        zoom: 5 
+        coordinates: [34.0, -118.2],
+        zoom: 7 
     };
 
     this.searchType = {
@@ -260,9 +259,10 @@ window.console.log("Did not find any PHP result");
                 latlist=tmp['lat'];
                 lonlist=tmp['lon'];
                 vallist=tmp['val'];
-		    // XXX
-		    //
+
 		let pixi=makePixiOverlayLayerWithList(0,latlist,lonlist,vallist);
+
+                // XXX, a hack set to the zoom to 7
 
                 return(latlist,lonlist,vallist);
             }

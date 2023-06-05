@@ -351,9 +351,7 @@ function makePixiOverlayLayer(gid,pixiLatlngList) {
 window.console.log("HERE at container..");
       a.texture = markerTextures[i];
       a.baseTexture = markerTextures[i].baseTexture;
-      a.alpha = 0.2;
-//      a.anchor = {x: 0.5, y: 1};
-      a.anchor = {x: 0.5, y: 0.5};
+      a.anchor = {x: 0.5, y: 1};
 
       pixiContainer.addChild(a);
       pContainers.push(a);
@@ -384,7 +382,7 @@ window.console.log("in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>"+get
         let mapzoom=viewermap.getZoom();
 
         var origin = pixi_project([mapcenter['lat'], mapcenter['lng']]);
-        initialScale = invScale / 28; // initial size of the marker
+        initialScale = invScale/7; // initial size of the marker
 
 window.console.log("HERE Zoom from pixi init", mapzoom)
         // fill in the particles
