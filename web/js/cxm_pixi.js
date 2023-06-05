@@ -401,7 +401,7 @@ window.console.log("Zoom from pixi init", mapzoom)
 // our patched particleContainer accepts simple {x: ..., y: ...} objects as children:
 //window.console.log("    and xy at "+coords.x+" "+coords.y);
 		  
-/** XX  orginail way, 
+/** XXX  orginail way, 
               var aParticle=a.addChild({ x: coords.x - origin.x, y: coords.y - origin.y });
 **/
 
