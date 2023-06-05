@@ -396,15 +396,16 @@ window.console.log("in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>"+get
               var coords = pixi_project([ll,gg]);
               // our patched particleContainer accepts simple {x: ..., y: ...} objects as children:
 //window.console.log("    and xy at "+coords.x+" "+coords.y);
-              var aParticle=a.addChild({ x: coords.x - origin.x, y: coords.y - origin.y });
+//??? XXX              var aParticle=a.addChild({ x: coords.x - origin.x, y: coords.y - origin.y });
 
-/**** trying it out 
+/**** trying it out **/ 
               var marker = new PIXI.Sprite(markerTextures[9]);
+/***
               marker.popup = L.popup({className: 'pixi-popup'})
                                         .setLatLng(latlng)
                                         .setContent('<b>Hello world!</b><br>I am a popup.'+ latlng['lat']+' '+latlng['lng']).openOn(viewermap);
-              pixiContainer.addChild(marker);
 ***/
+              var aParticle=a.addChild(marker);
 //window.console.log( "      adding  child at..("+latlng['lat']+')('+latlng['lng']+')');
            }
         }
