@@ -337,6 +337,7 @@ function makePixiOverlayLayerWithFile(gid,file) {
 }
 
 function makePixiOverlayLayer(gid,pixiLatlngList) {
+
     let zoomChangeTs = null;
 
     let pixiContainer = new PIXI.Container();
@@ -345,12 +346,15 @@ function makePixiOverlayLayer(gid,pixiLatlngList) {
     for(var i=0; i<DATA_SEGMENT_COUNT; i++) {
       var length=getMarkerCount(pixiLatlngList,i);
 //XXX,  new PIXI.particles.ParticleContainer(maxSize, properties, batchSize)
-      var a = new PIXI.particles.ParticleContainer(length, {vertices: true});
+      var a = new PIXI.particles.ParticleContainer(length, {vertices: true, tint: true});
       // add properties for our patched particleRenderer:
+window.console.log("HERE at container..");
       a.texture = markerTextures[i];
       a.baseTexture = markerTextures[i].baseTexture;
-      a.anchor = {x: 0.5, y: 1};
-      a.alpha = 0.5;
+      a.alpha = 0.2;
+//      a.anchor = {x: 0.5, y: 1};
+      a.anchor = {x: 0.5, y: 0.5};
+
       pixiContainer.addChild(a);
       pContainers.push(a);
     }
@@ -364,9 +368,9 @@ function makePixiOverlayLayer(gid,pixiLatlngList) {
       var renderer = utils.getRenderer();
       pixi_project = utils.latLngToLayerPoint;
       var getScale = utils.getScale;
-      var invScale = 1 / getScale(utils.getMap().getZoom());
-//      var invScale = 1 / getScale();
+      var invScale = 1 / getScale();
 
+window.console.log("HERE at event");
 window.console.log("in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>"+getScale()+" invScale"+invScale);
 
       if (event.type === 'add') {
@@ -378,11 +382,11 @@ window.console.log("in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>"+get
 
         let mapcenter=viewermap.getCenter();
         let mapzoom=viewermap.getZoom();
-window.console.log("Zoom from pixi init", mapzoom)
 
         var origin = pixi_project([mapcenter['lat'], mapcenter['lng']]);
-        initialScale = invScale / 16; // initial size of the marker
+        initialScale = invScale / 28; // initial size of the marker
 
+window.console.log("HERE Zoom from pixi init", mapzoom)
         // fill in the particles
         for(var i=0; i< DATA_SEGMENT_COUNT; i++ ) {
            var a=pContainers[i];
@@ -392,6 +396,8 @@ window.console.log("Zoom from pixi init", mapzoom)
 
            var latlngs=getMarkerLatlngs(pixiLatlngList,i);
            var len=latlngs.length;
+           let xlen=100;
+           if(len < 100) xlen=len;
            for (var j = 0; j < len; j++) {
               var latlng=latlngs[j];
               var ll=latlng['lat'];
@@ -406,17 +412,25 @@ window.console.log("Zoom from pixi init", mapzoom)
               var aParticle=a.addChild({ x: coords.x - origin.x, y: coords.y - origin.y });
 **/
 
-/**** trying it out  **/
-              var marker = new PIXI.Sprite(markerTextures[i]);
-              marker.x = coords.x - origin.x;
-              marker.y= coords.y - origin.y;
-		   // try to change the opacity
-              marker.alpha = 0.01;
+var marker = new PIXI.Sprite(markerTextures[i]);
+marker.x = coords.x - origin.x;
+marker.y= coords.y - origin.y;
+		   /*
+marker.popup = L.popup({className: 'pixi-popup'})
+                 .setLatLng(latlng)
+                 .setContent('<b>Hello world!</b><br>I am a popup.'+ latlng['lat']+' '+latlng['lng']).openOn(viewermap);
+		 */
+ 
 /*
-              marker.popup = L.popup({className: 'pixi-popup'})
-                                        .setLatLng(latlng)
-                                        .setContent('<b>Hello world!</b><br>I am a popup.'+ latlng['lat']+' '+latlng['lng']).openOn(viewermap);
+let mx = coords.x - origin.x;
+let my = coords.y - origin.y;
+let nx = mx+0.01;
+let ny = my+0.01;
+//var bounds = [[mx, my], [nx,ny]];
+var bounds=[[34.0105, -120.8415], [34.011, -120.8]];
+var marker = new PIXI.Point([34.0105, -120.8415], {color: "#ff7800", weight: 1} );
 */
+
               var aParticle=a.addChild(marker);
 /***/
 //window.console.log( "      adding  child at..("+latlng['lat']+')('+latlng['lng']+')');
@@ -426,6 +440,7 @@ window.console.log("Zoom from pixi init", mapzoom)
 
       // change size of the marker after zoomin and zoomout
 window.console.log("event type", event.type);
+
      if (event.type === 'zoomanim') {
         var targetZoom = event.zoom;
 window.console.log("in zoomaim.., threshold", vs_zoom_threshold);
