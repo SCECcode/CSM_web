@@ -382,7 +382,9 @@ window.console.log("in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>"+get
         let mapzoom=viewermap.getZoom();
 
         var origin = pixi_project([mapcenter['lat'], mapcenter['lng']]);
-        initialScale = invScale/7; // initial size of the marker
+// initial size of the marker
+        initialScale = invScale/7; 
+// for circles       initialScale = invScale/20; 
 
 window.console.log("HERE Zoom from pixi init", mapzoom)
         // fill in the particles
