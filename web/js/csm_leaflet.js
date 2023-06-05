@@ -4,7 +4,7 @@
 This is leaflet specific utilities for CSM
 ***/
 
-var init_map_zoom_level = 6;
+var init_map_zoom_level = 5;
 var init_map_coordinates =  [34.3, -118.4];
 var drawing_rectangle = false;
 

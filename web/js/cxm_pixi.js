@@ -344,11 +344,13 @@ function makePixiOverlayLayer(gid,pixiLatlngList) {
 
     for(var i=0; i<DATA_SEGMENT_COUNT; i++) {
       var length=getMarkerCount(pixiLatlngList,i);
+//XXX,  new PIXI.particles.ParticleContainer(maxSize, properties, batchSize)
       var a = new PIXI.particles.ParticleContainer(length, {vertices: true});
       // add properties for our patched particleRenderer:
       a.texture = markerTextures[i];
       a.baseTexture = markerTextures[i].baseTexture;
       a.anchor = {x: 0.5, y: 1};
+      a.alpha = 0.5;
       pixiContainer.addChild(a);
       pContainers.push(a);
     }
@@ -375,9 +377,10 @@ window.console.log("in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>"+get
 
         let mapcenter=viewermap.getCenter();
         let mapzoom=viewermap.getZoom();
+window.console.log("Zoom from pixi init", mapzoom)
+
         var origin = pixi_project([mapcenter['lat'], mapcenter['lng']]);
         initialScale = invScale / 16; // initial size of the marker
-//initialScale = invScale / 2; // initial size of the marker
 
         // fill in the particles
         for(var i=0; i< DATA_SEGMENT_COUNT; i++ ) {
@@ -394,17 +397,28 @@ window.console.log("in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>"+get
               var gg=latlng['lng'];
 //window.console.log("start latlon>>"+ll+" "+gg);
               var coords = pixi_project([ll,gg]);
-              // our patched particleContainer accepts simple {x: ..., y: ...} objects as children:
-//window.console.log("    and xy at "+coords.x+" "+coords.y);
-              var aParticle=a.addChild({ x: coords.x - origin.x, y: coords.y - origin.y });
 
-/**** trying it out 
-              var marker = new PIXI.Sprite(markerTextures[9]);
+// our patched particleContainer accepts simple {x: ..., y: ...} objects as children:
+//window.console.log("    and xy at "+coords.x+" "+coords.y);
+		  
+/**  orginail way, 
+              var aParticle=a.addChild({ x: coords.x - origin.x, y: coords.y - origin.y });
+**/
+
+/**** trying it out  **/
+              var marker = new PIXI.Sprite(markerTextures[i]);
+              marker.x = coords.x - origin.x;
+              marker.y= coords.y - origin.y;
+		   // try to change the opacity
+              marker.alpha = 0.01;
+/*
               marker.popup = L.popup({className: 'pixi-popup'})
                                         .setLatLng(latlng)
                                         .setContent('<b>Hello world!</b><br>I am a popup.'+ latlng['lat']+' '+latlng['lng']).openOn(viewermap);
-              pixiContainer.addChild(marker);
-***/
+*/
+              var aParticle=a.addChild(marker);
+/***/
+
 //window.console.log( "      adding  child at..("+latlng['lat']+')('+latlng['lng']+')');
            }
         }

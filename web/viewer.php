@@ -77,8 +77,12 @@ $csm = new CSM();
 <!-- pixi pixiOverlay -->
     <script type="text/javascript" src="js/vendor/pixi.js"></script>
     <script type="text/javascript" src="js/vendor/pixiOverlay/L.PixiOverlay.js"></script>
+<!--
+<script src="https://cdn.jsdelivr.net/npm/leaflet-pixi-overlay@1.9.4/L.PixiOverlay.min.js "></script>
+-->
     <script type="text/javascript" src="js/vendor/pixiOverlay/MarkerContainer.js"></script>
     <script type="text/javascript" src="js/vendor/pixiOverlay/bezier-easing.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet-pixi-overlay@1.9.4/L.PixiOverlay.min.js "></script>
     <script type="text/javascript" src="js/cxm_pixi.js"></script>
 
 <!-- cxm js -->
