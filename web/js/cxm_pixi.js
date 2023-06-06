@@ -97,7 +97,6 @@ function getRangeIdx(vs_target, vs_max, vs_min) {
   }
   var step = (vs_max - vs_min)/DATA_SEGMENT_COUNT;
   var offset= Math.floor((vs_target-vs_min)/step);
-
   return offset;
 }
 
@@ -198,8 +197,8 @@ function toggleMarkerContainer(pixi,target_segment) {
 //    {"gid":gid,"data":[ [{"lat":lat,"lng":lng},...], ...] }
 function _loadup_data_list(gid,latlist,lonlist,vallist) {
 
-   DATA_max_v=null;
-   DATA_min_v=null;
+   let data_max_v=null;
+   let data_min_v=null;
    DATA_count=0;
 
    let rawlist=[];
@@ -211,26 +210,31 @@ function _loadup_data_list(gid,latlist,lonlist,vallist) {
    }
 
    let sz=latlist.length;
-   window.console.log("size of tmp is "+sz);
 
    for(let i=0; i<sz; i++) {
-      let lon=lonlist[i];
-      let lat=latlist[i];
-      let val=vallist[i];
+      let lon=parseFloat(lonlist[i]);
+      let lat=parseFloat(latlist[i]);
+      let val=parseFloat(vallist[i]);
       if(Number.isNaN(val) || val == "nan") {
           continue;
       }
       rawlist.push([val,lat,lon]);
-      if(DATA_max_v == null) {
-          DATA_max_v = val;
-	  DATA_min_v = val;  
+
+      if(data_max_v == null) {
+          data_max_v = val;
+          data_min_v = val;  
           } else {
-              if(val > DATA_max_v)
-                DATA_max_v=val;
-              if(val < DATA_min_v)
-                DATA_min_v=val;
+              if(val > data_max_v) {
+                data_max_v=val;
+              }
+              if(val < data_min_v) {
+                data_min_v=val;
+              }
       }
    }
+   DATA_max_v = data_max_v;
+   DATA_min_v = data_min_v;
+
    // sort datalist
    let sorted_rawlist = rawlist.sort((a,b) => {
           return b[0] - a[0];
@@ -246,15 +250,18 @@ function _loadup_data_list(gid,latlist,lonlist,vallist) {
       let idx=getRangeIdx(val, DATA_max_v, DATA_min_v);
       updateMarkerLatlng(datalist,idx,lat,lon);
    }
+window.console.log("HUMHUM..",DATA_count);
    pixiLatlngList= {"gid":gid,"data":datalist} ; 
 
-   window.console.log("Using lists: total data:"+DATA_count+"("+DATA_min_v+","+DATA_max_v+")");
-   return pixiLatlngList;
+   return [DATA_count, pixiLatlngList];
 }
 
+// this is from csm
 function makePixiOverlayLayerWithList(gid,latlist,lonlist,vallist) {
-    var pixiLatlngList=_loadup_data_list(gid,latlist,lonlist,vallist);
-    return makePixiOverlayLayer(gid,pixiLatlngList);
+    var pixiLatlngList;
+    var count;	 
+    [count, pixiLatlngList]=_loadup_data_list(gid,latlist,lonlist,vallist);
+    return makePixiOverlayLayer(gid,pixiLatlngList,count);
 }
 
 // order everything into a sorted array
@@ -279,7 +286,6 @@ function _loadup_data_url(gid,url) {
    let blob=ckExist(url);
    let tmp=blob.split("\n");
    let sz=tmp.length;
-   window.console.log("size of tmp is "+sz);
 
    for(let i=0; i<sz; i++) {
       let ll=tmp[i];
@@ -331,12 +337,13 @@ function _loadup_data_url(gid,url) {
    return pixiLatlngList;
 }
 
+// this is from cgm
 function makePixiOverlayLayerWithFile(gid,file) {
     var pixiLatlngList=_loadup_data_url(gid,file)
-    return makePixiOverlayLayer(gid,pixiLatlngList);
+    return makePixiOverlayLayer(gid,pixiLatlngList,0);
 }
 
-function makePixiOverlayLayer(gid,pixiLatlngList) {
+function makePixiOverlayLayer(gid,pixiLatlngList,hint) {
 
     let zoomChangeTs = null;
 
@@ -351,7 +358,7 @@ function makePixiOverlayLayer(gid,pixiLatlngList) {
 window.console.log("HERE at container..");
       a.texture = markerTextures[i];
       a.baseTexture = markerTextures[i].baseTexture;
-      a.anchor = {x: 0.5, y: 1};
+      a.anchor = {x: 0.5, y: 0.5};
 
       pixiContainer.addChild(a);
       pContainers.push(a);
@@ -382,12 +389,18 @@ window.console.log("in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>"+get
         let mapzoom=viewermap.getZoom();
 
         var origin = pixi_project([mapcenter['lat'], mapcenter['lng']]);
-// initial size of the marker
-        initialScale = invScale/7; 
+        initialScale = invScale/16; 
+// initial size of the marker for 70k pts
+	if(hint != 0) { // THIS IS A HACK...
+          initialScale = invScale/7; 
+// for 10k pts
+          if(hint < 20000)
+             initialScale = invScale/3; 
+        }
 // for circles       initialScale = invScale/20; 
 
-window.console.log("HERE Zoom from pixi init", mapzoom)
         // fill in the particles
+        let len_sum=0;
         for(var i=0; i< DATA_SEGMENT_COUNT; i++ ) {
            var a=pContainers[i];
            a.x = origin.x;
@@ -396,8 +409,7 @@ window.console.log("HERE Zoom from pixi init", mapzoom)
 
            var latlngs=getMarkerLatlngs(pixiLatlngList,i);
            var len=latlngs.length;
-           let xlen=100;
-           if(len < 100) xlen=len;
+           len_sum=len_sum+len;
            for (var j = 0; j < len; j++) {
               var latlng=latlngs[j];
               var ll=latlng['lat'];
@@ -436,6 +448,7 @@ var marker = new PIXI.Point([34.0105, -120.8415], {color: "#ff7800", weight: 1} 
 //window.console.log( "      adding  child at..("+latlng['lat']+')('+latlng['lng']+')');
            }
         }
+window.console.log("HERE total of len, ",len_sum); 
      }
 
       // change size of the marker after zoomin and zoomout
@@ -484,7 +497,8 @@ window.console.log(" ZOOManim.. new targetScale "+targetScale);
       destroyInteractionManager: true
     }).addTo(viewermap);
 
-pixiOverlayList.push({"gid":gid,"vis":1,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
+    pixiOverlayList.push({"gid":gid,"vis":1,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
+
     return overlay;
 }
 
