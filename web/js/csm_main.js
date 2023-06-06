@@ -28,7 +28,7 @@ jQuery(document).ready(function() {
   viewermap=setup_viewer();
 
 
-  $('.modelType').on("change", function() {
+  $('#modelType').on("change", function() {
       let type=$(this).val();
       CSM.setupModelDepth(CSM.csm_models,type);
   });

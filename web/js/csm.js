@@ -545,7 +545,7 @@ window.console.log(" ==> here in replace color");
       return html;
     }
 
-    this.setupModelDepth(mlist,model_idx) {
+    this.setupModelDepth = function (mlist,model_idx) {
       let jblob=mlist[model_idx]['jblob'];
       let dlist=jblob['meta']['dataByDEP'];
       let sz=dlist.length;
