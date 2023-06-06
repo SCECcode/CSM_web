@@ -20,6 +20,8 @@ var CSM = new function () {
     // tracking the global stress layer  --  to avoid generate these repeatly
     // { "gid":gid, "layers": { "aphi_local": layer, "aphi_global":layer,...} }
     this.csm_layers = [];
+
+    this.current_pixi_gid=0;
     
     this.current_modelDepth_idx=undefined; 
     this.current_modelMetric_idx=undefined; 
@@ -260,9 +262,12 @@ window.console.log("Did not find any PHP result");
                 lonlist=tmp['lon'];
                 vallist=tmp['val'];
 
-		let pixi=makePixiOverlayLayerWithList(0,latlist,lonlist,vallist);
+		clearAllPixiOverlay();
+		this.current_pixi_gid++;
 
-                // XXX, a hack set to the zoom to 7
+	        var pixi=makePixiOverlayLayerWithList(
+			this.current_pixi_gid,
+			latlist,lonlist,vallist);
 
                 return(latlist,lonlist,vallist);
             }

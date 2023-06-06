@@ -252,7 +252,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
 
        <div id="metricData" class="col-5 button-container d-flex flex-column pr-0" style="overflow:hidden;border:solid 2px red">
 
-<button id="toSearch" class="btn cxm-small-btn"> <span class="glyphicon glyphicon-share"></span> SEARCH</button>
+<button id="toSearch" class="btn cxm-small-btn"> <span class="glyphicon glyphicon-search"></span> SEARCH</button>
 
 <!-- model depth list -->
 	 <div id="modelDepth" class="mt-2" style="border:solid 1px green">

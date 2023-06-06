@@ -97,7 +97,6 @@ function getRangeIdx(vs_target, vs_max, vs_min) {
   }
   var step = (vs_max - vs_min)/DATA_SEGMENT_COUNT;
   var offset= Math.floor((vs_target-vs_min)/step);
-
   return offset;
 }
 
@@ -198,8 +197,8 @@ function toggleMarkerContainer(pixi,target_segment) {
 //    {"gid":gid,"data":[ [{"lat":lat,"lng":lng},...], ...] }
 function _loadup_data_list(gid,latlist,lonlist,vallist) {
 
-   DATA_max_v=null;
-   DATA_min_v=null;
+   let data_max_v=null;
+   let data_min_v=null;
    DATA_count=0;
 
    let rawlist=[];
@@ -211,26 +210,31 @@ function _loadup_data_list(gid,latlist,lonlist,vallist) {
    }
 
    let sz=latlist.length;
-   window.console.log("size of tmp is "+sz);
 
    for(let i=0; i<sz; i++) {
-      let lon=lonlist[i];
-      let lat=latlist[i];
-      let val=vallist[i];
+      let lon=parseFloat(lonlist[i]);
+      let lat=parseFloat(latlist[i]);
+      let val=parseFloat(vallist[i]);
       if(Number.isNaN(val) || val == "nan") {
           continue;
       }
       rawlist.push([val,lat,lon]);
-      if(DATA_max_v == null) {
-          DATA_max_v = val;
-	  DATA_min_v = val;  
+
+      if(data_max_v == null) {
+          data_max_v = val;
+          data_min_v = val;  
           } else {
-              if(val > DATA_max_v)
-                DATA_max_v=val;
-              if(val < DATA_min_v)
-                DATA_min_v=val;
+              if(val > data_max_v) {
+                data_max_v=val;
+              }
+              if(val < data_min_v) {
+                data_min_v=val;
+              }
       }
    }
+   DATA_max_v = data_max_v;
+   DATA_min_v = data_min_v;
+
    // sort datalist
    let sorted_rawlist = rawlist.sort((a,b) => {
           return b[0] - a[0];
@@ -248,7 +252,6 @@ function _loadup_data_list(gid,latlist,lonlist,vallist) {
    }
    pixiLatlngList= {"gid":gid,"data":datalist} ; 
 
-   window.console.log("Using lists: total data:"+DATA_count+"("+DATA_min_v+","+DATA_max_v+")");
    return pixiLatlngList;
 }
 
@@ -279,7 +282,6 @@ function _loadup_data_url(gid,url) {
    let blob=ckExist(url);
    let tmp=blob.split("\n");
    let sz=tmp.length;
-   window.console.log("size of tmp is "+sz);
 
    for(let i=0; i<sz; i++) {
       let ll=tmp[i];
@@ -484,7 +486,8 @@ window.console.log(" ZOOManim.. new targetScale "+targetScale);
       destroyInteractionManager: true
     }).addTo(viewermap);
 
-pixiOverlayList.push({"gid":gid,"vis":1,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
+    pixiOverlayList.push({"gid":gid,"vis":1,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
+
     return overlay;
 }
 
