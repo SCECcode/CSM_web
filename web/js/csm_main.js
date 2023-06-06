@@ -27,15 +27,10 @@ jQuery(document).ready(function() {
 
   viewermap=setup_viewer();
 
-  $('.csm-depth-item').on("focus", function() {
-     $('.csm-depth-item').on("blur mouseout", function() {
-       $('.csm-depth-item').off("mouseout");
-       $('.csm-depth-item').off("blur");
-       if( $(this).val() != '' ) {
-         CSM.refreshDepthSlider();
-       }
-       $(this).blur();
-     });
+
+  $('.modelType').on("change", function() {
+      let type=$(this).val();
+      CSM.setupModelDepth(CSM.csm_models,type);
   });
 
   $('.csm-latlon-item').on("focus", function() {

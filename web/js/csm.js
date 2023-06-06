@@ -501,7 +501,7 @@ window.console.log(" ==> here in replace color");
                 elt.add(option);
             }
 /* create the default model depth list to 1st one for model */
-            _setupModelDepth(this.csm_models,0);
+            this.setupModelDepth(this.csm_models,0);
             _setupModelMetric(this.csm_models,0);
     };
 
@@ -540,7 +540,7 @@ window.console.log(" ==> here in replace color");
       return html;
     }
 
-    function _setupModelDepth(mlist,model_idx) {
+    this.setupModelDepth(mlist,model_idx) {
       let jblob=mlist[model_idx]['jblob'];
       let dlist=jblob['meta']['dataByDEP'];
       let sz=dlist.length;
