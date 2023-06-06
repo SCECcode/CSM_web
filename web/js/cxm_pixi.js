@@ -393,9 +393,13 @@ window.console.log("in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>"+get
 // initial size of the marker for 70k pts
 	if(hint != 0) { // THIS IS A HACK...
           initialScale = invScale/7; 
+          if(hint < 50000)
+             initialScale = invScale/5; 
 // for 10k pts
           if(hint < 20000)
              initialScale = invScale/3; 
+          if(hint < 10000) // for SAFPoly3D
+             initialScale = invScale/7; 
         }
 // for circles       initialScale = invScale/20; 
 
