@@ -205,6 +205,9 @@ window.console.log("XX new freshSearch...",t);
       let mmetric=m[midx];
       window.console.log("modelMetric_idx is "+midx+"("+mmetric+")");
 
+window.console.log(tidx,midx,didx);
+      let foundlayer= _lookupModelLayers(tidx,midx,didx);
+
       let spec = [ tmodel, ddepth, mmetric ];
 window.console.log(spec);
       this.search(this.searchType.all, spec, []);
@@ -517,7 +520,7 @@ window.console.log(" ==> here in replace color");
 /* create the default model depth list to 1st one for model */
             this.setupModelDepth(this.csm_models,0);
             this.setupModelMetric(this.csm_models,0);
-//            this.setupModelLayers(this.csm_models);
+            this.setupModelLayers(this.csm_models);
     };
 
     // mlist,
@@ -534,12 +537,12 @@ window.console.log(" ==> here in replace color");
       let msz=mlist.length;
       this.csm_model_layers=[];
       for(let i=0; i<msz; i++) {
-        this.csm_model_layers=[]; // per model
+        this.csm_model_layers[i]=[]; // per model
         let mmlist=mlist[i]['jblob']['metric'];
         let mmsz=mmlist.length;
         for(let j=0; j<mmsz; j++) {
            this.csm_model_layers[i][j]=[]; // per metric
-           let dlist=mlist[i][j]['meta']['dataByDEP'];
+           let dlist=mlist[i]['jblob']['meta']['dataByDEP'];
            let dsz=dlist.length;
            for(let k=0; k<dsz; k++) {
              this.csm_model_layers[i][j][k]=undefined; // per depth
@@ -547,6 +550,17 @@ window.console.log(" ==> here in replace color");
         }
       }
     };
+
+    function _lookupModelLayers(midx, mmidx, didx) {
+      let alayer=CSM.csm_model_layers[midx][mmidx][didx];
+      if(alayer != undefined) {
+        window.console.log("FOUND an existing layer..");
+        return alayer;
+        } else {
+          window.console.log("DID not Find an existing layer..");
+          return null;
+      }
+    } 
 
     this.setupModelMetric = function (mlist,model_idx) {
       let dlist=mlist[model_idx]['jblob']['metric'];

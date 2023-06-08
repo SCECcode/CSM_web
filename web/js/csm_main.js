@@ -31,6 +31,8 @@ jQuery(document).ready(function() {
   $('#modelType').on("change", function() {
       let type=$(this).val();
       CSM.setupModelDepth(CSM.csm_models,type);
+      // reset metric to 0
+      CSM.setupModelMetric(CSM.csm_models,0);
   });
 
   $('.csm-latlon-item').on("focus", function() {
