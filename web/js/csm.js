@@ -7,22 +7,30 @@
 
 var CSM = new function () {
 
-    // complete set of csm models
-    // include the meta data info
+    // 
+    // complete set of csm models info from the backend-service,
     // { "gid":gid, "model_name":mn, "table_name":tn, "jblob":jblob } 
     // and,
     //   jblob's format
     //   { "model": mn,
     //     "meta": { "dataCount": cnt, "dataByDEP": [ { "dep":d, "cnt":lcnt,  "aphi_max":max, "aphi_min":min}..] },
-    //     "aphiRange": [mmax, mmin] }
+    //     "aphiRange": [mmax, mmin],
+    //     "metric" : [ "aphi" ] }
     this.csm_models = [];
+
+    //  pixi depth layer for model metric, 
+    //  made on-demand
+    //  csm_model_layers['model_id]['metric_id']['depth_id']
+    this.csm_model_layers;
 
     // tracking the global stress layer  --  to avoid generate these repeatly
     // { "gid":gid, "layers": { "aphi_local": layer, "aphi_global":layer,...} }
+
     this.csm_layers = [];
 
     this.current_pixi_gid=0;
     
+
     this.current_modelDepth_idx=undefined; 
     this.current_modelMetric_idx=undefined; 
 
@@ -196,6 +204,8 @@ window.console.log("XX new freshSearch...",t);
       let m=model['jblob']['metric'];
       let mmetric=m[midx];
       window.console.log("modelMetric_idx is "+midx+"("+mmetric+")");
+
+window.console.log(spec);
 
       let spec = [ tmodel, ddepth, mmetric ];
       this.search(this.searchType.all, spec, []);
@@ -507,22 +517,39 @@ window.console.log(" ==> here in replace color");
             }
 /* create the default model depth list to 1st one for model */
             this.setupModelDepth(this.csm_models,0);
-            _setupModelMetric(this.csm_models,0);
+            this.setupModelMetric(this.csm_models,0);
+            this.setupModelLayers(this.csm_models);
     };
 
-    /* 
-       jblob :
+    // mlist,
+    // { "gid":gid, "model_name":mn, "table_name":tn, "jblob":jblob }
+    // and,
+    //   jblob's format
+    //   { "model": mn,
+    //     "meta": { "dataCount": cnt, "dataByDEP": [ { "dep":d, "cnt":lcnt,  "aphi_max":max, "aphi_min":min}..] },
+    //     "aphiRange": [mmax, mmin],
+    //     "metric" : [ "aphi" ] }
+  
+    //  csm_model_layers['model_id]['metric_id']['depth_id']
+    this.setupModelLayers = function (mlist) {
+      let msz=mlist.length;
+      this.csm_model_layers=[];
+      for(let i=0; i<msz; i++) {
+        this.csm_model_layers=[]; // per model
+        let mmlist=mlist[i]['jblob']['metric'];
+        let mmsz=mmlist.length;
+        for(let j=0; j<mmsz; j++) {
+           this.csm_model_layers[i][j]=[]; // per metric
+           let dlist=mlist[i][j]['meta']['dataByDEP'];
+           let dsz=dlist.length;
+           for(let k=0; k<dsz; k++) {
+             this.csm_model_layers[i][j][k]=undefined; // per depth
+           }
+        }
+      }
+    };
 
-       {"model": "SHELLS", 
-        "metric": [ 'aphi' ],
-        "meta": {"dataCount": 968679, 
-                 "aphiRange": [0.0, 3.0], 
-                 "dataByDEP": [
-             {"dep": 1.0, "aphi_min": 0.0, "aphi_max": 3.0, "cnt": 66300}, 
-             {"dep": 3.0, "aphi_min": 0.081, "aphi_max": 3.0, "cnt": 72325},
-             ...
-    */
-    function _setupModelMetric(mlist,model_idx) {
+    this.setupModelMetric = function (mlist,model_idx) {
       let dlist=mlist[model_idx]['jblob']['metric'];
       let sz=dlist.length;
       let html="";
@@ -534,7 +561,6 @@ window.console.log(" ==> here in replace color");
             html=html+"<br>";
          }            
       }
-
       $("#modelMetric-options").html(html);
       $("#modelMetric_0").click();
     };
@@ -561,8 +587,8 @@ window.console.log(" ==> here in replace color");
          }            
        }
 
-      $("#modelDepth-options").html(html);
-      $("#modelDepth_0").click();
+       $("#modelDepth-options").html(html);
+       $("#modelDepth_0").click();
     };
 
     /*

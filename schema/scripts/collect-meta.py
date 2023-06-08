@@ -28,8 +28,7 @@ for f in file_list:
 
   print("file:",f) 
 
-# [ { 'dep': val, 'aphi_min': val, 'aphi_max': val, 'cnt': val }, ...]
-# index = 2
+# [ { 'dep': val, 'aphi_min': val, 'aphi_max': val, 'cnt': val }, ...] # index = 2
   DEP_range = []
   Overall_data_total = 0
 # index = 13
@@ -160,8 +159,8 @@ for f in file_list:
   jblob['meta']['s3Range']=Overall_S3_range
   jblob['meta']['dataByDEP']=DEP_range
   jblob['metric'] = [ 'aphi', 's3' ] 
-#  jstr=json.dumps(jblob, indent=2)
-  jstr=json.dumps(jblob)
+  jstr=json.dumps(jblob, indent=2)
+#  jstr=json.dumps(jblob)
   f.write(jstr)
   f.close()
 
