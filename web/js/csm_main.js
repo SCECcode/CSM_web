@@ -27,12 +27,10 @@ jQuery(document).ready(function() {
 
   viewermap=setup_viewer();
 
-
   $('#modelType').on("change", function() {
       let type=$(this).val();
-      CSM.setupModelDepth(CSM.csm_models,type);
-      // reset metric to 0
-      CSM.setupModelMetric(CSM.csm_models,0);
+      CSM.resetModelDepth(); // reset to depth to first one
+      CSM.resetModelMetric(); // reset metric to first one
   });
 
   $('.csm-latlon-item').on("focus", function() {
@@ -49,9 +47,11 @@ jQuery(document).ready(function() {
 
   $("#csm-search-type").on('change', function () {
       let type=$(this).val();
+      if(type == "dismiss") {  // reset to initial state
+        } else {
+          CSM.showSearch(type);
   window.console.log( "initiate a search session...",type);
-      if(type != "") {
-        CSM.freshSearch(type);
+//          CSM.freshSearch();
       }
   });
 

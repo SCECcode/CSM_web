@@ -107,7 +107,7 @@ $csm = new CSM();
         $(document).on("tableLoadCompleted", function () {
             tableLoadCompleted = true;
 
-	    var $result_table = $('#result_table');
+         var $result_table = $('#result_table');
             $result_table.floatThead({
                 scrollContainer: function ($table) {
                     return $table.closest('div#result-table-container');
@@ -151,13 +151,6 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
 
 <!-- top-control-row-1 -->
         <div id="top-control-row-1" class="col-12">
-<!-- model select -->
-          <div class="input-group input-group-sm custom-control-inline">
-            <div class="input-group-prepend">
-                <label class="input-group-text" for="modelType">Select CSM Model</label>
-            </div>
-            <select id="modelType" class="custom-select custom-select-sm"></select>
-          </div> <!-- model select -->
         </div> <!-- top-control-row-1 -->
 
 <!-- top-control-row-2 -->
@@ -170,7 +163,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                                for="cxm-model-cfm">
                 <input class='form-check-inline mr-1'
                                type="checkbox"
-			       id="cxm-model-cfm" value="1" />CFM6.0
+                      id="cxm-model-cfm" value="1" />CFM6.0
                 </label>
               </div>
               <div class="form-check form-check-inline">
@@ -178,7 +171,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                                for="cxm-model-gfm">
                 <input class='form-check-inline mr-1'
                                type="checkbox"
-			       id="cxm-model-gfm" value="1" />GFM
+                      id="cxm-model-gfm" value="1" />GFM
                 </label>
               </div>
             </div>
@@ -199,16 +192,16 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
             </div> <!-- end of kml -->
 
 <!-- seismicity -->
-            <div class="col-3" style="border:solid 0px blue">
+            <div class="col-3" style="border:solid 0px blue; display:none">
               <div id="loadSeismicity" class="row" style="width:20rem;">
-		<button id="quakesBtn" class="btn" 
+          <button id="quakesBtn" class="btn" 
                         onClick="loadSeismicity()" title="This loads the updated Hauksson et al. (2012) and Ross et al. (2019) relocated earthquake catalogs and provides a pull-down menu with options to color by depth, magnitude, or time. Significant historical events (1900-2021 >M6.0) are shown with red dots. These can be turned on/off by clicking on the button on the right which appears here once the catalogs have been loaded" style="color:#395057;background-color:#f2f2f2;border:1px solid #ced4da;border-radius:0.2rem;padding:0.15rem 0.5rem;display:;">Load relocated seismicity</button>
               </div>
  
               <div id="showSeismicity" class="row" style="width:20rem; display:none;">
                 <select id="seismicitySelect" onchange="changePixiOverlay(this.value)"
                 class="custom-select custom-select-sm" style="width:auto;min-width:14rem;">
-		   <option value="none">Hide relocated seismicity</option>
+             <option value="none">Hide relocated seismicity</option>
                    <option selected value="haukssondepth">Hauksson et al. by depth</option>
                    <option value="haukssonmag">Hauksson et al. by magnitude</option>
                    <option value="haukssontime">Hauksson et al. by time</option>
@@ -252,15 +245,85 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
 
        <div id="metricData" class="col-5 button-container d-flex flex-column pr-0" style="overflow:hidden;border:solid 2px red">
 
-<button id="toSearch" class="btn cxm-small-btn"> <span class="glyphicon glyphicon-search"></span> SEARCH</button>
+<!-- search method -->
+         <div class="row">
+           <div class="input-group filters mt-1 mb-1" style="margin-left:15px; border:1px solid blue">
+             <select id="csm-search-type" class="custom-select custom-select-sm">
+               <option value="dismiss">Search by </option>
+               <option value="model">Model</option>
+               <option value="latlon">Latitude &amp; Longitude</option>
+             </select>
+             <div class="input-group-append">
+               <button id="refreshBtn" type="button" onclick="refreshAll()" class="btn btn-dark" >Reset</button>
+             </div>
+           </div>
+
+           <div id="csm-search-btn" class="row" style="margin-left:30px;;display:;">
+             <button id="toSearch" class="btn" style="color:#395057;background-color:#f2f2f2;border:1px solid #ced4da;border-radius:0.2rem;"><span>SEARCH</span></button>
+           </div>
+         </div>
+
+<!-- XXX -->
+         <div id="search-option" >
+            <ul id="option" class="navigation" style="display:;border:solid 1px green;padding: 0 0 0 0;">
+              <li id='csm-model' class='navigationLi' style="border:">
+              </li>
+              <li id='csm-latlon' class='navigationLi mt-1' style="border:solid 1px red">
+                <div id='latlonMenu' class='menu'>
+                  <div class="row">
+                    <div class="col-5">
+                          <p>Draw a rectangle on the map or enter latitudes and longitudes.</p>
+                    </div>
+                  <div class="col-2 pl-0 pr-0">
+                      <input type="text"
+                          placeholder="Latitude"
+                          id="firstLatTxt"
+                          title="first lat"
+                          onfocus="this.value=''"
+                          class="latlon-item form-control">
+                      <input type="text" 
+                          id="firstLonTxt" 
+                          placeholder='Longitude' 
+                          title="first lon"
+                          onfocus="this.value=''" 
+                          class="latlon-item form-control mt-1">
+                    </div>
+                    <div class="col-2 pl-1 pr-0">
+                      <input type="text"
+                          id="secondLatTxt"
+                          title="optional second lat"
+                          value='optional'
+                          onfocus="this.value=''"
+                          class="latlon-item form-control">
+                      <input type="text"
+                          id="secondLonTxt"
+                          title="optional second lon"
+                          value='optional'
+                          onfocus="this.value=''"
+                          class="latlon-item form-control mt-1">
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul> <!-- option -->
+         </div>
+
+<!-- model select -->
+         <div class="input-group input-group-sm custom-control-inline">
+            <div class="input-group-prepend">
+                  <label class="input-group-text" for="modelType">Select CSM Model</label>
+            </div>
+            <select id="modelType" class="custom-select custom-select-sm"></select>
+         </div> <!-- model select -->
+
 
 <!-- model depth list -->
-	 <div id="modelDepth" class="mt-2" style="border:solid 1px green">
-	   <div id="modelDepth-options" class="form-check"> </div>
+         <div id="modelDepth" class="mt-2" style="border:solid 1px green">
+           <div id="modelDepth-options" class="form-check"> </div>
          </div>
 <!-- metric list -->
          <div id="modelMetric" class="mt-2" style="border:solid 1px blue">
-	   <div id="modelMetric-options" class="form-check"> </div>
+           <div id="modelMetric-options" class="form-check"> </div>
          </div>
 
 <!-- result parking location -->
@@ -277,13 +340,11 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
        <div id="top-map" class="col-7 pl-1">
           <div class="w-100 mb-1" id='CSM_plot'
              style="position:relative;border:solid 1px #ced4da; height:576px;">
-             <div  id='wait-spinner' style="">
-               <div class="d-flex justify-content-center" >
-                 <div class="spinner-border text-light" role="status">
-                   <span class="sr-only">Loading...</span>
-                 </div>
-               </div>
+
+             <div class="spinDialog" style="position:absolute;top:40%;left:50%; z-index:9999;">
+               <div id="csm-wait-spin" align="center" style="display:none;"><i class="glyphicon glyphicon-cog fa-spin" style="color:red"></i></div>
              </div>
+
           </div>
        </div>
 

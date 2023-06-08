@@ -50,11 +50,11 @@ var CSM = new function () {
     };
 
     this.searchType = {
-        all: 'all',
+        model: 'model',
         latlon: 'latlon'
     };
 
-    this.searchingType=this.searchType.all;
+    this.searchingType=this.searchType.model;
     var tablePlaceholderRow = `<tr id="placeholder-row">
                         <td colspan="9">Metadata for selected region will appear here.</td>
                     </tr>`;
@@ -135,9 +135,11 @@ window.console.log("flyingBounds --new list");
 
 /********** search/layer  functions *********************/
     this.showSearch = function (type) {
-        const $all_search_controls = $("#csm-search-control ul li");
-        $all_search_controls.hide();
+
+        this.searchingType = type;
         switch (type) {
+            case this.searchType.model:
+               break;
             case this.searchType.latlon:
                 $("#csm-latlon").show();
                 drawRectangle();
@@ -145,6 +147,8 @@ window.console.log("flyingBounds --new list");
             default:
                 // no action
         }
+        // enable search btn
+        $("#csm-search-btn").css('display','');
     };
 
 // reset from the reset button
@@ -175,18 +179,21 @@ window.console.log("call setView.. default");
 // reset just the search only
     this.resetSearch = function (){
 window.console.log("calling --->> resetSearch.");
+        $("#csm-search-btn").css('display','none');
+//
         this.resetLatLonSearch();
     };
 
 
 
-    this.freshSearch = function (t){
+    this.freshSearch = function (){
 
-window.console.log("XX new freshSearch...",t);
+window.console.log("XX new freshSearch...");
 
       // retrieve model's database table name
       // depth value  
       // which metric type
+      $("#csm-wait-spin").css('display','');
          
       let tidx=$("#modelType").val();
       let model=this.csm_models[tidx];
@@ -205,52 +212,22 @@ window.console.log("XX new freshSearch...",t);
       let mmetric=m[midx];
       window.console.log("modelMetric_idx is "+midx+"("+mmetric+")");
 
+// initiate search if it is for whole model or
+// wait for a region 
+      if(this.searchingType == this.searchType.model) {
 window.console.log(tidx,midx,didx);
-      let foundlayer= _lookupModelLayers(tidx,midx,didx);
+        let foundlayer= _lookupModelLayers(tidx,midx,didx);
 
-      let spec = [ tmodel, ddepth, mmetric ];
-window.console.log(spec);
-      this.search(this.searchType.all, spec, []);
-    };
-
-// a complete fresh search
-    this.freshSearch2 = function (t){
-
-        this.resetSearch();
-
-        const $all_search_controls = $("#csm-controls-container ul li")
-window.console.log("calling freshSearch..");
-        switch (t) {
-            case "latlon": 
-               this.searchingType = this.searchType.latlon;
-               $all_search_controls.hide();
-               $("#csm-latlon").show();
-               drawRectangle();
-               break;
-            default:
-               this.searchingType = this.searchType.all;
-               break;
-        }
-
-        if ($("#csm-model-cfm").prop('checked')) {
-          CXM.showCFMFaults(viewermap);
-          } else {
-          CXM.hideCFMFaults(viewermap);
-        }
-
-        if ($("#csm-model-gfm").prop('checked')) {
-          CXM.showGFMRegions(viewermap);
-          } else {
-          CXM.hideGFMRegions(viewermap);
-        }
+        let spec = [ tmodel, ddepth, mmetric ];
+        this.search(this.searchType.model, spec, []);
+      } else {
+      }
+      $("#csm-wait-spin").css('display','none');
     };
 
     // search with table_name, depth, type (ie. aphi)
     // expect at most 80k lat/lon/val
     this.search = function(type, spec, criteria) {
-
-        if(type != this.searchingType)
-          return;
 
         if (!Array.isArray(criteria)) {
             criteria = [criteria];
@@ -577,6 +554,10 @@ window.console.log(" ==> here in replace color");
       $("#modelMetric-options").html(html);
       $("#modelMetric_0").click();
     };
+    // set to first metric
+    this.resetModelMetric = function () {
+      $("#modelMetric_0").click();
+    };
 
     function _metricoption(label,idx) {
       var html = "<input type=\"radio\" class='mr-1' id=\"modelMetric_"+idx+"\" name=\"modelMetric_idx\" onclick=\"CSM.changeModelMetric("+idx+")\">";
@@ -603,6 +584,10 @@ window.console.log(" ==> here in replace color");
        $("#modelDepth-options").html(html);
        $("#modelDepth_0").click();
     };
+    // reset to depth of 0
+    this.resetModelDepth = function () {
+       $("#modelDepth_0").click();
+    };
 
     /*
         <input class='form-check-inline mr-1'
@@ -617,11 +602,9 @@ window.console.log(" ==> here in replace color");
     }
 
    this.changeModelDepth = function(v) {
-        window.console.log("clicked on modelDepth_idx..",v);
         this.current_modelDepth_idx=v; 
    };
    this.changeModelMetric = function(v) {
-        window.console.log("clicked on modelMetric_idx..",v);
         this.current_modelMetric_idx=v; 
    };
 
