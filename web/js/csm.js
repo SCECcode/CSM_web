@@ -205,9 +205,8 @@ window.console.log("XX new freshSearch...",t);
       let mmetric=m[midx];
       window.console.log("modelMetric_idx is "+midx+"("+mmetric+")");
 
-window.console.log(spec);
-
       let spec = [ tmodel, ddepth, mmetric ];
+window.console.log(spec);
       this.search(this.searchType.all, spec, []);
     };
 
@@ -518,7 +517,7 @@ window.console.log(" ==> here in replace color");
 /* create the default model depth list to 1st one for model */
             this.setupModelDepth(this.csm_models,0);
             this.setupModelMetric(this.csm_models,0);
-            this.setupModelLayers(this.csm_models);
+//            this.setupModelLayers(this.csm_models);
     };
 
     // mlist,

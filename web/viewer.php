@@ -11,7 +11,7 @@ $csm = new CSM();
 <head>
     <title>Community Stress Model (Provisional)</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initialscale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/vendor/font-awesome.min.css">
     <link rel="stylesheet" href="css/vendor/bootstrap.min.css">
     <link rel="stylesheet" href="css/vendor/bootstrap-grid.min.css">
