@@ -255,6 +255,8 @@ window.console.log(tidx,midx,didx);
     // 	        is tidx,midx,didx for storing the pixi into a list	
     this.search = function(type, spec, criteria) {
 
+        CSM.startWaitSpin();
+
         let tmp=criteria;
         if(type==CSM.searchType.model) { tmp = []; }
         if (!Array.isArray(tmp)) { tmp = [tmp]; }
@@ -282,7 +284,6 @@ window.console.log("Did not find any PHP result");
 
                 let spec = {'data_max':3.0, 'data_min':1.0};
 
-                this.startWaitSpin();
                 var pixi=makePixiOverlayLayerWithList(
                          this.current_pixi_gid,
                          latlist,lonlist,vallist,spec);
