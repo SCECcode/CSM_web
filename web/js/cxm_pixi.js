@@ -257,11 +257,16 @@ window.console.log("HUMHUM..",DATA_count);
 }
 
 // this is from csm
-function makePixiOverlayLayerWithList(gid,latlist,lonlist,vallist) {
+function makePixiOverlayLayerWithList(gid,latlist,lonlist,vallist,spec) {
     var pixiLatlngList;
     var count;	 
     [count, pixiLatlngList]=_loadup_data_list(gid,latlist,lonlist,vallist);
-    return makePixiOverlayLayer(gid,pixiLatlngList,count);
+    spec.hint=count;
+window.console.log("before", DATA_max_v, DATA_min_v);
+    if(spec.data_max) { DATA_max_v = spec.data_max; }
+    if(spec.data_min) { DATA_min_v = spec.data_min; }
+window.console.log("after", DATA_max_v, DATA_min_v);
+    return makePixiOverlayLayer(gid,pixiLatlngList,spec);
 }
 
 // order everything into a sorted array
@@ -340,10 +345,11 @@ function _loadup_data_url(gid,url) {
 // this is from cgm
 function makePixiOverlayLayerWithFile(gid,file) {
     var pixiLatlngList=_loadup_data_url(gid,file)
-    return makePixiOverlayLayer(gid,pixiLatlngList,0);
+    let spec={'hint':0};
+    return makePixiOverlayLayer(gid,pixiLatlngList,spec);
 }
 
-function makePixiOverlayLayer(gid,pixiLatlngList,hint) {
+function makePixiOverlayLayer(gid,pixiLatlngList,spec) {
 
     let zoomChangeTs = null;
 
@@ -391,14 +397,14 @@ window.console.log("in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>"+get
         var origin = pixi_project([mapcenter['lat'], mapcenter['lng']]);
         initialScale = invScale/16; 
 // initial size of the marker for 70k pts
-	if(hint != 0) { // THIS IS A HACK...
+	if(spec.hint != 0) { // THIS IS A HACK...
           initialScale = invScale/7; 
-          if(hint < 50000)
+          if(spec.hint < 50000)
              initialScale = invScale/5; 
 // for 10k pts
-          if(hint < 20000)
+          if(spec.hint < 20000)
              initialScale = invScale/3; 
-          if(hint < 10000) // for SAFPoly3D
+          if(spec.hint < 10000) // for SAFPoly3D
              initialScale = invScale/7; 
         }
 // for circles       initialScale = invScale/20; 
@@ -502,6 +508,8 @@ window.console.log(" ZOOManim.. new targetScale "+targetScale);
     }).addTo(viewermap);
 
     pixiOverlayList.push({"gid":gid,"vis":1,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
+
+window.console.log(">>> HERE..");
 
     return overlay;
 }

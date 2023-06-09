@@ -18,18 +18,17 @@ var CSM = new function () {
     //     "metric" : [ "aphi" ] }
     this.csm_models = [];
 
-    //  pixi depth layer for model metric, 
+    //  pixi layers for for each model metric for each depth, 
     //  made on-demand
-    //  csm_model_layers['model_id]['metric_id']['depth_id']
-    this.csm_model_layers;
+    //  csm_model_pixi_layers['model_id]['metric_id']['depth_id']
+    //  to avoid generate these repeatly
+    this.csm_model_pixi_layers;
 
-    // tracking the global stress layer  --  to avoid generate these repeatly
-    // { "gid":gid, "layers": { "aphi_local": layer, "aphi_global":layer,...} }
-
-    this.csm_layers = [];
+    // { "gid":gid, "layer": layer } 
+    // from searchLatlon, to be downloaded
+    this.csm_pixi_layers = [];
 
     this.current_pixi_gid=0;
-    
 
     this.current_modelDepth_idx=undefined; 
     this.current_modelMetric_idx=undefined; 
@@ -104,13 +103,13 @@ var CSM = new function () {
         this.csm_active_markerLocations = [];
 
         let gsz=glist.length;
-        let lsz= this.csm_layers.length;
+        let lsz= this.csm_pixi_layers.length;
         let i_start=0;
 
         for (let j=0; j<gsz; j++) {
           let gid=glist[j];
           for (let i=i_start; i< lsz; i++) {
-            let layer = this.csm_layers[i];
+            let layer = this.csm_pixi_layers[i];
             if (layer.hasOwnProperty("scec_properties")) {
                if (gid == layer.scec_properties.gid) {
                   this.replaceColor(layer);
@@ -196,9 +195,8 @@ window.console.log("calling reset");
     this.resetSearch = function (){
 window.console.log("calling --->> resetSearch.");
         $("#csm-search-btn").css('display','none');
-//
         this.resetModel();
-        this.resetLatLon();
+        this.resetLatlon();
     };
 
     this.freshSearch = function (){
@@ -208,9 +206,8 @@ window.console.log("XX new freshSearch...");
       // retrieve model's database table name
       // depth value  
       // which metric type
-      this.startWaitSpin();
          
-      let tidx=$("#modelType").val();
+      let tidx=parseInt($("#modelType").val());
       let model=this.csm_models[tidx];
       let tmodel=model['table_name'];
       window.console.log("name is ", model['table_name']);
@@ -231,10 +228,16 @@ window.console.log("XX new freshSearch...");
 // wait for a region 
       if(this.searchingType == this.searchType.model) {
 window.console.log(tidx,midx,didx);
-        let foundlayer= _lookupModelLayers(tidx,midx,didx);
+        var pixilayer= CSM.lookupModelLayers(tidx,midx,didx);
 
-        let spec = [ tmodel, ddepth, mmetric ];
-        this.search(this.searchType.model, spec, []);
+        if(pixilayer) { // reuse and add to viewer map 
+          clearAllPixiOverlay();
+          viewermap.addLayer(pixilayer);
+          } else {
+            let spec = [ tmodel, ddepth, mmetric ];
+            let other = [ tidx,midx,didx ];
+            pixilayer = this.search(this.searchType.model, spec, other);
+        }
       } else {
       }
     };
@@ -248,13 +251,15 @@ window.console.log(tidx,midx,didx);
 
     // search with table_name, depth, type (ie. aphi)
     // expect at most 80k lat/lon/val
+    // criteria is lat,lon,lat2,lon2 for searching with LatLon
+    // 	        is tidx,midx,didx for storing the pixi into a list	
     this.search = function(type, spec, criteria) {
 
-        if (!Array.isArray(criteria)) {
-            criteria = [criteria];
-        }
+        let tmp=criteria;
+        if(type==CSM.searchType.model) { tmp = []; }
+        if (!Array.isArray(tmp)) { tmp = [tmp]; }
 
-        let JSON_criteria = JSON.stringify(criteria);
+        let JSON_criteria = JSON.stringify(tmp);
         let JSON_spec = JSON.stringify(spec);
 
         $.ajax({
@@ -272,17 +277,23 @@ window.console.log("Did not find any PHP result");
                 lonlist=tmp['lon'];
                 vallist=tmp['val'];
 
-          clearAllPixiOverlay();
-          this.current_pixi_gid++;
+                clearAllPixiOverlay();
+                this.current_pixi_gid++;
 
-             var pixi=makePixiOverlayLayerWithList(
-               this.current_pixi_gid,
-               latlist,lonlist,vallist);
+                let spec = {'data_max':3.0, 'data_min':1.0};
 
-                return(latlist,lonlist,vallist);
+                this.startWaitSpin();
+                var pixi=makePixiOverlayLayerWithList(
+                         this.current_pixi_gid,
+                         latlist,lonlist,vallist,spec);
+                CSM.removeWaitSpin();
+
+                if(type==CSM.searchType.model) {
+                    CSM.addModelLayers(criteria[0],criteria[1],criteria[2],pixi);
+                }
+		return pixi;
             }
         });
-        return([],[],[]);
     };
 
     // special case, Latlon can be from text inputs or from the map
@@ -318,10 +329,7 @@ window.console.log("Did not find any PHP result");
                 $("#csm-secondLonTxt").val(criteria[3]);
         }
 
-     // push  XX      
-                 
-        // get latlist, lonlist, valist);
-        this.search(CSM.searchType.latlon, spec, criteria);
+        let pixi= this.search(CSM.searchType.latlon, spec, criteria);
 
         let regionLocations = [];
         regionLocations.push(L.latLng(criteria[0],criteria[1]));
@@ -429,7 +437,7 @@ window.console.log("generateMetadataTable..");
           $("#csm-model").hide();
         }
 
-        this.resetLatLon = function () {
+        this.resetLatlon = function () {
           if( this.searchingType != this.searchType.latlon) return;
           $("#csm-firstLatTxt").val("");
           $("#csm-firstLonTxt").val("");
@@ -444,9 +452,9 @@ window.console.log("generateMetadataTable..");
 // marker.scec_properties.high_rate_color, marker.sce_properties.low_rate_color
 // toMake == 1, set the scec_properties color values
         this.makeLayerColors = function() {
-            let lsz = this.csm_layers.length;
+            let lsz = this.csm_pixi_layers.length;
             for(let i=0; i<lsz; i++) {
-                let layer=this.csm_layers[i];
+                let layer=this.csm_pixi_layers[i];
                 let hr = layer.scec_properties.high_rate;
                 let lr = layer.scec_properties.low_rate;
                 layer.scec_properties.low_rate_color = makeRGB(lr, csm_minrate_max, csm_minrate_min );
@@ -542,33 +550,43 @@ window.console.log("resetModelType");
     //     "aphiRange": [mmax, mmin],
     //     "metric" : [ "aphi" ] }
   
-    //  csm_model_layers['model_id]['metric_id']['depth_id']
+    //  csm_model_pixi_layers['model_id]['metric_id']['depth_id']
     this.setupModelLayers = function (mlist) {
       let msz=mlist.length;
-      this.csm_model_layers=[];
+      this.csm_model_pixi_layers=[];
       for(let i=0; i<msz; i++) {
-        this.csm_model_layers[i]=[]; // per model
+        this.csm_model_pixi_layers[i]=[]; // per model
         let mmlist=mlist[i]['jblob']['metric'];
         let mmsz=mmlist.length;
         for(let j=0; j<mmsz; j++) {
-           this.csm_model_layers[i][j]=[]; // per metric
+           this.csm_model_pixi_layers[i][j]=[]; // per metric
            let dlist=mlist[i]['jblob']['meta']['dataByDEP'];
            let dsz=dlist.length;
            for(let k=0; k<dsz; k++) {
-             this.csm_model_layers[i][j][k]=undefined; // per depth
+             this.csm_model_pixi_layers[i][j][k]=undefined; // per depth
            }
         }
       }
     };
 
-    function _lookupModelLayers(midx, mmidx, didx) {
-      let alayer=CSM.csm_model_layers[midx][mmidx][didx];
+    this.lookupModelLayers = function (midx, mmidx, didx) {
+//window.console.log(" ===> LOOKING FOR", midx, mmidx, didx);
+      let alayer=CSM.csm_model_pixi_layers[midx][mmidx][didx];
       if(alayer != undefined) {
-        window.console.log("FOUND an existing layer..");
+//        window.console.log(" === FOUND an existing layer..");
         return alayer;
         } else {
-          window.console.log("DID not Find an existing layer..");
+//          window.console.log(" === DID not Find an existing layer..");
           return null;
+      }
+    } 
+    this.addModelLayers = function(midx,mmidx,didx,pixilayer) {
+//window.console.log(" ===> ADDING FOR", midx, mmidx, didx);
+      let alayer=CSM.csm_model_pixi_layers[midx][mmidx][didx];
+      if(alayer != undefined) {
+        window.console.log(" === BAD BAD BAD - found  an existing layer..");
+        } else {
+          CSM.csm_model_pixi_layers[midx][mmidx][didx]=pixilayer;
       }
     } 
 
@@ -580,7 +598,7 @@ window.console.log("resetModelType");
          let label=dlist[i];
          let h=_metricoption(label,i);
          html=html+h;
-         if( (i+1) % 4 === 0 ) {
+         if( (i+1) % 5 === 0 ) {
             html=html+"<br>";
          }            
       }
@@ -609,7 +627,7 @@ window.console.log("resetModelType");
          let label=term['dep'];
          let h=_depthoption(label,i);
          html=html+h;
-         if( (i+1) % 4 === 0 ) {
+         if( (i+1) % 5 === 0 ) {
             html=html+"<br>";
          }            
        }
