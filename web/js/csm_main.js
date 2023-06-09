@@ -29,8 +29,9 @@ jQuery(document).ready(function() {
 
   $('#modelType').on("change", function() {
       let type=$(this).val();
-      CSM.resetModelDepth(); // reset to depth to first one
-      CSM.resetModelMetric(); // reset metric to first one
+      CSM.setupModelDepth(CSM.csm_models,type);
+      // reset metric to 0
+      CSM.setupModelMetric(CSM.csm_models,0);
   });
 
   $('.csm-latlon-item').on("focus", function() {
@@ -47,17 +48,18 @@ jQuery(document).ready(function() {
 
   $("#csm-search-type").on('change', function () {
       let type=$(this).val();
-      if(type == "dismiss") {  // reset to initial state
-        } else {
-          CSM.showSearch(type);
-  window.console.log( "initiate a search session...",type);
-//          CSM.freshSearch();
-      }
+      CSM.showSearch(type);
   });
 
   $("#toSearch").on('click', function () {
 window.console.log("Calling toSearch..");
         CSM.freshSearch(0); // type = 0, first one
+  });
+
+
+  $("#toReset").on('click', function () {
+window.console.log("Calling toReset..");
+        CSM.resetAll();
   });
 
   $("#cxm-model-cfm").change(function() {
@@ -90,7 +92,6 @@ window.console.log("Calling toSearch..");
   CSM.setupCSMInterface();
 
 window.console.log("after main");
-
 window.console.log("current zoom ", viewermap.getZoom());
 
 }); // end of MAIN

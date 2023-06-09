@@ -50,6 +50,7 @@ var CSM = new function () {
     };
 
     this.searchType = {
+        none: 'none', 
         model: 'model',
         latlon: 'latlon'
     };
@@ -138,23 +139,29 @@ window.console.log("flyingBounds --new list");
 
         this.searchingType = type;
         switch (type) {
+            case this.searchType.none:
+               $("#csm-search-btn").css('display','none');
+               break;
             case this.searchType.model:
+        // enable search btn
+               $("#csm-search-btn").css('display','');
                break;
             case this.searchType.latlon:
-                $("#csm-latlon").show();
-                drawRectangle();
-                break;
+        // enable search btn
+               $("#csm-search-btn").css('display','');
+        // enable latlon 
+               $("#csm-latlon").show();
+               drawRectangle();
+               break;
             default:
                 // no action
         }
-        // enable search btn
-        $("#csm-search-btn").css('display','');
     };
 
 // reset from the reset button
 // reset option button, the map to original state
 // but leave the external model state the same
-    this.reset = function () {
+    this.resetAll = function () {
 
 window.console.log("calling reset");
         this.resetSearch();
@@ -172,8 +179,10 @@ window.console.log("calling reset");
         }
 
         // go back to default view,
-window.console.log("call setView.. default");
         viewermap.setView(this.defaultMapView.coordinates, this.defaultMapView.zoom);
+        // reset model/metric to initial state
+	CSM.resetModelType();
+
     };
 
 // reset just the search only
@@ -181,10 +190,8 @@ window.console.log("call setView.. default");
 window.console.log("calling --->> resetSearch.");
         $("#csm-search-btn").css('display','none');
 //
-        this.resetLatLonSearch();
+        this.resetLatLon();
     };
-
-
 
     this.freshSearch = function (){
 
@@ -193,7 +200,7 @@ window.console.log("XX new freshSearch...");
       // retrieve model's database table name
       // depth value  
       // which metric type
-      $("#csm-wait-spin").css('display','');
+      this.startWaitSpin();
          
       let tidx=$("#modelType").val();
       let model=this.csm_models[tidx];
@@ -222,8 +229,14 @@ window.console.log(tidx,midx,didx);
         this.search(this.searchType.model, spec, []);
       } else {
       }
-      $("#csm-wait-spin").css('display','none');
     };
+
+    this.startWaitSpin = function() {
+      $("#csm-wait-spin").css('display','');
+    }
+    this.removeWaitSpin = function() {
+      $("#csm-wait-spin").css('display','none');
+    }
 
     // search with table_name, depth, type (ie. aphi)
     // expect at most 80k lat/lon/val
@@ -499,6 +512,13 @@ window.console.log(" ==> here in replace color");
             this.setupModelMetric(this.csm_models,0);
             this.setupModelLayers(this.csm_models);
     };
+	
+    // need to trigger modelType change to first model
+    this.resetModelType = function () {
+       let elt=document.getElementById('modelType');
+       elt.value = 0;
+       $("#modelType").change();
+    }
 
     // mlist,
     // { "gid":gid, "model_name":mn, "table_name":tn, "jblob":jblob }

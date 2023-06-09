@@ -249,26 +249,26 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
          <div class="row">
            <div class="input-group filters mt-1 mb-1" style="margin-left:15px; border:1px solid blue">
              <select id="csm-search-type" class="custom-select custom-select-sm">
-               <option value="dismiss">Search by </option>
+               <option value="none">Search by </option>
                <option value="model">Model</option>
                <option value="latlon">Latitude &amp; Longitude</option>
              </select>
              <div class="input-group-append">
-               <button id="refreshBtn" type="button" onclick="refreshAll()" class="btn btn-dark" >Reset</button>
+               <button id="toReset" type="button" class="btn btn-dark" >Reset</button>
              </div>
            </div>
 
-           <div id="csm-search-btn" class="row" style="margin-left:30px;;display:;">
+           <div id="csm-search-btn" class="row" style="margin-left:30px;;display:none;">
              <button id="toSearch" class="btn" style="color:#395057;background-color:#f2f2f2;border:1px solid #ced4da;border-radius:0.2rem;"><span>SEARCH</span></button>
            </div>
          </div>
 
-<!-- XXX -->
+<!-- search-option -->
          <div id="search-option" >
-            <ul id="option" class="navigation" style="display:;border:solid 1px green;padding: 0 0 0 0;">
-              <li id='csm-model' class='navigationLi' style="border:">
+            <ul id="option" class="navigation" style="padding: 0 0 0 0;">
+              <li id='csm-model' class='navigationLi' style="display:none">
               </li>
-              <li id='csm-latlon' class='navigationLi mt-1' style="border:solid 1px red">
+              <li id='csm-latlon' class='navigationLi mt-1' style="display:none; border:solid 1px red">
                 <div id='latlonMenu' class='menu'>
                   <div class="row">
                     <div class="col-5">
