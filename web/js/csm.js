@@ -141,15 +141,22 @@ window.console.log("flyingBounds --new list");
         switch (type) {
             case this.searchType.none:
                $("#csm-search-btn").css('display','none');
+               $("#csm-model").hide();
+               $("#csm-latlon").hide();
+               skipRectangle();
                break;
             case this.searchType.model:
         // enable search btn
                $("#csm-search-btn").css('display','');
+               $("#csm-model").show();
+               $("#csm-latlon").hide();
+               skipRectangle();
                break;
             case this.searchType.latlon:
         // enable search btn
                $("#csm-search-btn").css('display','');
         // enable latlon 
+               $("#csm-model").hide();
                $("#csm-latlon").show();
                drawRectangle();
                break;
@@ -181,7 +188,7 @@ window.console.log("calling reset");
         // go back to default view,
         viewermap.setView(this.defaultMapView.coordinates, this.defaultMapView.zoom);
         // reset model/metric to initial state
-	CSM.resetModelType();
+     CSM.resetModelType();
 
     };
 
@@ -190,6 +197,7 @@ window.console.log("calling reset");
 window.console.log("calling --->> resetSearch.");
         $("#csm-search-btn").css('display','none');
 //
+        this.resetModel();
         this.resetLatLon();
     };
 
@@ -264,12 +272,12 @@ window.console.log("Did not find any PHP result");
                 lonlist=tmp['lon'];
                 vallist=tmp['val'];
 
-		clearAllPixiOverlay();
-		this.current_pixi_gid++;
+          clearAllPixiOverlay();
+          this.current_pixi_gid++;
 
-	        var pixi=makePixiOverlayLayerWithList(
-			this.current_pixi_gid,
-			latlist,lonlist,vallist);
+             var pixi=makePixiOverlayLayerWithList(
+               this.current_pixi_gid,
+               latlist,lonlist,vallist);
 
                 return(latlist,lonlist,vallist);
             }
@@ -417,6 +425,10 @@ window.console.log("generateMetadataTable..");
           return false;
         }
 
+        this.resetModel = function () {
+          $("#csm-model").hide();
+        }
+
         this.resetLatLon = function () {
           if( this.searchingType != this.searchType.latlon) return;
           $("#csm-firstLatTxt").val("");
@@ -512,9 +524,10 @@ window.console.log(" ==> here in replace color");
             this.setupModelMetric(this.csm_models,0);
             this.setupModelLayers(this.csm_models);
     };
-	
+     
     // need to trigger modelType change to first model
     this.resetModelType = function () {
+window.console.log("resetModelType");
        let elt=document.getElementById('modelType');
        elt.value = 0;
        $("#modelType").change();
