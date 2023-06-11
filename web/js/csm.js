@@ -297,6 +297,7 @@ window.console.log("Did not find any PHP result");
     // fromWhere=0 is from text
     // fromWhere=1 from drawRectangle call
     this.searchLatlon = function (fromWhere, rect) {
+window.console.log("calling searchLatlon..");
         let criteria = [];
         let spec = [];
         if( fromWhere == 0) {
