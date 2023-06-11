@@ -33,10 +33,6 @@ var CSM = new function () {
     this.current_modelDepth_idx=undefined; 
     this.current_modelMetric_idx=undefined; 
 
-    // locally used, floats
-    var csm_depth_min=undefined;
-    var csm_depth_max=undefined;
-
     var site_colors = {
         normal: '#006E90',
         selected: '#B02E0C',

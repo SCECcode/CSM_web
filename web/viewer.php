@@ -280,13 +280,13 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                           id="firstLatTxt"
                           title="first lat"
                           onfocus="this.value=''"
-                          class="latlon-item form-control">
+                          class="csm-latlon-item form-control">
                       <input type="text" 
                           id="firstLonTxt" 
                           placeholder='Longitude' 
                           title="first lon"
                           onfocus="this.value=''" 
-                          class="latlon-item form-control mt-1">
+                          class="csm-latlon-item form-control mt-1">
                     </div>
                     <div class="col-2 pl-1 pr-0">
                       <input type="text"
@@ -294,13 +294,13 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                           title="optional second lat"
                           value='optional'
                           onfocus="this.value=''"
-                          class="latlon-item form-control">
+                          class="csm-latlon-item form-control">
                       <input type="text"
                           id="secondLonTxt"
                           title="optional second lon"
                           value='optional'
                           onfocus="this.value=''"
-                          class="latlon-item form-control mt-1">
+                          class="csm-latlon-item form-control mt-1">
                     </div>
                   </div>
                 </div>
