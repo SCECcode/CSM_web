@@ -9,7 +9,7 @@ class CSM extends SpatialData
     if (!$this->connection) { die('Could not connect'); }
   }
 
-  public function search($type, $spec="", $criteria="")
+  public function searchForRegion($type, $spec="", $criteria="")
   {
     $query = "";
 
@@ -27,53 +27,45 @@ class CSM extends SpatialData
     }
     list($model_tb, $depth, $metric) = $spec;
 
-    $error = false;
+    if (count($criteria) !== 4) {
+      $this->php_result = "BAD criteria";
+      return $this;
+    }
 
-    switch ($type) {
-      case "latlon":
-        if (count($criteria) !== 4) {
-          $this->php_result = "BAD criteria";
-          return $this;
-        }
+    $criteria = array_map("floatVal", $criteria);
+    list($firstlat, $firstlon, $secondlat, $secondlon) = $criteria;
 
-        $criteria = array_map("floatVal", $criteria);
-        list($firstlat, $firstlon, $secondlat, $secondlon) = $criteria;
+    $minlon = $firstlon;
+    $maxlon = $secondlon;
+    if($firstlon > $secondlon) {
+      $minlon = $secondlon;
+      $maxlon = $firstlon;
+    }
 
-        $minlon = $firstlon;
-        $maxlon = $secondlon;
-        if($firstlon > $secondlon) {
-          $minlon = $secondlon;
-          $maxlon = $firstlon;
-        }
+    $minlat = $firstlat;
+    $maxlat = $secondlat;
+    if($firstlat > $secondlat) {
+      $minlat = $secondlat;
+      $maxlat = $firstlat;
+    }
 
-        $minlat = $firstlat;
-        $maxlat = $secondlat;
-        if($firstlat > $secondlat) {
-          $minlat = $secondlat;
-          $maxlat = $firstlat;
-        }
+    $query = "SELECT lat,lon".$metric." from ".$model_tb." WHERE dep = ".$depth;
+    $result = pg_query($this->connection, $query);
 
-
-	$query = "SELECT lat,lon".$metric." from ".$model_tb." WHERE dep = ".$depth;
-        $result = pg_query($this->connection, $query);
+    print($query);
 
 //        $query = "SELECT gid FROM XXX_tb WHERE ST_Contains(ST_MakeEnvelope( $1, $2, $3, $4, 4326), XXX_tb.geom)";
 //        $data = array($minlon, $minlat, $maxlon, $maxlat);
 //        $result = pg_query_params($this->connection, $query, $data);
 
-        $csm_result = array();
+    $csm_result = array();
 
-        while($row = pg_fetch_object($result)) {
+    while($row = pg_fetch_object($result)) {
           $csm_result[] = $row;
-        }
+    }
 
-        $this->php_result = $csm_result;
-        return $this;
-        break;
-
-      }
-      $this->php_result = "BAD";
-      return $this;
+    $this->php_result = $csm_result;
+    return $this;
   }
 
 
@@ -83,7 +75,6 @@ class CSM extends SpatialData
     if (!is_array($spec)) {
       $spec = array($spec);
     }
-    $error = false;
 
 // need to get the dataset, depth, metric
     if (count($spec) !== 3) {

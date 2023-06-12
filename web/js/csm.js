@@ -195,46 +195,59 @@ window.console.log("calling --->> resetSearch.");
         this.resetLatlon();
     };
 
-    this.freshSearch = function (){
-
-window.console.log("XX new freshSearch...");
-
-      // retrieve model's database table name
-      // depth value  
-      // which metric type
-         
+    this.getSpec = function() {
       let tidx=parseInt($("#modelType").val());
       let model=this.csm_models[tidx];
       let tmodel=model['table_name'];
       window.console.log("name is ", model['table_name']);
 
-      let didx=this.current_modelDepth_idx; 
+      let didx=this.current_modelDepth_idx;
       let d=model['jblob']['meta'];
       let dd=d['dataByDEP'];
       let ddd=dd[didx];
       let ddepth=ddd["dep"];
       window.console.log("modelDepth_idx is "+didx+"("+ddepth+"km)");
 
-      let midx=this.current_modelMetric_idx; 
+      let midx=this.current_modelMetric_idx;
       let m=model['jblob']['metric'];
       let mmetric=m[midx];
       window.console.log("modelMetric_idx is "+midx+"("+mmetric+")");
 
+      let spec = [ tmodel, ddepth, mmetric ];
+      let spec_idx = [ tidx,midx,didx ];
+
+      return [spec, spec_idx];
+    }
+
+    this.freshSearch = function (){
+
+window.console.log("calling, new freshSearch...");
+
+     // retrieve model's database table name
+     // depth value  
+     // which metric type
+         
+      let spec = [];
+      let spec_idx = [];
+      [ spec, spec_idx ] = this.getSpec();
+
 // initiate search if it is for whole model or
 // wait for a region 
       if(this.searchingType == this.searchType.model) {
-window.console.log(tidx,midx,didx);
-        var pixilayer= CSM.lookupModelLayers(tidx,midx,didx);
+window.console.log("in freshSearch --model");
+        var pixilayer= CSM.lookupModelLayers(
+                       spec_idx[0], spec_idx[1], spec_idx[2]);
 
         if(pixilayer) { // reuse and add to viewer map 
           clearAllPixiOverlay();
           viewermap.addLayer(pixilayer);
           } else {
-            let spec = [ tmodel, ddepth, mmetric ];
-            let other = [ tidx,midx,didx ];
-            pixilayer = this.search(this.searchType.model, spec, other);
+            pixilayer = this.search(this.searchType.model, spec, spec_idx);
         }
-      } else {
+        return;
+      }
+      if(this.searchingType == this.searchType.latlon) {
+window.console.log("in freshSearch --latlon");
       }
     };
 
@@ -248,7 +261,7 @@ window.console.log(tidx,midx,didx);
     // search with table_name, depth, type (ie. aphi)
     // expect at most 80k lat/lon/val
     // criteria is lat,lon,lat2,lon2 for searching with LatLon
-    // 	        is tidx,midx,didx for storing the pixi into a list	
+    //              is tidx,midx,didx for storing the pixi into a list     
     this.search = function(type, spec, criteria) {
 
         CSM.startWaitSpin();
@@ -286,13 +299,11 @@ window.console.log("Did not find any PHP result");
                              latlist,lonlist,vallist,spec);
                     CSM.removeWaitSpin();
 
-                    if(type==CSM.searchType.model) {
-                        CSM.addModelLayers(criteria[0],criteria[1],criteria[2],pixi);
-                    }
-		    return pixi;
+                    CSM.addModelLayers(criteria[0],criteria[1],criteria[2],pixi);
+                    return pixi;
                     } else { // for Latlon
 window.console.log("XXX search for lat lon one..");
-                
+                }
             }
         });
     };
@@ -304,6 +315,10 @@ window.console.log("XXX search for lat lon one..");
 window.console.log("calling searchLatlon..");
         let criteria = [];
         let spec = [];
+        let spec_info = [];
+
+        [spec, spec_info] = this.getSpec();
+
         if( fromWhere == 0) {
             let lat1=$("#csm-firstLatTxt").val();
             let lon1=$("#csm-firstLonTxt").val();
