@@ -270,25 +270,29 @@ window.console.log(tidx,midx,didx);
             if(search_result === "[]") {
 window.console.log("Did not find any PHP result");
             } else {
-                let tmp=JSON.parse(search_result); 
-                latlist=tmp['lat'];
-                lonlist=tmp['lon'];
-                vallist=tmp['val'];
+                if(type==CSM.searchType.model) { 
+                    let tmp=JSON.parse(search_result); 
+                    latlist=tmp['lat'];
+                    lonlist=tmp['lon'];
+                    vallist=tmp['val'];
 
-                clearAllPixiOverlay();
-                this.current_pixi_gid++;
+                    clearAllPixiOverlay();
+                    this.current_pixi_gid++;
 
-                let spec = {'data_max':3.0, 'data_min':1.0};
+                    let spec = {'data_max':3.0, 'data_min':1.0};
 
-                var pixi=makePixiOverlayLayerWithList(
-                         this.current_pixi_gid,
-                         latlist,lonlist,vallist,spec);
-                CSM.removeWaitSpin();
+                    var pixi=makePixiOverlayLayerWithList(
+                             this.current_pixi_gid,
+                             latlist,lonlist,vallist,spec);
+                    CSM.removeWaitSpin();
 
-                if(type==CSM.searchType.model) {
-                    CSM.addModelLayers(criteria[0],criteria[1],criteria[2],pixi);
-                }
-		return pixi;
+                    if(type==CSM.searchType.model) {
+                        CSM.addModelLayers(criteria[0],criteria[1],criteria[2],pixi);
+                    }
+		    return pixi;
+                    } else { // for Latlon
+window.console.log("XXX search for lat lon one..");
+                
             }
         });
     };

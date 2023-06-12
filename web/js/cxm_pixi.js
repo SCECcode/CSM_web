@@ -361,7 +361,7 @@ function makePixiOverlayLayer(gid,pixiLatlngList,spec) {
 //XXX,  new PIXI.particles.ParticleContainer(maxSize, properties, batchSize)
       var a = new PIXI.particles.ParticleContainer(length, {vertices: true, tint: true});
       // add properties for our patched particleRenderer:
-window.console.log("HERE at container..");
+window.console.log("pixi at container..");
       a.texture = markerTextures[i];
       a.baseTexture = markerTextures[i].baseTexture;
       a.anchor = {x: 0.5, y: 0.5};
@@ -381,7 +381,7 @@ window.console.log("HERE at container..");
       var getScale = utils.getScale;
       var invScale = 1 / getScale();
 
-window.console.log("HERE at event");
+window.console.log("pixi at event");
 window.console.log("in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>"+getScale()+" invScale"+invScale);
 
       if (event.type === 'add') {
@@ -458,7 +458,7 @@ var marker = new PIXI.Point([34.0105, -120.8415], {color: "#ff7800", weight: 1} 
 //window.console.log( "      adding  child at..("+latlng['lat']+')('+latlng['lng']+')');
            }
         }
-window.console.log("HERE total of len, ",len_sum); 
+window.console.log("pixi: total of len, ",len_sum); 
      }
 
       // change size of the marker after zoomin and zoomout
@@ -509,7 +509,7 @@ window.console.log(" ZOOManim.. new targetScale "+targetScale);
 
     pixiOverlayList.push({"gid":gid,"vis":1,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
 
-window.console.log(">>> HERE..");
+window.console.log(">>> pixi..");
 
     return overlay;
 }

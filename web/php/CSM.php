@@ -19,19 +19,20 @@ class CSM extends SpatialData
     if (!is_array($criteria)) {
       $criteria = array($criteria);
     }
+
+    // need to get the dataset, depth, metric
+    if (count($spec) !== 3) {
+      $this->php_result = "BAD spec";
+      return $this;
+    }
+    list($model_tb, $depth, $metric) = $spec;
+
     $error = false;
 
     switch ($type) {
-      case "layer":
-
-// need dataset, depth, metric 
-        break;
-
       case "latlon":
-// need to get the dataset, depth, metric
-
         if (count($criteria) !== 4) {
-          $this->php_result = "BAD";
+          $this->php_result = "BAD criteria";
           return $this;
         }
 
@@ -53,9 +54,12 @@ class CSM extends SpatialData
         }
 
 
-        $query = "SELECT gid FROM XXX_tb WHERE ST_Contains(ST_MakeEnvelope( $1, $2, $3, $4, 4326), XXX_tb.geom)";
-        $data = array($minlon, $minlat, $maxlon, $maxlat);
-        $result = pg_query_params($this->connection, $query, $data);
+	$query = "SELECT lat,lon".$metric." from ".$model_tb." WHERE dep = ".$depth;
+        $result = pg_query($this->connection, $query);
+
+//        $query = "SELECT gid FROM XXX_tb WHERE ST_Contains(ST_MakeEnvelope( $1, $2, $3, $4, 4326), XXX_tb.geom)";
+//        $data = array($minlon, $minlat, $maxlon, $maxlat);
+//        $result = pg_query_params($this->connection, $query, $data);
 
         $csm_result = array();
 
@@ -91,6 +95,7 @@ class CSM extends SpatialData
 
     $query = "SELECT lat,lon,".$metric." from ".$model_tb." WHERE dep = ".$depth;
     $result = pg_query($this->connection, $query);
+
 
     $latlist = array();
     $lonlist = array();
