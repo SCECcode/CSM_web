@@ -6,7 +6,7 @@ abstract class SpatialData
   protected $connection;
   protected $php_result = [];
 
-  abstract public function search($type, $criteria);
+  abstract public function search($type, $spec, $criteria);
 
   public function outputJSON()
   {

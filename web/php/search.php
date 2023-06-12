@@ -12,16 +12,17 @@ if (is_object($spec[0])) { $spec = (array)$spec[0]; }
 
 //print_r($spec);exit;
 //print_r($criteria);exit;
+//print_r($type); exit;
 
-if ($criteria === []) {
+if ($type === "model") {
   try {
-    print $csm->searchForAll($type, $spec)->outputJSON();
+    print $csm->searchForModel($type, $spec)->outputJSON();
   } catch (BadFunctionCallException $e) {
     print "csm search error";
   }
   } else {
     try {
-      print $csm->searchForRegion($type, $spec, $criteria)->outputJSON();
+      print $csm->search($type, $spec, $criteria)->outputJSON();
     } catch (BadFunctionCallException $e) {
       print "csm search error";
     }

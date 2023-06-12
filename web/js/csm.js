@@ -24,9 +24,9 @@ var CSM = new function () {
     //  to avoid generate these repeatly
     this.csm_model_pixi_layers;
 
-    // { "gid":gid, "layer": layer } 
+    // { "gid":gid, "scec_properties": prop, "layer": layer } 
     // from searchLatlon, to be downloaded
-    this.csm_pixi_layers = [];
+    this.csm_download_layers = [];
 
     this.current_pixi_gid=0;
 
@@ -185,7 +185,19 @@ window.console.log("calling reset");
         // reset model/metric to initial state
      CSM.resetModelType();
 
-    };
+   };
+ 
+   // given a dataset's db_tb name, return matching dataset name
+   this.lookupDataset = function(tb_nm) {
+        let sz=this.csm_models.length;
+        for( let i=0; i<sz; i++) {
+          let term=this.csm_models[i];
+          if(term.table_name == tb_nm) { 
+            return term.model_name;
+          }
+        }
+        return("bad model");
+   };	     
 
 // reset just the search only
     this.resetSearch = function (){
@@ -272,6 +284,7 @@ window.console.log("in freshSearch --latlon");
 
         let JSON_criteria = JSON.stringify(tmp);
         let JSON_spec = JSON.stringify(spec);
+        let dataset=this.lookupDataset(spec[0]);
 
         $.ajax({
             url: "php/search.php",
@@ -301,8 +314,27 @@ window.console.log("Did not find any PHP result");
 
                     CSM.addModelLayers(criteria[0],criteria[1],criteria[2],pixi);
                     return pixi;
-                    } else { // for Latlon
-window.console.log("XXX search for lat lon one..");
+                }
+                if(type==CSM.searchType.latlon) { 
+                    let jblob=JSON.parse(search_result); 
+                    let sz=jblob.length;
+                    if(sz > 0) { 
+                      let first = jblob[0];
+                      let scec_properties={};
+                      let gid = CSM.csm_download_layers.length;
+                      scec_properties.gid=gid;
+                      scec_properties.depth=first.dep;
+                      scec_properties.lon1=criteria[0];
+                      scec_properties.lat1=criteria[1];
+		      scec_properties.lon2=criteria[2];
+		      scec_properties.lat2=criteria[3];
+                      scec_properties.dataset=dataset;
+                      scec_properties.note="sz="+sz;
+                      let tlayer={"gid":gid, "scec_properties":scec_properties, "jblob":jblob}; 
+                      CSM.csm_download_layers.push(tlayer);
+                      CSM.addToMetadataTable(tlayer);
+                      CSM.removeWaitSpin();
+	            }	
                 }
             }
         });
@@ -379,9 +411,10 @@ window.console.log("flyingBounds --latlon");
         html += `<tr csm-metadata-gid="${layer.scec_properties.gid}">`;
 
         html += `<td><button class=\"btn btn-sm cxm-small-btn\" id=\"button_meta_${layer.scec_properties.gid}\" title=\"remove the site\" onclick=CSM.unselectSiteByGid("${layer.scec_properties.gid}");><span id=\"csm_metadata_${layer.scec_properties.gid}\" class=\"glyphicon glyphicon-trash\"></span></button></td>`;
+        html += `<td class="meta-data">${layer.scec_properties.gid}</td>`;
+        html += `<td class="meta-data">${layer.scec_properties.dataset}</td>`;
         html += `<td class="meta-data">${layer.scec_properties.depth}</td>`;
         html += `<td class="meta-data">${layer.scec_properties.note} </td>`;
-        html += `<td class="meta-data">......</td>`;
         html += `</tr>`;
         return html;
     };

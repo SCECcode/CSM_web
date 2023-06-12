@@ -9,7 +9,7 @@ class CSM extends SpatialData
     if (!$this->connection) { die('Could not connect'); }
   }
 
-  public function searchForRegion($type, $spec="", $criteria="")
+  public function search($type, $spec="", $criteria="")
   {
     $query = "";
 
@@ -20,7 +20,7 @@ class CSM extends SpatialData
       $criteria = array($criteria);
     }
 
-    // need to get the dataset, depth, metric
+// need to get the dataset, depth, metric
     if (count($spec) !== 3) {
       $this->php_result = "BAD spec";
       return $this;
@@ -49,10 +49,9 @@ class CSM extends SpatialData
       $maxlat = $firstlat;
     }
 
-    $query = "SELECT lat,lon".$metric." from ".$model_tb." WHERE dep = ".$depth;
+    $query = "SELECT * from ".$model_tb." WHERE ST_Contains(ST_MakeEnvelope(".$minlon.",".$minlat.",".$maxlon.",".$maxlat.", 4326),".$model_tb.".geom) and dep = ".$depth;
+    
     $result = pg_query($this->connection, $query);
-
-    print($query);
 
 //        $query = "SELECT gid FROM XXX_tb WHERE ST_Contains(ST_MakeEnvelope( $1, $2, $3, $4, 4326), XXX_tb.geom)";
 //        $data = array($minlon, $minlat, $maxlon, $maxlat);
@@ -69,7 +68,7 @@ class CSM extends SpatialData
   }
 
 
-  public function searchForAll($type, $spec="")
+  public function searchForModel($type, $spec="")
   { 
 
     if (!is_array($spec)) {
@@ -87,6 +86,7 @@ class CSM extends SpatialData
     $query = "SELECT lat,lon,".$metric." from ".$model_tb." WHERE dep = ".$depth;
     $result = pg_query($this->connection, $query);
 
+//    print($query);
 
     $latlist = array();
     $lonlist = array();
