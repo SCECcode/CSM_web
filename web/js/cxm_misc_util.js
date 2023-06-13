@@ -117,7 +117,7 @@ function inList(target, glist) {
 
 
 function updateDownloadCounter(select_count) {
-//    window.console.log("download counter updated.."+select_count);
+    window.console.log("download counter updated.."+select_count);
     let downloadCounterElem = $("#download-counter");
     let downloadBtnElem = $("#download-all");
     let placeholderTextElem = $("#placeholder-row");

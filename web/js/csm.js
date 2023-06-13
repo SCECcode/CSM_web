@@ -23,12 +23,13 @@ var CSM = new function () {
     //  csm_model_pixi_layers['model_id]['metric_id']['depth_id']
     //  to avoid generate these repeatly
     this.csm_model_pixi_layers;
-
-    // { "gid":gid, "scec_properties": prop, "layer": layer } 
-    // from searchLatlon, to be downloaded
-    this.csm_download_layers = [];
-
     this.current_pixi_gid=0;
+
+    // { "gid":gid, "scec_properties": prop, "jblob": jblob } 
+    // from searchLatlon, to be downloaded
+    // scec_properties : gid, depth, lon1, lat1, lon2, lat2, dataset, note
+    // jblob is JSON blob of all the rows from the db query
+    this.csm_downloads = [];
 
     this.current_modelDepth_idx=undefined; 
     this.current_modelMetric_idx=undefined; 
@@ -49,18 +50,50 @@ var CSM = new function () {
         model: 'model',
         latlon: 'latlon'
     };
+    this.searchingType=this.searchType.none;
 
-    this.searchingType=this.searchType.model;
+
+var csm_csv_keys= {
+LON:'LON',
+LAT:'LAT',
+DEP:'DEP',
+See:'See',
+Sen:'Sen',
+Seu:'Seu',
+Snn:'Snn',
+Snu:'Snu',
+Suu:'Suu',
+SHmax:'SHmax',
+SHmax_unc:'SHmax_unc',
+phi:'phi',
+R:'R',
+Aphi:'Aphi',
+iso:'iso',
+dif:'dif',
+mss:'mss',
+S1:'S1',
+S2:'S2',
+S3:'S3',
+V1x:'V1x',
+V1y:'V1y',
+V1z:'V1z',
+V2x:'V2x',
+V2y:'V2y',
+V2z:'V2z',
+V3x:'V3x',
+V3y:'V3y',
+V3z:'V3z',
+V1pl:'V1pl',
+V2pl:'V2pl',
+V3pl:'V3pl',
+V1azi:'V1azi',
+V2azi:'V2azi',
+V3azi:'V3azi',
+};
+
     var tablePlaceholderRow = `<tr id="placeholder-row">
                         <td colspan="9">Metadata for selected region will appear here.</td>
                     </tr>`;
-
-    this.activateData = function() {
-        this.showOnMap();
-        $("div.control-container").hide();
-        $("#csm-controls-container").show();
-
-    };
 
 /********** show layer/select functions *********************/
 
@@ -83,51 +116,6 @@ var CSM = new function () {
             }
         }
     };
-
-    // create a all model layer with circle markers with
-    //  with table_name, depth, "aphi" 
-    //  lat,lon,val
-    // ie. meta_data,
-    // aphi_max, aphi_min,dep
-    this.createActiveLayerGroupWithGids = function(glist) {
-
-        // remove the old ones and remove from result table
-        this.clearAllSelections()
-        this.csm_active_layers.remove();
-        this.csm_active_layers= new L.FeatureGroup();
-        this.csm_active_gid=[];
-        this.csm_active_markerLocations = [];
-
-        let gsz=glist.length;
-        let lsz= this.csm_pixi_layers.length;
-        let i_start=0;
-
-        for (let j=0; j<gsz; j++) {
-          let gid=glist[j];
-          for (let i=i_start; i< lsz; i++) {
-            let layer = this.csm_pixi_layers[i];
-            if (layer.hasOwnProperty("scec_properties")) {
-               if (gid == layer.scec_properties.gid) {
-                  this.replaceColor(layer);
-                  this.csm_active_layers.addLayer(layer);
-                  this.csm_active_gid.push(gid);
-                  this.csm_active_markerLocations.push(layer.getLatLng())                      
-                  i_start=i+1;
-                  break;
-               }
-            }
-          }
-        }
-        replaceResultTableBodyWithGids(glist);
-        this.csm_active_layers.addTo(viewermap);
-
-        if(this.csm_active_markerLocations.length > 0) {
-          let bounds = L.latLngBounds(this.csm_active_markerLocations);
-window.console.log("flyingBounds --new list");
-          viewermap.flyToBounds(bounds);
-        }
-    };
-
 
 /********** search/layer  functions *********************/
     this.showSearch = function (type) {
@@ -197,7 +185,7 @@ window.console.log("calling reset");
           }
         }
         return("bad model");
-   };	     
+   };             
 
 // reset just the search only
     this.resetSearch = function (){
@@ -258,7 +246,9 @@ window.console.log("in freshSearch --model");
         }
         return;
       }
+
       if(this.searchingType == this.searchType.latlon) {
+// XXX
 window.console.log("in freshSearch --latlon");
       }
     };
@@ -321,20 +311,21 @@ window.console.log("Did not find any PHP result");
                     if(sz > 0) { 
                       let first = jblob[0];
                       let scec_properties={};
-                      let gid = CSM.csm_download_layers.length;
+                      let gid = CSM.csm_downloads.length;
                       scec_properties.gid=gid;
                       scec_properties.depth=first.dep;
                       scec_properties.lon1=criteria[0];
                       scec_properties.lat1=criteria[1];
-		      scec_properties.lon2=criteria[2];
-		      scec_properties.lat2=criteria[3];
+                      scec_properties.lon2=criteria[2];
+                      scec_properties.lat2=criteria[3];
                       scec_properties.dataset=dataset;
                       scec_properties.note="sz="+sz;
-                      let tlayer={"gid":gid, "scec_properties":scec_properties, "jblob":jblob}; 
-                      CSM.csm_download_layers.push(tlayer);
-                      CSM.addToMetadataTable(tlayer);
+                      let result={"gid":gid, "scec_properties":scec_properties, "jblob":jblob}; 
+                      CSM.csm_downloads.push(result);
+                      CSM.addToMetadataTable(result);
+                      updateDownloadCounter(gid+1);
                       CSM.removeWaitSpin();
-	            }	
+                    }        
                 }
             }
         });
@@ -384,7 +375,6 @@ window.console.log("calling searchLatlon..");
         regionLocations.push(L.latLng(criteria[0],criteria[1]));
         regionLocations.push(L.latLng(criteria[2],criteria[3]));
         let bounds = L.latLngBounds(regionLocations);
-window.console.log("flyingBounds --latlon");
         viewermap.flyToBounds(bounds);
     };
 
@@ -398,25 +388,35 @@ window.console.log("flyingBounds --latlon");
         }
         let html = generateMetadataTableRow(layer);
         $table.prepend(html);
+        $(`#metadata-table tbody tr[id='placeholder-row']`).remove();
     };
 
+// assume there is only 1
     this.removeFromMetadataTable = function (gid) {
+        let $table = $("#metadata-table tbody");
+        $table.prepend(tablePlaceholderRow);
         $(`#metadata-table tbody tr[csm-metadata-gid='${gid}']`).remove();
     };
 
     var generateMetadataTableRow = function(layer) {
-        let $table = $("#metadata-table");
         let html = "";
-
         html += `<tr csm-metadata-gid="${layer.scec_properties.gid}">`;
 
-        html += `<td><button class=\"btn btn-sm cxm-small-btn\" id=\"button_meta_${layer.scec_properties.gid}\" title=\"remove the site\" onclick=CSM.unselectSiteByGid("${layer.scec_properties.gid}");><span id=\"csm_metadata_${layer.scec_properties.gid}\" class=\"glyphicon glyphicon-trash\"></span></button></td>`;
+        html += `<td><button class=\"btn btn-sm cxm-small-btn\" id=\"button_meta_${layer.scec_properties.gid}\" title=\"remove the region\" onclick=CSM.unselectRegion("${layer.scec_properties.gid}");><span id=\"csm_metadata_${layer.scec_properties.gid}\" class=\"glyphicon glyphicon-trash\"></span></button></td>`;
         html += `<td class="meta-data">${layer.scec_properties.gid}</td>`;
         html += `<td class="meta-data">${layer.scec_properties.dataset}</td>`;
         html += `<td class="meta-data">${layer.scec_properties.depth}</td>`;
         html += `<td class="meta-data">${layer.scec_properties.note} </td>`;
         html += `</tr>`;
         return html;
+    };
+
+    // there is only 1 latlon region at a time which is the rectangle
+    this.unselectRegion = function(gid) {
+    // there is only 1 latlon region at a time which is the rectangle
+    remove_bounding_rectangle_layer();
+    // remove the entry
+    CSM.removeFromMetadataTable(gid);
     };
 
     var generateMetadataTable = function (results) {
@@ -435,7 +435,7 @@ window.console.log("generateMetadataTable..");
 <!--download all -->
                 <div class="btn-group download-now">
                     <button id="download-all" type="button" class="btn btn-dark" value="metadata"
-                            onclick="CSM.downloadURLsAsZip(this.value);" disabled>
+                            onclick="CSM.downloadData();" disabled>
                             DOWNLOAD&nbsp<span id="download-counter"></span>
                     </button>
                 </div>
@@ -498,51 +498,6 @@ window.console.log("generateMetadataTable..");
           $("#csm-latlon").hide();
         }
 
-/********************* marker color function **************************/
-// marker.scec_properties.high_rate_color, marker.sce_properties.low_rate_color
-// toMake == 1, set the scec_properties color values
-        this.makeLayerColors = function() {
-            let lsz = this.csm_pixi_layers.length;
-            for(let i=0; i<lsz; i++) {
-                let layer=this.csm_pixi_layers[i];
-                let hr = layer.scec_properties.high_rate;
-                let lr = layer.scec_properties.low_rate;
-                layer.scec_properties.low_rate_color = makeRGB(lr, csm_minrate_max, csm_minrate_min );
-                layer.scec_properties.high_rate_color = makeRGB(hr, csm_maxrate_max, csm_maxrate_min );
-            }
-        }
-
-        this.replaceColor = function(layer) {
-            let myColor = site_colors.normal;
-
-            let hr = layer.scec_properties.high_rate;
-            let lr = layer.scec_properties.low_rate;
-            if( this.searchingType == this.searchType.minrate) {
-                myColor = layer.scec_properties.low_rate_color;
-            }
-            if( this.searchingType == this.searchType.maxrate) {
-                myColor = layer.scec_properties.high_rate_color;
-            }
-            if(layer.scec_properties.selected) {
-                myColor = site_colors.selected;
-            }
-            layer.setStyle({fillColor:myColor, color:myColor});
-       }
-
-       this.resetActiveLayerColor = function () {
-            this.csm_active_layers.remove();
-
-window.console.log(" ==> here in replace color");
-            let layers=this.csm_active_layers;
-
-            layers.eachLayer(function(layer) {
-              layer.resetStyle();
-            });
-
-            this.csm_active_layers.addTo(viewermap);
-       }
-
-
 /********************* csm INTERFACE function **************************/
        this.setupCSMInterface = function() {
 
@@ -552,7 +507,6 @@ window.console.log(" ==> here in replace color");
             var $download_queue_table = $('#metadata-table');
             $download_queue_table.floatThead('destroy');
             this.replaceMetadataTable([]);
-            $download_queue_table.addClass('sliprate');
             $download_queue_table.floatThead({
                  scrollContainer: function ($table) {
                      return $table.closest('div#metadata-table-container');
@@ -710,51 +664,17 @@ window.console.log("resetModelType");
    };
 
 /********************** zip utilities functions *************************/
-    this.downloadURLsAsZip = function(ftype) {
-        var nzip=new JSZip();
-        var layers=CSM.csm_active_layers.getLayers();
+    this.downloadData = function() {
         let timestamp=$.now();
-        let mlist=[];
-      
-        var cnt=layers.length;
-        for(var i=0; i<cnt; i++) {
-          let layer=layers[i];
 
-          if( !layer.scec_properties.selected ) {
-            continue;
-          }
-
-          if(ftype == "metadata" || ftype == "all") {
-          // create metadata from layer.scec_properties
-            let m=createMetaData(csm_meta_data[layer.scec_properties.idx]);
-            mlist.push(m);
-          }
-      
-/***** this is for downloading some generated file from the result directory..
-          if(ftype == "extra") {
-            let downloadURL = getDataDownloadURL(layer.scec_properties.csm_id);
-            let dname=downloadURL.substring(downloadURL.lastIndexOf('/')+1);
-            let promise = $.get(downloadURL);
-            nzip.file(dname,promise);
-          }
-***/
-        }
-
-/**
-        var zipfname="CSM_"+timestamp+".zip"; 
-        nzip.generateAsync({type:"blob"}).then(function (content) {
-          // see FileSaver.js
-          saveAs(content, zipfname);
-        })
-***/
-
-        if(mlist.length != 0) {
-//        saveAsJSONBlobFile(mlist, timestamp)
-          var data=getCSVFromMeta(mlist);
+        let cnt=CSM.csm_downloads.length;
+        for(let i=0; i<cnt; i++) {
+          let tmp=CSM.csm_downloads[i];
+          let mlist = tmp.jblob;
+          let data=getCSVFromMeta(mlist);
           saveAsCSVBlobFile(data, timestamp);
         }
     };
-
 
     function getCSVFromMeta(mlist) {
         var len=mlist.length;  // each data is a meta data format
@@ -766,9 +686,9 @@ window.console.log("resetModelType");
         var jlen=keys.length;
         
 //        var csvblob = keys.join(",");
-        var csvblob=sliprate_csv_keys[keys[0]];
+        var csvblob=csm_csv_keys[keys[0]];
         for(let k=1; k< jlen; k++) {
-           csvblob += (','+sliprate_csv_keys[keys[k]]);
+           csvblob += (','+csm_csv_keys[keys[k]]);
         }
         csvblob +='\n';
 
@@ -797,5 +717,4 @@ window.console.log("resetModelType");
 //http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
         return csvblob;
     }
-           
 };
