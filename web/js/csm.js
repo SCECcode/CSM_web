@@ -27,7 +27,7 @@ var CSM = new function () {
 
     // { "gid":gid, "scec_properties": prop, "jblob": jblob } 
     // from searchLatlon, to be downloaded
-    // scec_properties : gid, depth, lon1, lat1, lon2, lat2, dataset, note
+    // scec_properties : gid, depth, lon1, lat1, lon2, lat2, dataset, note, layer
     // jblob is JSON blob of all the rows from the db query
     this.csm_downloads = [];
 
@@ -54,41 +54,41 @@ var CSM = new function () {
 
 
 var csm_csv_keys= {
-LON:'LON',
-LAT:'LAT',
-DEP:'DEP',
-See:'See',
-Sen:'Sen',
-Seu:'Seu',
-Snn:'Snn',
-Snu:'Snu',
-Suu:'Suu',
-SHmax:'SHmax',
-SHmax_unc:'SHmax_unc',
+lon:'LON',
+lat:'LAT',
+dep:'DEP',
+see:'See',
+sen:'Sen',
+seu:'Seu',
+snn:'Snn',
+snu:'Snu',
+suu:'Suu',
+shmax:'SHmax',
+shmax_unc:'SHmax_unc',
 phi:'phi',
-R:'R',
-Aphi:'Aphi',
+r:'R',
+aphi:'Aphi',
 iso:'iso',
 dif:'dif',
 mss:'mss',
-S1:'S1',
-S2:'S2',
-S3:'S3',
-V1x:'V1x',
-V1y:'V1y',
-V1z:'V1z',
-V2x:'V2x',
-V2y:'V2y',
-V2z:'V2z',
-V3x:'V3x',
-V3y:'V3y',
-V3z:'V3z',
-V1pl:'V1pl',
-V2pl:'V2pl',
-V3pl:'V3pl',
-V1azi:'V1azi',
-V2azi:'V2azi',
-V3azi:'V3azi',
+s1:'S1',
+s2:'S2',
+s3:'S3',
+v1x:'V1x',
+v1y:'V1y',
+v1z:'V1z',
+v2x:'V2x',
+v2y:'V2y',
+v2z:'V2z',
+v3x:'V3x',
+v3y:'V3y',
+v3z:'V3z',
+v1pl:'V1pl',
+v2pl:'V2pl',
+v3pl:'V3pl',
+v1azi:'V1azi',
+v2azi:'V2azi',
+v3azi:'V3azi',
 };
 
     var tablePlaceholderRow = `<tr id="placeholder-row">
@@ -171,8 +171,9 @@ window.console.log("calling reset");
         // go back to default view,
         viewermap.setView(this.defaultMapView.coordinates, this.defaultMapView.zoom);
         // reset model/metric to initial state
-     CSM.resetModelType();
-
+        CSM.resetModelType();
+        // reset search type
+	CSM.resetSearchType();
    };
  
    // given a dataset's db_tb name, return matching dataset name
@@ -248,7 +249,6 @@ window.console.log("in freshSearch --model");
       }
 
       if(this.searchingType == this.searchType.latlon) {
-// XXX
 window.console.log("in freshSearch --latlon");
       }
     };
@@ -311,8 +311,8 @@ window.console.log("Did not find any PHP result");
                     if(sz > 0) { 
                       let first = jblob[0];
                       let scec_properties={};
-                      let gid = CSM.csm_downloads.length;
-                      scec_properties.gid=gid;
+                      let gid = get_bounding_rectangle_layer_idx();
+                      scec_properties.gid=gid; 
                       scec_properties.depth=first.dep;
                       scec_properties.lon1=criteria[0];
                       scec_properties.lat1=criteria[1];
@@ -320,10 +320,11 @@ window.console.log("Did not find any PHP result");
                       scec_properties.lat2=criteria[3];
                       scec_properties.dataset=dataset;
                       scec_properties.note="sz="+sz;
-                      let result={"gid":gid, "scec_properties":scec_properties, "jblob":jblob}; 
+                      let result={"scec_properties":scec_properties, "jblob":jblob}; 
                       CSM.csm_downloads.push(result);
                       CSM.addToMetadataTable(result);
-                      updateDownloadCounter(gid+1);
+                      CSM.flyToDownloadBounds();
+                      updateDownloadCounter(CSM.csm_downloads.length);
                       CSM.removeWaitSpin();
                     }        
                 }
@@ -348,7 +349,6 @@ window.console.log("calling searchLatlon..");
             let lat2=$("#csm-secondLatTxt").val();
             let lon2=$("#csm-secondLonTxt").val();
             if(lat1=='' || lon1=='' || lat2=='' || lon2=='') return;
-            remove_bounding_rectangle_layer();
             add_bounding_rectangle(lat1,lon1,lat2,lon2);
             criteria.push(lat1);
             criteria.push(lon1);
@@ -371,10 +371,25 @@ window.console.log("calling searchLatlon..");
 
         let pixi= this.search(CSM.searchType.latlon, spec, criteria);
 
+/****
         let regionLocations = [];
         regionLocations.push(L.latLng(criteria[0],criteria[1]));
         regionLocations.push(L.latLng(criteria[2],criteria[3]));
         let bounds = L.latLngBounds(regionLocations);
+        viewermap.flyToBounds(bounds);
+****/
+    };
+
+   this.flyToDownloadBounds = function() {
+        // collect up all the points
+        let len=this.csm_downloads.length;
+        let locs=[];
+        for(let i=0; i<len; i++) {
+          let tmp=this.csm_downloads[i].scec_properties;
+          locs.push(L.latLng(tmp.lon1,tmp.lat1));
+          locs.push(L.latLng(tmp.lon2,tmp.lat2));
+        }
+        let bounds = L.latLngBounds(locs);
         viewermap.flyToBounds(bounds);
     };
 
@@ -391,10 +406,12 @@ window.console.log("calling searchLatlon..");
         $(`#metadata-table tbody tr[id='placeholder-row']`).remove();
     };
 
-// assume there is only 1
     this.removeFromMetadataTable = function (gid) {
         let $table = $("#metadata-table tbody");
-        $table.prepend(tablePlaceholderRow);
+// prepend it if there is only 1
+        if(this.csm_downloads.length == 1) {
+          $table.prepend(tablePlaceholderRow);
+        }
         $(`#metadata-table tbody tr[csm-metadata-gid='${gid}']`).remove();
     };
 
@@ -411,13 +428,44 @@ window.console.log("calling searchLatlon..");
         return html;
     };
 
-    // there is only 1 latlon region at a time which is the rectangle
-    this.unselectRegion = function(gid) {
-    // there is only 1 latlon region at a time which is the rectangle
-    remove_bounding_rectangle_layer();
+
+// remove from download list and also remove the rectangle layer
+    this.removeFromDownloads = function(gid) {
+      let len=this.csm_downloads.length;
+      for(let i=0; i< len; i++) {
+        let tmp=this.csm_downloads[i].scec_properties;
+        if(tmp.gid == gid) {
+          remove_bounding_rectangle_layer(gid);
+          this.csm_downloads.splice(i,1);
+	  this.flyToDownloadBounds();
+          updateDownloadCounter(CSM.csm_downloads.length);
+          return;
+        }
+      }
+      window.console.log("BAD: removeFromDownloads");
+    }
+
     // remove the entry
-    CSM.removeFromMetadataTable(gid);
+    this.unselectRegion = function(gid) {
+       this.removeFromMetadataTable(gid);
+       this.removeFromDownloads(gid); 
     };
+
+    // clear all the rectangle regions from the map
+    this.unselectAllRegion = function() {
+      let len=this.csm_downloads.length;
+      for(let i=0; i< len; i++) {
+        let tmp=this.csm_downloads[i].scec_properties;
+        this.removeFromMetadataTable(tmp.gid);
+        remove_bounding_rectangle_layer(tmp.gid);
+      }
+      this.csm_downloads = [];
+    }
+
+    // clear the model layer from the map
+    this.unselectAllModel = function() {
+       clearAllPixiOverlay();
+    }
 
     var generateMetadataTable = function (results) {
 window.console.log("generateMetadataTable..");
@@ -484,6 +532,8 @@ window.console.log("generateMetadataTable..");
         }
 
         this.resetModel = function () {
+          if( this.searchingType != this.searchType.model) return;
+          this.unselectAllModel();
           $("#csm-model").hide();
         }
 
@@ -494,7 +544,7 @@ window.console.log("generateMetadataTable..");
           $("#csm-secondLatTxt").val("");
           $("#csm-scecondLonTxt").val("");
           skipRectangle();
-          remove_bounding_rectangle_layer();
+	  this.unselectAllRegion();
           $("#csm-latlon").hide();
         }
 
@@ -537,6 +587,14 @@ window.console.log("generateMetadataTable..");
             this.setupModelLayers(this.csm_models);
     };
      
+    // need to trigger csm-search-type change to none
+    this.resetSearchType = function () {
+window.console.log("resetSerchType");
+       let elt=document.getElementById('csm-search-type');
+       elt.value = "none";
+       $("#csm-search-type").change();
+    }
+
     // need to trigger modelType change to first model
     this.resetModelType = function () {
 window.console.log("resetModelType");
@@ -664,11 +722,35 @@ window.console.log("resetModelType");
    };
 
 /********************** zip utilities functions *************************/
-    this.downloadData = function() {
+    this.downloadURLsAsZip = function(ftype) {
+        var nzip=new JSZip();
         let timestamp=$.now();
+        let mlist=[];
 
+        var cnt=layers.length;
+        for(var i=0; i<cnt; i++) {
+          let layer=layers[i];
+
+          if( !layer.scec_properties.selected ) {
+            continue;
+          }
+
+          if(ftype == "metadata" || ftype == "all") {
+          // create metadata from layer.scec_properties
+            let m=createMetaData(csm_meta_data[layer.scec_properties.idx]);
+            mlist.push(m);
+          }
+          if(mlist.length != 0) {
+            var data=getCSVFromMeta(mlist);
+            saveAsCSVBlobFile(data, timestamp);
+          }
+        }
+    };
+
+    this.downloadData = function() {
         let cnt=CSM.csm_downloads.length;
         for(let i=0; i<cnt; i++) {
+          let timestamp=$.now();
           let tmp=CSM.csm_downloads[i];
           let mlist = tmp.jblob;
           let data=getCSVFromMeta(mlist);
@@ -683,21 +765,29 @@ window.console.log("resetModelType");
     // grab the first meta data and generate the title..
         var meta=mlist[0];
         var keys=Object.keys(meta);
+        var jfirst=0;
         var jlen=keys.length;
         
-//        var csvblob = keys.join(",");
-        var csvblob=csm_csv_keys[keys[0]];
-        for(let k=1; k< jlen; k++) {
+   // skip gid and geom (key==0,45)
+	if(keys[0] == "gid") { 
+           jfirst=1;
+           jlen=jlen-1;
+        }
+        if(keys[jlen] == "geom") {
+           jlen=jlen-1;
+        }
+
+        var csvblob=csm_csv_keys[keys[jfirst]];
+        for(let k=jfirst+1; k< jlen; k++) {
            csvblob += (','+csm_csv_keys[keys[k]]);
         }
         csvblob +='\n';
 
         for(let i=0; i< len; i++) {
-            let j=0;
             meta=mlist[i];
             var values=Object.values(meta)
-            var vblob=JSON.stringify(values[0]);
-            for(j=1; j< jlen; j++) {
+            var vblob=JSON.stringify(values[jfirst]);
+            for(let j=jfirst+1; j< jlen; j++) {
                 var vv=values[j];
                 if(vv != null) {
                   if(isNaN(vv)) {

@@ -228,6 +228,7 @@ function saveAsCSVBlobFile(data, timestamp)
     });
     //FileSaver.js
     saveAs(blob, fname);
+window.console.log("saving csv file", fname);
 }
 
 function saveAsBlobFile(data)

@@ -30,7 +30,12 @@ var rectangleDrawer;
 var mymap, baseLayers, layerControl, currentLayer;
 var mylegend;
 
+// track all rectangles, never remove
+// valid: 1 is visible, 0 is not(already got removed)
+//var tmp={"layer":layer, "valid":1, "latlngs":[{"lat":a,"lon":b},{"lat":c,"lon":d}]};
 var csm_latlon_area_list=[];
+
+// track all marker, never remove
 var csm_latlon_point_list=[];
 
 /*****************************************************************/
@@ -187,10 +192,9 @@ function setup_viewer()
         var ne=loclist[2];
         add_bounding_rectangle_layer(layer,sw['lat'],sw['lng'],ne['lat'],ne['lng']);
         mymap.addLayer(layer);
-// XX CHECK, the rectangle created on the mapview does not seem to 'confirm'
+// TODO: CHECK, the rectangle created on the mapview does not seem to 'confirm'
 // like hand inputed rectangle. Maybe some property needs to be set
 // For now, just redraw the rectangle
-	    //
         CSM.searchLatlon(1,latlngs);        
     }
   });
@@ -314,30 +318,53 @@ function switchLayer(layerString) {
 }
 
 /****************************** from a list ****************/
-
+// input from the key-in
 function add_bounding_rectangle(a,b,c,d) {
-  // remove old one and add a new one
-  remove_bounding_rectangle_layer();
   var layer=addRectangleLayer(a,b,c,d);
-  var tmp={"layer":layer, "latlngs":[{"lat":a,"lon":b},{"lat":c,"lon":d}]};
+  var tmp={"layer":layer, "valid":1, "latlngs":[{"lat":a,"lon":b},{"lat":c,"lon":d}]};
   csm_latlon_area_list.push(tmp);
   return layer;
 }
 
-function remove_bounding_rectangle_layer() {
-   if(csm_latlon_area_list.length == 1) {
-     var area=csm_latlon_area_list.pop();
-     var l=area["layer"];
+function get_bounding_rectangle_layer_idx() {
+   return csm_latlon_area_list.length;
+}
+
+// idx starts from 1
+function remove_bounding_rectangle_layer(idx) {
+window.console.log("remove rectangle layer one");
+   let len=csm_latlon_area_list.length;
+   if(idx > len) {
+      window.console.log("BAD: remove_bounding_rectangle_layer");
+      return;
+   }
+   let tmp=csm_latlon_area_list[idx-1];
+   var l=tmp.layer;
+   if(tmp.valid==1) {
+     tmp.valid=0;
      viewermap.removeLayer(l);
    }
 }
 
+function remove_bounding_rectangle_layer_all() {
+window.console.log("remove rectangle layer all");
+   let len=csm_latlon_area_list.length;
+   for(let i=0; i<len; i++) {
+     let tmp=csm_latlon_area_list[0];
+     var l=tmp.layer;
+     if(tmp.valid == 1) {
+       viewermap.removeLayer(l);
+       tmp.valid=0;
+     }
+   }
+}
 
+// input from the map
 function add_bounding_rectangle_layer(layer, a,b,c,d) {
-  // remove old one and add a new one
-  remove_bounding_rectangle_layer();
-  var tmp={"layer":layer, "latlngs":[{"lat":a,"lon":b},{"lat":c,"lon":d}]};
+window.console.log("add_bounding_rectangle_layer..");
+  var tmp={"layer":layer, "valid":1,  "latlngs":[{"lat":a,"lon":b},{"lat":c,"lon":d}]};
   csm_latlon_area_list.push(tmp);
+  return layer;
 }
 
 function add_marker_point(a,b) {
