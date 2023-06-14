@@ -8,6 +8,24 @@ var init_map_zoom_level = 7;
 var init_map_coordinates =  [34.0, -118.2];
 var drawing_rectangle = false;
 
+var default_color = "red";
+var default_highlight_color = "blue";
+var default_weight = 2;
+var default_highlight_weight = 4;
+
+var original_style = {
+    'color': default_color,
+    'opacity':0.5,
+    'fill-opacity':0.1,
+    'weight': default_weight,
+};
+
+var highlight_style = {
+    'color': default_highlight_color,
+    'opacity':1,
+    'weight': default_highlight_weight,
+};
+
 //var scecAttribution ='<a href="https://www.scec.org">SCEC</a><button id="bigMapBtn" class="btn cxm-small-btn" title="Expand into a larger map" style="color:black;padding: 0rem 0rem 0rem 0.5rem" onclick="toggleBigMap()"><span class="fas fa-expand"></span></button>';
 var scecAttribution ='<a href="https://www.scec.org">SCEC</a>';
 
@@ -16,8 +34,8 @@ var rectangle_options = {
        showArea: false,
          shapeOptions: {
               stroke: true,
-              color: "red",
-              weight: 3,
+              color: default_color,
+              weight: default_weight,
               opacity: 0.5,
               fill: true,
               fillColor: null, //same as color by default
@@ -32,7 +50,7 @@ var mylegend;
 
 // track all rectangles, never remove
 // valid: 1 is visible, 0 is not(already got removed)
-//var tmp={"layer":layer, "valid":1, "latlngs":[{"lat":a,"lon":b},{"lat":c,"lon":d}]};
+//var tmp={"layer":layer, "gid": gid,  "valid":1, "latlngs":[{"lat":a,"lon":b},{"lat":c,"lon":d}]};
 var csm_latlon_area_list=[];
 
 // track all marker, never remove
@@ -246,14 +264,14 @@ function bindPopupEachFeature(feature, layer) {
     var popupContent="";
     layer.on({
         mouseover: function(e) {
-          layer.setStyle({weight: 5});
+          layer.setStyle({weight: default_highlight_weight});
           if (feature.properties != undefined) {
-            popupContent = feature.properties.name;
+            popupContent = "wowow";
           }
           layer.bindPopup(popupContent);
         },
         mouseout: function(e) {
-          layer.setStyle({weight: 1});
+          layer.setStyle({weight: default_weight});
         },
         click: function(e) {
           if (feature.properties != undefined) {
@@ -265,10 +283,10 @@ function bindPopupEachFeature(feature, layer) {
 
 }
 
-
 function addRectangleLayer(latA,lonA,latB,lonB) {
   var bounds = [[latA, lonA], [latB, lonB]];
   var layer=L.rectangle(bounds).addTo(viewermap);
+  layer.setStyle(original_style);
   return layer;
 }
 
@@ -321,7 +339,18 @@ function switchLayer(layerString) {
 // input from the key-in
 function add_bounding_rectangle(a,b,c,d) {
   var layer=addRectangleLayer(a,b,c,d);
-  var tmp={"layer":layer, "valid":1, "latlngs":[{"lat":a,"lon":b},{"lat":c,"lon":d}]};
+  let gid=csm_latlon_area_list.length+1;
+  layer.on({
+    mouseover: function(e) {
+      layer.setStyle({color:default_highlight_color, weight: default_highlight_weight});
+      CSM.highlight_metadata_row(gid);
+    },
+    mouseout: function(e) {
+      layer.setStyle({color:default_color, weight: default_weight});
+      CSM.unhighlight_metadata_row(gid);
+    },
+  });
+  var tmp={"layer":layer, "gid": gid, "valid":1, "latlngs":[{"lat":a,"lon":b},{"lat":c,"lon":d}]};
   csm_latlon_area_list.push(tmp);
   return layer;
 }
@@ -339,10 +368,39 @@ window.console.log("remove rectangle layer one");
       return;
    }
    let tmp=csm_latlon_area_list[idx-1];
-   var l=tmp.layer;
+   var layer=tmp.layer;
    if(tmp.valid==1) {
      tmp.valid=0;
-     viewermap.removeLayer(l);
+     viewermap.removeLayer(layer);
+   }
+}
+
+// idx is a string
+function highlight_bounding_rectangle_layer(idx) {
+window.console.log("highlight rectangle layer one");
+   let len=csm_latlon_area_list.length;
+   if(idx > len) {
+      window.console.log("BAD: highlight_bounding_rectangle_layer");
+      return;
+   }
+   let tmp=csm_latlon_area_list[idx-1];
+   var layer=tmp.layer;
+   if(tmp.valid==1) {
+//     layer.mouseover();
+     layer.setStyle({color: highlight_style.color});
+   }
+}
+function unhighlight_bounding_rectangle_layer(idx) {
+window.console.log("unhighlight rectangle layer one");
+   let len=csm_latlon_area_list.length;
+   if(idx > len) {
+      window.console.log("BAD: unhighlight_bounding_rectangle_layer");
+      return;
+   }
+   let tmp=csm_latlon_area_list[idx-1];
+   var layer=tmp.layer;
+   if(tmp.valid==1) {
+     layer.setStyle({color: original_style.color});
    }
 }
 
@@ -351,9 +409,9 @@ window.console.log("remove rectangle layer all");
    let len=csm_latlon_area_list.length;
    for(let i=0; i<len; i++) {
      let tmp=csm_latlon_area_list[0];
-     var l=tmp.layer;
+     var layer=tmp.layer;
      if(tmp.valid == 1) {
-       viewermap.removeLayer(l);
+       viewermap.removeLayer(layer);
        tmp.valid=0;
      }
    }
@@ -362,7 +420,23 @@ window.console.log("remove rectangle layer all");
 // input from the map
 function add_bounding_rectangle_layer(layer, a,b,c,d) {
 window.console.log("add_bounding_rectangle_layer..");
-  var tmp={"layer":layer, "valid":1,  "latlngs":[{"lat":a,"lon":b},{"lat":c,"lon":d}]};
+  let gid=csm_latlon_area_list.length+1;
+  layer.on({
+      mouseover: function(e) {
+        layer.setStyle({color:default_highlight_color, weight: default_highlight_weight});
+        CSM.highlight_metadata_row(gid);
+      },
+      mouseout: function(e) {
+        layer.setStyle({color:default_color, weight: default_weight});
+        CSM.unhighlight_metadata_row(gid);
+      },
+      click: function(e) {
+        let popupContent = "id="+gid;
+        layer.bindPopup(popupContent);
+      }
+  });
+  var tmp={"layer":layer, "gid":gid, "valid":1, "latlngs":[{"lat":a,"lon":b},{"lat":c,"lon":d}]};
+  
   csm_latlon_area_list.push(tmp);
   return layer;
 }

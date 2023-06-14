@@ -250,6 +250,7 @@ window.console.log("in freshSearch --model");
 
       if(this.searchingType == this.searchType.latlon) {
 window.console.log("in freshSearch --latlon");
+         this.searchLatlon(0, []);
       }
     };
 
@@ -423,12 +424,12 @@ window.console.log("calling searchLatlon..");
         html += `<tr csm-metadata-gid="${layer.scec_properties.gid}">`;
 
         html += `<td>
-<button class=\"btn btn-sm cxm-small-btn\" id=\"button_meta_${layer.scec_properties.gid}\" title=\"remove the region\" onclick=CSM.unselectRegion("${layer.scec_properties.gid}");><span id=\"csm_metadata_${layer.scec_properties.gid}\" class=\"glyphicon glyphicon-trash\"></span></button></td>`;
+<button class=\"btn btn-sm cxm-small-btn\" id=\"button_meta_${layer.scec_properties.gid}\" title=\"remove the region\" onclick=CSM.unselectRegion(\"${layer.scec_properties.gid}\") onmouseover=CSM.mouseoverRegion(${layer.scec_properties.gid}) onmouseout=CSM.mouseoutRegion(${layer.scec_properties.gid}) ><span id=\"csm_metadata_${layer.scec_properties.gid}\" class=\"glyphicon glyphicon-trash\"></span></button></td>`;
         html += `<td class="meta-data">${layer.scec_properties.gid}</td>`;
         html += `<td class="meta-data">${layer.scec_properties.dataset}</td>`;
         html += `<td class="meta-data">${layer.scec_properties.depth}</td>`;
         html += `<td class="meta-data">${layer.scec_properties.note} </td>`;
-        html += `<td class="text-center"><button id=\"download_${layer.scec_properties.gid}\" class=\"btn btn-xs csm-btn\" onclick=\"CSM.downloadData(${layer.scec_properties.gid})\"><span class=\"glyphicon glyphicon-download\">download</span></button></td>`;
+        html += `<td class="text-center"><button id=\"download_${layer.scec_properties.gid}\" class=\"btn btn-xs csm-btn\" onclick=\"CSM.downloadData(${layer.scec_properties.gid})\"><span class=\"glyphicon glyphicon-download\"></span></button></td>`;
         html += `</tr>`;
         return html;
     };
@@ -450,10 +451,35 @@ window.console.log("calling searchLatlon..");
       window.console.log("BAD: removeFromDownloads");
     }
 
+    this.highlight_metadata_row = function(gid) {
+      let nm="button_meta_"+gid;
+      var elt=document.getElementById(nm);
+      if(elt) {
+        elt.style.color="red";
+      }
+    };
+
+    this.unhighlight_metadata_row = function(gid) {
+      let nm="button_meta_"+gid;
+      var elt=document.getElementById(nm);
+      if(elt) {
+        elt.style.color="black";
+      }
+    };
+
     // remove the entry
     this.unselectRegion = function(gid) {
        this.removeFromMetadataTable(gid);
        this.removeFromDownloads(gid); 
+    };
+    this.mouseoverRegion = function(gid) {
+	highlight_bounding_rectangle_layer(gid);
+//	this.highlight_metadata_row(gid);
+    };
+    // mouseout the entry
+    this.mouseoutRegion = function(gid) {
+	unhighlight_bounding_rectangle_layer(gid);
+//	this.unhighlight_metadata_row(gid);
     };
 
     // clear all the rectangle regions from the map
