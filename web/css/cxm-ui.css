@@ -1,4 +1,17 @@
-/* cpd */
+/* csm */
+.csm-btn {
+    background: white;
+    border: 0px solid #D5D5D5;
+    color: #011638;
+    width: 5em;
+    height: 3vh;
+    display: inline-block;
+}
+
+.csm-btn:disabled {
+    color: white;
+}
+
 #expand-view-key {
     z-index: 8000;
     position: absolute;

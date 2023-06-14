@@ -356,10 +356,6 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
             <table id="metadata-table">
               <thead>
               </thead>
-              <tbody>
-                <tr id="placeholder-row">
-                  <td colspan="9">Metadata for selected model will appear here. </td>
-                </tr>
             </table>
          </div>
       </div>

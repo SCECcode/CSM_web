@@ -120,15 +120,12 @@ function updateDownloadCounter(select_count) {
     window.console.log("download counter updated.."+select_count);
     let downloadCounterElem = $("#download-counter");
     let downloadBtnElem = $("#download-all");
-    let placeholderTextElem = $("#placeholder-row");
     if (select_count <= 0) {
         downloadCounterElem.hide();
         downloadBtnElem.prop("disabled", true);
-        placeholderTextElem.show();
     } else {
        downloadCounterElem.show();
        downloadBtnElem.prop("disabled", false);
-       placeholderTextElem.hide();
     }
     downloadCounterElem.html("(" + select_count + ")");
 }

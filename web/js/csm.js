@@ -323,8 +323,8 @@ window.console.log("Did not find any PHP result");
                       let result={"scec_properties":scec_properties, "jblob":jblob}; 
                       CSM.csm_downloads.push(result);
                       CSM.addToMetadataTable(result);
-                      CSM.flyToDownloadBounds();
                       updateDownloadCounter(CSM.csm_downloads.length);
+                      CSM.flyToDownloadBounds();
                       CSM.removeWaitSpin();
                     }        
                 }
@@ -384,6 +384,9 @@ window.console.log("calling searchLatlon..");
         // collect up all the points
         let len=this.csm_downloads.length;
         let locs=[];
+
+        if(len == 0) { return; }
+
         for(let i=0; i<len; i++) {
           let tmp=this.csm_downloads[i].scec_properties;
           locs.push(L.latLng(tmp.lon1,tmp.lat1));
@@ -419,11 +422,13 @@ window.console.log("calling searchLatlon..");
         let html = "";
         html += `<tr csm-metadata-gid="${layer.scec_properties.gid}">`;
 
-        html += `<td><button class=\"btn btn-sm cxm-small-btn\" id=\"button_meta_${layer.scec_properties.gid}\" title=\"remove the region\" onclick=CSM.unselectRegion("${layer.scec_properties.gid}");><span id=\"csm_metadata_${layer.scec_properties.gid}\" class=\"glyphicon glyphicon-trash\"></span></button></td>`;
+        html += `<td>
+<button class=\"btn btn-sm cxm-small-btn\" id=\"button_meta_${layer.scec_properties.gid}\" title=\"remove the region\" onclick=CSM.unselectRegion("${layer.scec_properties.gid}");><span id=\"csm_metadata_${layer.scec_properties.gid}\" class=\"glyphicon glyphicon-trash\"></span></button></td>`;
         html += `<td class="meta-data">${layer.scec_properties.gid}</td>`;
         html += `<td class="meta-data">${layer.scec_properties.dataset}</td>`;
         html += `<td class="meta-data">${layer.scec_properties.depth}</td>`;
         html += `<td class="meta-data">${layer.scec_properties.note} </td>`;
+        html += `<td class="text-center"><button id=\"download_${layer.scec_properties.gid}\" class=\"btn btn-xs csm-btn\" onclick=\"CSM.downloadData(${layer.scec_properties.gid})\"><span class=\"glyphicon glyphicon-download\">download</span></button></td>`;
         html += `</tr>`;
         return html;
     };
@@ -437,8 +442,8 @@ window.console.log("calling searchLatlon..");
         if(tmp.gid == gid) {
           remove_bounding_rectangle_layer(gid);
           this.csm_downloads.splice(i,1);
-	  this.flyToDownloadBounds();
           updateDownloadCounter(CSM.csm_downloads.length);
+	  this.flyToDownloadBounds();
           return;
         }
       }
@@ -483,7 +488,7 @@ window.console.log("generateMetadataTable..");
 <!--download all -->
                 <div class="btn-group download-now">
                     <button id="download-all" type="button" class="btn btn-dark" value="metadata"
-                            onclick="CSM.downloadData();" disabled>
+                            onclick="CSM.downloadDataAll();" disabled>
                             DOWNLOAD&nbsp<span id="download-counter"></span>
                     </button>
                 </div>
@@ -722,39 +727,23 @@ window.console.log("resetModelType");
    };
 
 /********************** zip utilities functions *************************/
-    this.downloadURLsAsZip = function(ftype) {
-        var nzip=new JSZip();
-        let timestamp=$.now();
-        let mlist=[];
-
-        var cnt=layers.length;
-        for(var i=0; i<cnt; i++) {
-          let layer=layers[i];
-
-          if( !layer.scec_properties.selected ) {
-            continue;
-          }
-
-          if(ftype == "metadata" || ftype == "all") {
-          // create metadata from layer.scec_properties
-            let m=createMetaData(csm_meta_data[layer.scec_properties.idx]);
-            mlist.push(m);
-          }
-          if(mlist.length != 0) {
-            var data=getCSVFromMeta(mlist);
-            saveAsCSVBlobFile(data, timestamp);
-          }
-        }
+    this.downloadDataAll = function() {
+        window.console.log("downloadDataAll");
     };
 
-    this.downloadData = function() {
+    this.downloadData = function(gid) {
         let cnt=CSM.csm_downloads.length;
         for(let i=0; i<cnt; i++) {
           let timestamp=$.now();
           let tmp=CSM.csm_downloads[i];
-          let mlist = tmp.jblob;
-          let data=getCSVFromMeta(mlist);
-          saveAsCSVBlobFile(data, timestamp);
+          let tmp_gid=tmp.scec_properties.gid;
+
+          if(tmp_gid == gid) {
+            let timestamp=$.now();
+            let mlist = tmp.jblob;
+            let data=getCSVFromMeta(mlist);
+            saveAsCSVBlobFile(data, timestamp);
+          }
         }
     };
 
