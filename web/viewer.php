@@ -79,9 +79,9 @@ $csm = new CSM();
     <script type="text/javascript" src="js/vendor/pixiOverlay/L.PixiOverlay.js"></script>
 <!--
 <script src="https://cdn.jsdelivr.net/npm/leaflet-pixi-overlay@1.9.4/L.PixiOverlay.min.js "></script>
--->
     <script type="text/javascript" src="js/vendor/pixiOverlay/MarkerContainer.js"></script>
     <script type="text/javascript" src="js/vendor/pixiOverlay/bezier-easing.js"></script>
+-->
     <script type="text/javascript" src="js/cxm_pixi.js"></script>
 
 <!-- cxm js -->
@@ -243,7 +243,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
 <!-- map space -->
     <div id="mapDataBig" class="row mapData">
 
-       <div id="metricData" class="col-5 button-container d-flex flex-column pr-0" style="overflow:hidden;border:solid 2px red">
+       <div id="metricData" class="col-5 button-container flex-column pr-0" style="overflow:hidden;border:solid 1px red;">
 
 <!-- search method -->
          <div class="row">

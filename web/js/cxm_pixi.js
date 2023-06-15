@@ -374,6 +374,9 @@ window.console.log("pixi at container..");
     var initialScale;
 
     var overlay=L.pixiOverlay(function(utils, event) {
+
+window.console.log("event type --- ", event.type);
+
       var zoom = utils.getMap().getZoom();
       var container = utils.getContainer();
       var renderer = utils.getRenderer();
@@ -381,9 +384,7 @@ window.console.log("pixi at container..");
       var getScale = utils.getScale;
       var invScale = 1 / getScale();
 
-window.console.log("pixi at event");
 window.console.log("in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>"+getScale()+" invScale"+invScale);
-
       if (event.type === 'add') {
 
 // only add it first time
@@ -409,9 +410,10 @@ window.console.log("in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>"+get
         }
 // for circles       initialScale = invScale/20; 
 
-        // fill in the particles
-        let len_sum=0;
+        // fill in the particles one group at a time
+        let collect_len=0;
         for(var i=0; i< DATA_SEGMENT_COUNT; i++ ) {
+           if(i != 12 && i !=10 && i!=14 ) continue;	 
            var a=pContainers[i];
            a.x = origin.x;
            a.y = origin.y;
@@ -419,12 +421,12 @@ window.console.log("in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>"+get
 
            var latlngs=getMarkerLatlngs(pixiLatlngList,i);
            var len=latlngs.length;
-           len_sum=len_sum+len;
+           collect_len=collect_len+len;
+window.console.log(" group ",i," len is ",len);
            for (var j = 0; j < len; j++) {
               var latlng=latlngs[j];
               var ll=latlng['lat'];
               var gg=latlng['lng'];
-//window.console.log("start latlon>>"+ll+" "+gg);
               var coords = pixi_project([ll,gg]);
 
 // our patched particleContainer accepts simple {x: ..., y: ...} objects as children:
@@ -458,48 +460,8 @@ var marker = new PIXI.Point([34.0105, -120.8415], {color: "#ff7800", weight: 1} 
 //window.console.log( "      adding  child at..("+latlng['lat']+')('+latlng['lng']+')');
            }
         }
-window.console.log("pixi: total of len, ",len_sum); 
+window.console.log("pixi: total of len, ",collect_len); 
      }
-
-      // change size of the marker after zoomin and zoomout
-window.console.log("event type", event.type);
-
-     if (event.type === 'zoomanim') {
-        var targetZoom = event.zoom;
-window.console.log("in zoomaim.., threshold", vs_zoom_threshold);
-window.console.log("in zoomaim.., targetZoom", targetZoom);
-window.console.log("in zoomaim.., zoom", zoom);
-        if (targetZoom >= vs_zoom_threshold || zoom >= vs_zoom_threshold) {
-          zoomChangeTs = 0;
-          var targetScale = targetZoom >= vs_zoom_threshold ? (1 / getScale(event.zoom))/10  : initialScale;
-
-window.console.log(" ZOOManim.. new targetScale "+targetScale);
-
-          pContainers.forEach(function(innerContainer) {
-            innerContainer.currentScale = innerContainer.localScale;
-            innerContainer.targetScale = targetScale;
-          });
-        }
-        return null;
-      }
-
-      if (event.type === 'redraw') {
-        var easing = BezierEasing(0, 0, 0.25, 1);
-        var delta = event.delta;
-        if (zoomChangeTs !== null) {
-          var duration = 5; // 17
-          zoomChangeTs += delta;
-          var lambda = zoomChangeTs / duration;
-          if (lambda > 1) {
-            lambda = 1;
-            zoomChangeTs = null;
-          }
-          lambda = easing(lambda);
-          pContainers.forEach(function(innerContainer) {
-            innerContainer.localScale = innerContainer.currentScale + lambda * (innerContainer.targetScale - innerContainer.currentScale);
-          });
-        } else { return null;}
-      }
 
       renderer.render(container);
     }, pixiContainer, {
@@ -509,7 +471,8 @@ window.console.log(" ZOOManim.. new targetScale "+targetScale);
 
     pixiOverlayList.push({"gid":gid,"vis":1,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
 
-window.console.log(">>> pixi..");
+window.console.log(">>> PIXI..adding:",gid);
+window.console.log(">>> PIXI..size:",pixiOverlayList.length);
 
     return overlay;
 }
@@ -531,6 +494,7 @@ function clearAllPixiOverlay() {
         var layer=pixi["overlay"];
         viewermap.removeLayer(layer);
         pixi["vis"]=0;
+window.console.log("Pixi: clear All..",pixi["gid"]);
       }
     }
   });

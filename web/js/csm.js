@@ -22,7 +22,7 @@ var CSM = new function () {
     //  made on-demand
     //  csm_model_pixi_layers['model_id]['metric_id']['depth_id']
     //  to avoid generate these repeatly
-    this.csm_model_pixi_layers;
+    this.csm_model_pixi_layers=[];
     this.current_pixi_gid=0;
 
     // { "gid":gid, "scec_properties": prop, "jblob": jblob } 
@@ -294,12 +294,12 @@ window.console.log("Did not find any PHP result");
                     vallist=tmp['val'];
 
                     clearAllPixiOverlay();
-                    this.current_pixi_gid++;
+                    CSM.current_pixi_gid++;
 
                     let spec = {'data_max':3.0, 'data_min':1.0};
 
                     var pixi=makePixiOverlayLayerWithList(
-                             this.current_pixi_gid,
+                             CSM.current_pixi_gid,
                              latlist,lonlist,vallist,spec);
                     CSM.removeWaitSpin();
 
@@ -474,12 +474,12 @@ window.console.log("calling searchLatlon..");
     };
     this.mouseoverRegion = function(gid) {
 	highlight_bounding_rectangle_layer(gid);
-//	this.highlight_metadata_row(gid);
+	this.highlight_metadata_row(gid);
     };
     // mouseout the entry
     this.mouseoutRegion = function(gid) {
 	unhighlight_bounding_rectangle_layer(gid);
-//	this.unhighlight_metadata_row(gid);
+	this.unhighlight_metadata_row(gid);
     };
 
     // clear all the rectangle regions from the map

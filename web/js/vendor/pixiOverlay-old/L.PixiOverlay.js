@@ -1,5 +1,5 @@
 // Leaflet.PixiOverlay
-// version: 1.9.4
+// version: 1.8.2
 // author: Manuel Baclet <mbaclet@gmail.com>
 // license: MIT
 
@@ -23,24 +23,23 @@
 }(function (L, PIXI) {
 
 	var round = L.Point.prototype._round;
-	var no_round = function () { return this; };
+	var no_round = function () {return this;};
 
-	function setEventSystem(renderer, destroyInteractionManager, autoPreventDefault) {
-		var eventSystem = (PIXI.VERSION < "7") ? renderer.plugins.interaction : renderer.events;
+	function setInteractionManager(interactionManager, destroyInteractionManager, autoPreventDefault) {
 		if (destroyInteractionManager) {
-			eventSystem.destroy();
+			interactionManager.destroy();
 		} else if (!autoPreventDefault) {
-			eventSystem.autoPreventDefault = false;
+			interactionManager.autoPreventDefault = false;
 		}
 	}
 
-	function projectionZoom(map) {
-		var maxZoom = map.getMaxZoom();
-		var minZoom = map.getMinZoom();
-		if (maxZoom === Infinity) return minZoom + 8;
+  function projectionZoom(map) {
+    var maxZoom = map.getMaxZoom();
+    var minZoom = map.getMinZoom();
+    if (maxZoom === Infinity) return minZoom + 8;
 
-		return (maxZoom + minZoom) / 2;
-	}
+    return (maxZoom + minZoom) / 2;
+  }
 
 	var pixiOverlayClass = {
 
@@ -63,10 +62,10 @@
 			// return the layer projection zoom level
 			projectionZoom: projectionZoom,
 			// @option destroyInteractionManager:  Boolean = false
-			// Destroy PIXI EventSystem
+			// Destroy PIXI Interaction Manager
 			destroyInteractionManager: false,
 			// @option
-			// Customize PIXI EventSystem autoPreventDefault property
+			// Customize PIXI Interaction Manager autoPreventDefault property
 			// This option is ignored if destroyInteractionManager is set
 			autoPreventDefault: true,
 			// @option resolution: Boolean = false
@@ -77,7 +76,7 @@
 			clearBeforeRender: true,
 			// @option shouldRedrawOnMove(e: moveEvent): Boolean
 			// filter move events that should trigger a layer redraw
-			shouldRedrawOnMove: function () { return false; },
+			shouldRedrawOnMove: function () {return false;},
 		},
 
 		initialize: function (drawCallback, pixiContainer, options) {
@@ -86,32 +85,26 @@
 			this._drawCallback = drawCallback;
 			this._pixiContainer = pixiContainer;
 			this._rendererOptions = {
+				transparent: true,
 				resolution: this.options.resolution,
 				antialias: true,
 				forceCanvas: this.options.forceCanvas,
 				preserveDrawingBuffer: this.options.preserveDrawingBuffer,
 				clearBeforeRender: this.options.clearBeforeRender
 			};
-
-			if (PIXI.VERSION < "6") {
-				this._rendererOptions.transparent = true;
-			} else {
-				this._rendererOptions.backgroundAlpha = 0;
-			}
-
 			this._doubleBuffering = PIXI.utils.isWebGLSupported() && !this.options.forceCanvas &&
 				this.options.doubleBuffering;
 		},
 
-		_setMap: function () { },
+		_setMap: function () {},
 
-		_setContainerStyle: function () { },
+		_setContainerStyle: function () {},
 
 		_addContainer: function () {
 			this.getPane().appendChild(this._container);
 		},
 
-		_setEvents: function () { },
+		_setEvents: function () {},
 
 		onAdd: function (targetMap) {
 			this._setMap(targetMap);
@@ -119,8 +112,8 @@
 				var container = this._container = L.DomUtil.create('div', 'leaflet-pixi-overlay');
 				container.style.position = 'absolute';
 				this._renderer = PIXI.autoDetectRenderer(this._rendererOptions);
-				setEventSystem(
-					this._renderer,
+				setInteractionManager(
+					this._renderer.plugins.interaction,
 					this.options.destroyInteractionManager,
 					this.options.autoPreventDefault
 				);
@@ -131,8 +124,8 @@
 				}
 				if (this._doubleBuffering) {
 					this._auxRenderer = PIXI.autoDetectRenderer(this._rendererOptions);
-					setEventSystem(
-						this._auxRenderer,
+					setInteractionManager(
+						this._auxRenderer.plugins.interaction,
 						this.options.destroyInteractionManager,
 						this.options.autoPreventDefault
 					);
@@ -176,7 +169,7 @@
 					return _layer._map;
 				}
 			};
-			this._update({ type: 'add' });
+			this._update({type: 'add'});
 		},
 
 		onRemove: function () {
@@ -203,7 +196,7 @@
 			this._updateTransform(e.center, e.zoom);
 		},
 
-		_onMove: function (e) {
+		_onMove: function(e) {
 			if (this.options.shouldRedrawOnMove(e)) {
 				this._update(e);
 			}
@@ -224,11 +217,11 @@
 			}
 		},
 
-		_redraw: function (offset, e) {
+		_redraw: function(offset, e) {
 			this._disableLeafletRounding();
 			var scale = this._map.getZoomScale(this._zoom, this._initialZoom),
 				shift = this._map.latLngToLayerPoint(this._wgsOrigin)
-					._subtract(this._wgsInitialShift.multiplyBy(scale))._subtract(offset);
+				._subtract(this._wgsInitialShift.multiplyBy(scale))._subtract(offset);
 			this._pixiContainer.scale.set(scale);
 			this._pixiContainer.position.set(shift.x, shift.y);
 			this._drawCallback(this.utils, e);
@@ -237,7 +230,7 @@
 
 		_update: function (e) {
 			// is this really useful?
-			if (this._map._animatingZoom && this._bounds) { return; }
+			if (this._map._animatingZoom && this._bounds) {return;}
 
 			// Update pixel bounds of renderer container
 			var p = this.options.padding,
@@ -285,7 +278,7 @@
 
 			if (this._doubleBuffering) {
 				var self = this;
-				requestAnimationFrame(function () {
+				requestAnimationFrame(function() {
 					self._redraw(b.min, e);
 					self._renderer.gl.finish();
 					view.style.visibility = 'visible';
@@ -313,19 +306,8 @@
 				this._enableLeafletRounding();
 			}
 			return this;
-		},
-
-		_destroy: function () {
-			this._renderer.destroy(true);
-			if (this._doubleBuffering) {
-				this._auxRenderer.destroy(true);
-			}
-		},
-
-		destroy: function () {
-			this.remove();
-			this._destroy();
 		}
+
 	};
 
 	if (L.version >= "1") {
@@ -388,23 +370,12 @@
 		};
 
 		pixiOverlayClass.onRemove = function () {
-			this._map = null;
-			var parent = this._container.parentNode;
-			if (parent) {
-				parent.removeChild(this._container);
-			}
+			this._map.getPanes()[this.options.pane || 'overlayPane']
+				.removeChild(this._container);
 			var events = this.getEvents();
 			for (var evt in events) {
 				this._map.off(evt, events[evt], this);
 			}
-		};
-
-		pixiOverlayClass.destroy = function () {
-			var map = this._map || this._mapToAdd;
-			if (map) {
-				map.removeLayer(this);
-			}
-			this._destroy();
 		};
 
 		L.PixiOverlay = L.Class.extend(pixiOverlayClass);
