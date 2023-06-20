@@ -88,7 +88,7 @@
 			this._rendererOptions = {
 				resolution: this.options.resolution,
 				antialias: true,
-				autoDensity: true,
+//				autoDensity: true,
 				forceCanvas: this.options.forceCanvas,
 				preserveDrawingBuffer: this.options.preserveDrawingBuffer,
 				clearBeforeRender: this.options.clearBeforeRender

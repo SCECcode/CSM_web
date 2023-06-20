@@ -415,7 +415,6 @@ function makePixiOverlayLayer(gid,pixiLatlngList,spec) {
     }
 
     var doubleBuffering = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    var initialScale;
 
     var overlay=L.pixiOverlay(function(utils, event) {
 
@@ -444,33 +443,27 @@ window.console.log("PIXI: add event");
         let mapzoom=viewermap.getZoom();
 
         var origin = pixi_project([mapcenter['lat'], mapcenter['lng']]);
-        initialScale = invScale/16; 
-// initial size of the marker for 70k pts
-window.console.log("PIXI: scale_hint:"+spec.scale_hint);
-	if(spec.scale_hint != 0) { // THIS IS A HACK...
-          if(spec.scale_hint < 50000)
-             initialScale = invScale/5; 
-// for 10k pts
-          if(spec.scale_hint < 20000)
-             initialScale = invScale/3; 
-          if(spec.scale_hint < 10000) // for SAFPoly3D
-             initialScale = invScale/7; 
+
+        let scaleFactor=7; // when len is 70k
+        //let scaleFactor=8; // when len is 70k
+        if(spec.scale_hint != 0) {
+          if( spec.scale_hint < 15000) { scaleFactor=3; }
         }
+
+window.console.log("PIXI: using scale factor",scaleFactor);
 
         // fill in the particles one group at a time
         let collect_len=0;
         for(var i=0; i< DATA_SEGMENT_COUNT; i++ ) {
 
-// show first one, in the middle and the last
-//if(i !=12 && i !=10 ) continue;	 
-//if(i != Math.floor(DATA_SEGMENT_COUNT/2) && i !=0 && i!= (DATA_SEGMENT_COUNT-1) ) continue;	 
+           var latlngs=getMarkerLatlngs(pixiLatlngList,i);
+           var len=latlngs.length;
+
            var a=pContainers[i];
            a.x = origin.x;
            a.y = origin.y;
-           a.localScale = initialScale;
+           a.localScale = invScale/scaleFactor;
 
-           var latlngs=getMarkerLatlngs(pixiLatlngList,i);
-           var len=latlngs.length;
            collect_len=collect_len+len;
 window.console.log("PIXI: group ",i," len is ",len);
            for (var j = 0; j < len; j++) {
@@ -479,6 +472,7 @@ window.console.log("PIXI: group ",i," len is ",len);
               var gg=latlng['lng'];
               var coords = pixi_project([ll,gg]);
 
+
 // our patched particleContainer accepts simple {x: ..., y: ...} objects as children:
 //window.console.log("    and xy at "+coords.x+" "+coords.y);
 		  
@@ -486,9 +480,11 @@ window.console.log("PIXI: group ",i," len is ",len);
               var aParticle=a.addChild({ x: coords.x - origin.x, y: coords.y - origin.y });
 **/
 
-var marker = new PIXI.Sprite(markerTextures[i]);
-marker.x = coords.x - origin.x;
-marker.y= coords.y - origin.y;
+              var marker = new PIXI.Sprite(markerTextures[i]);
+              marker.x = coords.x - origin.x;
+              marker.y= coords.y - origin.y;
+              marker.scale.set(invScale/scaleFactor);
+
 		   /*
 marker.popup = L.popup({className: 'pixi-popup'})
                  .setLatLng(latlng)
@@ -506,7 +502,6 @@ var marker = new PIXI.Point([34.0105, -120.8415], {color: "#ff7800", weight: 1} 
 */
 
               var aParticle=a.addChild(marker);
-/***/
            }
         }
 window.console.log("PIXI: total of len, ",collect_len); 
