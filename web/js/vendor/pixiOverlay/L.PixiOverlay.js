@@ -88,10 +88,12 @@
 			this._rendererOptions = {
 				resolution: this.options.resolution,
 				antialias: true,
+				autoDensity: true,
 				forceCanvas: this.options.forceCanvas,
 				preserveDrawingBuffer: this.options.preserveDrawingBuffer,
 				clearBeforeRender: this.options.clearBeforeRender
 			};
+window.console.log("MEI, FROM pixioverlay inner: resolution ", this._rendererOptions.antialias,this._rendererOptions.resolution, this._rendererOptions.autoDensity);
 
 			if (PIXI.VERSION < "6") {
 				this._rendererOptions.transparent = true;

@@ -2,28 +2,23 @@
    cxm_pixi.js
 ***/
 
-try {
-    var isFileSaverSupported = !!new Blob;
-} catch (e) {
-    window.console.log("FileSaver is not working!!!");
-    abort();
-}
-
 /* marker's resizing size's zoom threshold */
 var vs_zoom_threshold=5;
 
 // pixi, Leafle.overlayLayer.js
 /* data sections, to matching marker name markerN_icon.png */
-const DATA_SEGMENT_COUNT= 20; // 0 to 19 -- to matching marker names
+const DEFAULT_DATA_SEGMENT_COUNT= 20; // marker name from 1 to 20
 
-var DATA_max_v=null;
-var DATA_min_v=null;
+var DATA_SEGMENT_COUNT=0; // supplied from client 
+
+var DATA_MAX_V=undefined;
+var DATA_MIN_V=undefined;
 var DATA_count=0;
 
 /********************************************/
 /* a place to park all the pixiOverlay from the session */
-/* [ {"gid":gid, "vis":true, "layer": overlay,         */
-/*    "top":pixiContainer,"inner":[ {"container":c0, "vis":1 }, ...]} ] */
+/* [ {"gid":gid, "vis":true, "segment":20, "layer": overlay,         */
+/*    "top":pixiContainer,"inner":[ {"container":c0, "vis":1 }, ...], "latlnglist":pixiLatlngList} ] */
 var pixiOverlayList=[];
 
 /* PixiOverlayLayer */
@@ -38,38 +33,15 @@ var markerTextures=[];
 
 var loadOnce=1;
 
-function initMarkerTextures(resources) {
-    markerTextures.push(resources.marker1.texture);
-    markerTextures.push(resources.marker2.texture);
-    markerTextures.push(resources.marker3.texture);
-    markerTextures.push(resources.marker4.texture);
-    markerTextures.push(resources.marker5.texture);
-    markerTextures.push(resources.marker6.texture);
-    markerTextures.push(resources.marker7.texture);
-    markerTextures.push(resources.marker8.texture);
-    markerTextures.push(resources.marker9.texture);
-    markerTextures.push(resources.marker10.texture);
-    markerTextures.push(resources.marker11.texture);
-    markerTextures.push(resources.marker12.texture);
-    markerTextures.push(resources.marker13.texture);
-    markerTextures.push(resources.marker14.texture);
-    markerTextures.push(resources.marker15.texture);
-    markerTextures.push(resources.marker16.texture);
-    markerTextures.push(resources.marker17.texture);
-    markerTextures.push(resources.marker18.texture);
-    markerTextures.push(resources.marker19.texture);
-    markerTextures.push(resources.marker20.texture);
-}
-
 function printMarkerLatlngInfo(plist) {
   let sum=0;
-  window.console.log("For: "+plist.gid);
+  window.console.log("PIXI: For: "+plist.gid);
   for(let i=0; i<DATA_SEGMENT_COUNT; i++) {
     let dlist=plist[i];
     sum=sum+data.length;
-    window.console.log("    i: "+i+" count: "+ dlist.length);
+    window.console.log("PIXI:    i: "+i+" count: "+ dlist.length);
   }
-  window.console.log("  sum up :"+sum);
+  window.console.log("PIXI:  sum up :"+sum);
 }
 
 function updateMarkerLatlng(plist,idx,lat,lng) {
@@ -102,53 +74,90 @@ function getRangeIdx(vs_target, vs_max, vs_min) {
 
 // from pixi,
 //  >> Adds a BaseTexture to the global BaseTextureCache. This cache is shared across the whole PIXI object.
+// PIXI.BaseTexture.addToCache (baseTexture, id)
+// PIXI.BaseTexture.from (source, options, strict) PIXI.BaseTexture static
+//
 function init_pixi(loader) {
   pixiOverlayList=[];
 
-  loader
-    .add('marker1', 'img/marker1_icon.png')
-    .add('marker2', 'img/marker2_icon.png')
-    .add('marker3', 'img/marker3_icon.png')
-    .add('marker4', 'img/marker4_icon.png')
-    .add('marker5', 'img/marker5_icon.png')
-    .add('marker6', 'img/marker6_icon.png')
-    .add('marker7', 'img/marker7_icon.png')
-    .add('marker8', 'img/marker8_icon.png')
-    .add('marker9', 'img/marker9_icon.png')
-    .add('marker10', 'img/marker10_icon.png')
-    .add('marker11', 'img/marker11_icon.png')
-    .add('marker12', 'img/marker12_icon.png')
-    .add('marker13', 'img/marker13_icon.png')
-    .add('marker14', 'img/marker14_icon.png')
-    .add('marker15', 'img/marker15_icon.png')
-    .add('marker16', 'img/marker16_icon.png')
-    .add('marker17', 'img/marker17_icon.png')
-    .add('marker18', 'img/marker18_icon.png')
-    .add('marker19', 'img/marker19_icon.png')
-    .add('marker20', 'img/marker20_icon.png');
+  let marker1Texture = PIXI.Texture.from('img/marker1_icon.png');
+  let marker2Texture = PIXI.Texture.from('img/marker2_icon.png');
+  let marker3Texture = PIXI.Texture.from('img/marker3_icon.png');
+  let marker4Texture = PIXI.Texture.from('img/marker4_icon.png');
+  let marker5Texture = PIXI.Texture.from('img/marker5_icon.png');
+  let marker6Texture = PIXI.Texture.from('img/marker6_icon.png');
+  let marker7Texture = PIXI.Texture.from('img/marker7_icon.png');
+  let marker8Texture = PIXI.Texture.from('img/marker8_icon.png');
+  let marker9Texture = PIXI.Texture.from('img/marker9_icon.png');
+  let marker10Texture = PIXI.Texture.from('img/marker10_icon.png');
+  let marker11Texture = PIXI.Texture.from('img/marker11_icon.png');
+  let marker12Texture = PIXI.Texture.from('img/marker12_icon.png');
+  let marker13Texture = PIXI.Texture.from('img/marker13_icon.png');
+  let marker14Texture = PIXI.Texture.from('img/marker14_icon.png');
+  let marker15Texture = PIXI.Texture.from('img/marker15_icon.png');
+  let marker16Texture = PIXI.Texture.from('img/marker16_icon.png');
+  let marker17Texture = PIXI.Texture.from('img/marker17_icon.png');
+  let marker18Texture = PIXI.Texture.from('img/marker18_icon.png');
+  let marker19Texture = PIXI.Texture.from('img/marker19_icon.png');
+  let marker20Texture = PIXI.Texture.from('img/marker20_icon.png');
+
+  PIXI.BaseTexture.addToCache(marker1Texture,"marker1");
+  PIXI.BaseTexture.addToCache(marker1Texture,"marker2");
+  PIXI.BaseTexture.addToCache(marker1Texture,"marker3");
+  PIXI.BaseTexture.addToCache(marker1Texture,"marker4");
+  PIXI.BaseTexture.addToCache(marker1Texture,"marker5");
+  PIXI.BaseTexture.addToCache(marker1Texture,"marker6");
+  PIXI.BaseTexture.addToCache(marker1Texture,"marker7");
+  PIXI.BaseTexture.addToCache(marker1Texture,"marker8");
+  PIXI.BaseTexture.addToCache(marker1Texture,"marker9");
+  PIXI.BaseTexture.addToCache(marker1Texture,"marker10");
+  PIXI.BaseTexture.addToCache(marker1Texture,"marker11");
+  PIXI.BaseTexture.addToCache(marker1Texture,"marker12");
+  PIXI.BaseTexture.addToCache(marker1Texture,"marker13");
+  PIXI.BaseTexture.addToCache(marker1Texture,"marker14");
+  PIXI.BaseTexture.addToCache(marker1Texture,"marker15");
+  PIXI.BaseTexture.addToCache(marker1Texture,"marker16");
+  PIXI.BaseTexture.addToCache(marker1Texture,"marker17");
+  PIXI.BaseTexture.addToCache(marker1Texture,"marker18");
+  PIXI.BaseTexture.addToCache(marker1Texture,"marker19");
+  PIXI.BaseTexture.addToCache(marker1Texture,"marker20");
+
+  markerTextures.push(marker1Texture);
+  markerTextures.push(marker2Texture);
+  markerTextures.push(marker3Texture);
+  markerTextures.push(marker4Texture);
+  markerTextures.push(marker5Texture);
+  markerTextures.push(marker6Texture);
+  markerTextures.push(marker7Texture);
+  markerTextures.push(marker8Texture);
+  markerTextures.push(marker9Texture);
+  markerTextures.push(marker10Texture);
+  markerTextures.push(marker11Texture);
+  markerTextures.push(marker12Texture);
+  markerTextures.push(marker13Texture);
+  markerTextures.push(marker14Texture);
+  markerTextures.push(marker15Texture);
+  markerTextures.push(marker16Texture);
+  markerTextures.push(marker17Texture);
+  markerTextures.push(marker18Texture);
+  markerTextures.push(marker19Texture);
+  markerTextures.push(marker20Texture);
 }
 
+
 function setup_pixi() {
-  // this is used to simulate leaflet zoom animation timing:
-  let loader = new PIXI.loaders.Loader();
-
   if(loadOnce) {
-    init_pixi(loader);
+    init_pixi();
+    loadOnce=0;
   }
-
-  loader.load(function(loader, resources) {
-      if(loadOnce) {
-        initMarkerTextures(resources);
-        loadOnce=0;
-      }
-  })
-  return loader;
 }
 
 function makeOnePixiLayer(gid,file) {
 
-  let pixiLayer = makePixiOverlayLayer(gid,file);
-  let ticker = new PIXI.ticker.Ticker();
+  makePixiOverlayLayer(gid,file);
+  let pixiLayer = pixiFindPixiWithGid(gid);
+
+  let ticker = new PIXI.Ticker();
 
   ticker.add(function(delta) { 
     pixiLayer.redraw({type: 'redraw', delta: delta});
@@ -160,33 +169,34 @@ function makeOnePixiLayer(gid,file) {
   viewermap.on('zoomend', function() { ticker.stop(); });
   viewermap.on('zoomanim', pixiLayer.redraw, pixiLayer);
 
-  return {"pixiLayer":pixiLayer,"max_v":DATA_max_v,"min_v":DATA_min_v,"count_v":DATA_count };
+  return {"pixiLayer":pixiLayer,"max_v":DATA_MAX_V,"min_v":DATA_MIN_V,"count_v":DATA_count };
 }
 
 // toggle off a child container from an overlay layer
-function toggleMarkerContainer(pixi,target_segment) {
-  var plist=pixi['inner'];
-  var top=pixi['top'];
-  if(pixi["vis"]==false) {
-    windown.console.log("layer not visible To TOGGLE!!\n");
+function pixiToggleMarkerContainer(gid,target_segment) {
+
+window.console.log("PIXI: toggleMarker container..which segment..",target_segment);
+  let pixi=pixiFindPixiWithGid(gid);
+
+  if(pixi.visible==false) {
+    window.console.log("PIXI: layer not visible To TOGGLE!!\n");
     return;
   } 
-  var clist=pixi['inner'];
-  var top=pixi['top'];
-  for(var j=0; j<DATA_SEGMENT_COUNT; j++) {
-    var citem=clist[j];
-    var cptr=citem["container"];
-    if(cptr == target_segment) {
-      if(citem["vis"]) { // toggle off
-        citem["vis"]=0;
-        top.removeChild(cptr);
-        } else {
-          citem["vis"]=1;
-          top.addChild(cptr);
-      }
-      return;
-    }
+  let layer=pixi.overlay;
+  let clist=pixi.inner;
+  let top=pixi.top;
+  let segcnt=pixi.segment;
+
+  let citem=clist[target_segment]; // target particalContainer
+  if(citem.visible) { // toggle off
+    citem.visible=false;
+    top.removeChildAt(target_segment);
+    } else {
+      citem.visible=true;
+      top.addChildAt(citem, target_segment);
   }
+// need to refresh the layer
+  layer.redraw(target_segment);
 }
 
 
@@ -232,8 +242,12 @@ function _loadup_data_list(gid,latlist,lonlist,vallist) {
               }
       }
    }
-   DATA_max_v = data_max_v;
-   DATA_min_v = data_min_v;
+   if(DATA_MAX_V == undefined) {
+     DATA_MAX_V = data_max_v;
+   }
+   if(DATA_MIN_V == undefined) {
+     DATA_MIN_V = data_min_v;
+   }
 
    // sort datalist
    let sorted_rawlist = rawlist.sort((a,b) => {
@@ -247,10 +261,10 @@ function _loadup_data_list(gid,latlist,lonlist,vallist) {
       let lon=item[2];
       let lat=item[1];
       let val=item[0];
-      let idx=getRangeIdx(val, DATA_max_v, DATA_min_v);
+      let idx=getRangeIdx(val, DATA_MAX_V, DATA_MIN_V);
       updateMarkerLatlng(datalist,idx,lat,lon);
    }
-window.console.log("HUMHUM..",DATA_count);
+window.console.log("PIXI: HUMHUM..",DATA_count);
    pixiLatlngList= {"gid":gid,"data":datalist} ; 
 
    return [DATA_count, pixiLatlngList];
@@ -260,12 +274,30 @@ window.console.log("HUMHUM..",DATA_count);
 function makePixiOverlayLayerWithList(gid,latlist,lonlist,vallist,spec) {
     var pixiLatlngList;
     var count;	 
+
+    if(spec.seg_cnt) { 
+      DATA_SEGMENT_COUNT = spec.seg_cnt;
+      } else {
+        DATA_SEGMENT_COUNT = DEFAULT_DATA_SEGMENT_COUNT;
+    }
+    if(spec.data_max) { 
+      DATA_MAX_V = spec.data_max;
+      } else {
+        DATA_MAX_V = undefined;
+    }
+    if(spec.data_min) { 
+      DATA_MIN_V = spec.data_min;
+      } else {
+        DATA_MIN_V = undefined;
+    }
+
     [count, pixiLatlngList]=_loadup_data_list(gid,latlist,lonlist,vallist);
-    spec.hint=count;
-window.console.log("before", DATA_max_v, DATA_min_v);
-    if(spec.data_max) { DATA_max_v = spec.data_max; }
-    if(spec.data_min) { DATA_min_v = spec.data_min; }
-window.console.log("after", DATA_max_v, DATA_min_v);
+    spec.scale_hint=count;
+
+window.console.log("PIXI:SEG_COUNT " + DATA_SEGMENT_COUNT);
+window.console.log("PIXI:DATA_MAX " + DATA_MAX_V);
+window.console.log("PIXI:DATA_MIN " + DATA_MIN_V);
+
     return makePixiOverlayLayer(gid,pixiLatlngList,spec);
 }
 
@@ -275,9 +307,8 @@ window.console.log("after", DATA_max_v, DATA_min_v);
 // returns :
 //    {"gid":gid,"data":[ [{"lat":lat,"lng":lng},...], ...] }
 function _loadup_data_url(gid,url) {
-
-   DATA_max_v=null;
-   DATA_min_v=null;
+   let data_max_v=null;
+   let data_min_v=null;
    DATA_count=0;
 
    let rawlist=[];
@@ -299,7 +330,7 @@ function _loadup_data_url(gid,url) {
       }	      
       let token=ll.split(",");
       if(token.length != 7) {
-         window.console.log("invalid data in this line "+i+" >>"+token.length);
+         window.console.log("PIXI: invalid data in this line "+i+" >>"+token.length);
          
          continue;
       }
@@ -311,16 +342,24 @@ function _loadup_data_url(gid,url) {
       }
       vel=parseFloat(vel);
       rawlist.push([vel,lat,lon]);
-      if(DATA_max_v == null) {
-          DATA_max_v = vel;
-	  DATA_min_v = vel;  
+      if(data_max_v == null) {
+          data_max_v = vel;
+	  data_min_v = vel;  
           } else {
-              if(vel > DATA_max_v)
-                DATA_max_v=vel;
+              if(vel > data_max_v)
+                data_max_v=vel;
               if(vel < DATA_min_v)
-                DATA_min_v=vel;
+                data_min_v=vel;
       }
    }
+
+   if(DATA_MAX_V == undefined) {
+     DATA_MAX_V = data_max_v;
+   }
+   if(DATA_MIN_V == undefined) {
+     DATA_MIN_V = data_min_v;
+   }
+
    // sort datalist
    let sorted_rawlist = rawlist.sort((a,b) => {
           return b[0] - a[0];
@@ -333,12 +372,12 @@ function _loadup_data_url(gid,url) {
       let lon=item[2];
       let lat=item[1];
       let vel=item[0];
-      let idx=getRangeIdx(vel, DATA_max_v, DATA_min_v);
+      let idx=getRangeIdx(vel, DATA_MAX_V, DATA_MIN_V);
       updateMarkerLatlng(datalist,idx,lat,lon);
    }
    pixiLatlngList= {"gid":gid,"data":datalist} ; 
 
-   window.console.log("FILE:"+url+" total data:"+DATA_count+"("+DATA_min_v+","+DATA_max_v+")");
+   window.console.log("PIXI: FILE:"+url+" total data:"+DATA_count+"("+data_min_v+","+data_max_v+")");
    return pixiLatlngList;
 }
 
@@ -349,6 +388,12 @@ function makePixiOverlayLayerWithFile(gid,file) {
     return makePixiOverlayLayer(gid,pixiLatlngList,spec);
 }
 
+// spec = {'data_max':3.0, 'data_min':1.0, 'seg_cnt':20};
+// data_max and data_min is client specified limits
+//
+// pixiOverlayList.push({"gid":gid,"vis":1,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
+// return 'gid'
+// 
 function makePixiOverlayLayer(gid,pixiLatlngList,spec) {
 
     let zoomChangeTs = null;
@@ -359,9 +404,8 @@ function makePixiOverlayLayer(gid,pixiLatlngList,spec) {
     for(var i=0; i<DATA_SEGMENT_COUNT; i++) {
       var length=getMarkerCount(pixiLatlngList,i);
 //XXX,  new PIXI.particles.ParticleContainer(maxSize, properties, batchSize)
-      var a = new PIXI.particles.ParticleContainer(length, {vertices: true, tint: true});
+      var a = new PIXI.ParticleContainer(length, {vertices: true, tint: true});
       // add properties for our patched particleRenderer:
-window.console.log("pixi at container..");
       a.texture = markerTextures[i];
       a.baseTexture = markerTextures[i].baseTexture;
       a.anchor = {x: 0.5, y: 0.5};
@@ -375,7 +419,7 @@ window.console.log("pixi at container..");
 
     var overlay=L.pixiOverlay(function(utils, event) {
 
-window.console.log("event type --- ", event.type);
+window.console.log("PIXI:event type --- ", event.type);
 
       var zoom = utils.getMap().getZoom();
       var container = utils.getContainer();
@@ -383,12 +427,16 @@ window.console.log("event type --- ", event.type);
       pixi_project = utils.latLngToLayerPoint;
       var getScale = utils.getScale;
       var invScale = 1 / getScale();
+window.console.log("PIXI:in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>"+getScale()+" invScale"+invScale);
 
-window.console.log("in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>"+getScale()+" invScale"+invScale);
+      if (event.type === "redraw") {
+window.console.log("PIXI: redraw event");
+      }
+
       if (event.type === 'add') {
+window.console.log("PIXI: add event");
 
-// only add it first time
-        if (foundOverlay(gid)) {
+        if (_foundOverlay(gid)) { // only add it first time
           return;
         }
 
@@ -398,22 +446,24 @@ window.console.log("in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>"+get
         var origin = pixi_project([mapcenter['lat'], mapcenter['lng']]);
         initialScale = invScale/16; 
 // initial size of the marker for 70k pts
-	if(spec.hint != 0) { // THIS IS A HACK...
-          initialScale = invScale/7; 
-          if(spec.hint < 50000)
+window.console.log("PIXI: scale_hint:"+spec.scale_hint);
+	if(spec.scale_hint != 0) { // THIS IS A HACK...
+          if(spec.scale_hint < 50000)
              initialScale = invScale/5; 
 // for 10k pts
-          if(spec.hint < 20000)
+          if(spec.scale_hint < 20000)
              initialScale = invScale/3; 
-          if(spec.hint < 10000) // for SAFPoly3D
+          if(spec.scale_hint < 10000) // for SAFPoly3D
              initialScale = invScale/7; 
         }
-// for circles       initialScale = invScale/20; 
 
         // fill in the particles one group at a time
         let collect_len=0;
         for(var i=0; i< DATA_SEGMENT_COUNT; i++ ) {
-           if(i != 12 && i !=10 && i!=14 ) continue;	 
+
+// show first one, in the middle and the last
+//if(i !=12 && i !=10 ) continue;	 
+//if(i != Math.floor(DATA_SEGMENT_COUNT/2) && i !=0 && i!= (DATA_SEGMENT_COUNT-1) ) continue;	 
            var a=pContainers[i];
            a.x = origin.x;
            a.y = origin.y;
@@ -422,7 +472,7 @@ window.console.log("in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>"+get
            var latlngs=getMarkerLatlngs(pixiLatlngList,i);
            var len=latlngs.length;
            collect_len=collect_len+len;
-window.console.log(" group ",i," len is ",len);
+window.console.log("PIXI: group ",i," len is ",len);
            for (var j = 0; j < len; j++) {
               var latlng=latlngs[j];
               var ll=latlng['lat'];
@@ -457,27 +507,54 @@ var marker = new PIXI.Point([34.0105, -120.8415], {color: "#ff7800", weight: 1} 
 
               var aParticle=a.addChild(marker);
 /***/
-//window.console.log( "      adding  child at..("+latlng['lat']+')('+latlng['lng']+')');
            }
         }
-window.console.log("pixi: total of len, ",collect_len); 
+window.console.log("PIXI: total of len, ",collect_len); 
      }
 
-      renderer.render(container);
+      renderer.render(container,{ antialias: true, resolution:2 });
     }, pixiContainer, {
       doubleBuffering: doubleBuffering,
       destroyInteractionManager: true
     }).addTo(viewermap);
 
-    pixiOverlayList.push({"gid":gid,"vis":1,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
+    pixiOverlayList.push({"gid":gid,"vis":1,"segment":DATA_SEGMENT_COUNT,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
 
-window.console.log(">>> PIXI..adding:",gid);
+window.console.log(">>> PIXI..adding into poxiOverlayList with gid of:",gid);
 window.console.log(">>> PIXI..size:",pixiOverlayList.length);
 
-    return overlay;
+    return gid;
 }
 
-function foundOverlay(gid) {
+function pixiFindSegmentWithGid(gid) {
+  for(let i=0; i<pixiOverlayList.length; i++) {
+     let pixi=pixiOverlayList[i];
+     if(pixi.gid == gid) {
+       return pixi.segment;
+     }
+  }
+  return 0;
+}
+function pixiFindOverlayWithGid(gid) {
+  for(let i=0; i<pixiOverlayList.length; i++) {
+     let pixi=pixiOverlayList[i];
+     if(pixi.gid == gid) {
+       return pixi.overlay;
+     }
+  }
+  return null;
+}
+
+function pixiFindPixiWithGid(gid) {
+  for(let i=0; i<pixiOverlayList.length; i++) {
+     let pixi=pixiOverlayList[i];
+     if(pixi.gid == gid) {
+       return pixi;
+     }
+  }
+  return null;
+}
+function _foundOverlay(gid) {
   for(let i=0; i<pixiOverlayList.length; i++) {
      let pixi=pixiOverlayList[i];
      if(pixi["gid"] == gid) {
@@ -487,20 +564,21 @@ function foundOverlay(gid) {
   return 0;
 }
 
-function clearAllPixiOverlay() {
+function pixiClearAllPixiOverlay() {
   pixiOverlayList.forEach(function(pixi) {
     if(pixi !=null || pixi.length !=0) {
       if(pixi["vis"]==1) {
         var layer=pixi["overlay"];
         viewermap.removeLayer(layer);
         pixi["vis"]=0;
-window.console.log("Pixi: clear All..",pixi["gid"]);
+window.console.log("PIXI: clear All..",pixi["gid"]);
       }
     }
   });
 }
 
 function togglePixiOverlay(gid) {
+window.console.log("PIXI: which gid to toggle PixiOverlay out..",gid);
   for(let i=0; i<pixiOverlayList.length; i++) {
      let pixi=pixiOverlayList[i];
      if(pixi["gid"] == gid) {

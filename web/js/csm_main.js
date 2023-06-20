@@ -34,6 +34,18 @@ jQuery(document).ready(function() {
       CSM.setupModelMetric(CSM.csm_models,0);
   });
 
+  $('.csm-model-item').on("focus", function() {
+     $('.csm-model-item').on("blur mouseout", function() {
+       $('.csm-model-item').off("mouseout");
+       $('.csm-model-item').off("blur");
+       if( $(this).val() != '' ) {
+         window.console.log(" need to redraw the pixi overlay with the given string", $(this).val());
+         CSM.redrawModel($(this).val());
+       }
+       $(this).blur();
+     });
+  });
+
   $('.csm-latlon-item').on("focus", function() {
      $('.csm-latlon-item').on("blur mouseout", function() {
        $('.csm-latlon-item').off("mouseout");
