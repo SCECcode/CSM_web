@@ -15,7 +15,8 @@ var CSM = new function () {
     //   { "model": mn,
     //     "meta": { "dataCount": cnt, "dataByDEP": [ { "dep":d, "cnt":lcnt,  "aphi_max":max, "aphi_min":min}..] },
     //     "aphiRange": [mmax, mmin],
-    //     "metric" : [ "aphi" ] }
+    //     "metric" : [ "aphi" ],
+    //     "header" : "..." }
     this.csm_models = [];
 
     //  track pixi gid for for each model metric for each depth, 
@@ -245,14 +246,16 @@ window.console.log("calling, new freshSearch...");
 
 // initiate search if it is for whole model or
 // wait for a region 
+
       if(this.searchingType == this.searchType.model) {
 window.console.log("in freshSearch --model");
         var pixigid= CSM.lookupModelLayers(
                        spec_idx[0], spec_idx[1], spec_idx[2]);
 
+        pixiClearAllPixiOverlay();
+        CSM.setupPixiSegment(0);
+
         if(pixigid != null) { // reuse and add to viewer map 
-          pixiClearAllPixiOverlay();
-          CSM.setupPixiSegment(0);
           let pixioverlay=pixiFindOverlayWithGid(pixigid);
           viewermap.addLayer(pixioverlay);
           let cnt=pixiFindSegmentWithGid(pixigid);
@@ -380,7 +383,7 @@ window.console.log("SEARCH :",criteria);
                       scec_properties.lon2=criteria[2];
                       scec_properties.lat2=criteria[3];
                       scec_properties.dataset=dataset;
-                      scec_properties.note="sz="+sz;
+                      scec_properties.note="N="+sz;
                       let result={"scec_properties":scec_properties, "jblob":jblob}; 
                       CSM.csm_downloads.push(result);
                       CSM.addToMetadataTable(result);
@@ -832,6 +835,9 @@ window.console.log("change ModelMetric with ..",v);
           let tmp=CSM.csm_downloads[i];
           let tmp_gid=tmp.scec_properties.gid;
 
+//XXX ???
+//          let hdata=tmp.scec_properties.header;
+
           if(tmp_gid == gid) {
             let timestamp=$.now();
             let mlist = tmp.jblob;
@@ -841,15 +847,20 @@ window.console.log("change ModelMetric with ..",v);
         }
     };
 
+    function getModelHeader(dataset) {
+        let fname="dataset+"
+        var hblob="";
+    };
+
     function getCSVFromMeta(mlist) {
-        var len=mlist.length;  // each data is a meta data format
-        var last=len-1;
+        let len=mlist.length;  // each data is a meta data format
+        let last=len-1;
 
     // grab the first meta data and generate the title..
-        var meta=mlist[0];
-        var keys=Object.keys(meta);
-        var jfirst=0;
-        var jlen=keys.length;
+        let meta=mlist[0];
+        let keys=Object.keys(meta);
+        let jfirst=0;
+        let jlen=keys.length;
         
    // skip gid and geom (key==0,45)
 	if(keys[0] == "gid") { 

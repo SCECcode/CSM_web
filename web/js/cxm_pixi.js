@@ -447,7 +447,7 @@ window.console.log("PIXI: add event");
         let scaleFactor=7; // when len is 70k
         //let scaleFactor=8; // when len is 70k
         if(spec.scale_hint != 0) {
-          if( spec.scale_hint < 15000) { scaleFactor=3; }
+          if( spec.scale_hint < 15000) { scaleFactor=5; }
         }
 
 window.console.log("PIXI: using scale factor",scaleFactor);
@@ -589,4 +589,9 @@ window.console.log("PIXI: which gid to toggle PixiOverlay out..",gid);
        return;
      }
   }
+}
+
+function setupLegend(gid) {
+var elt=document.getElementById('segment-legend');
+var elt2=document.getElementById('segment-legend-content');
 }

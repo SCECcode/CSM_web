@@ -65,7 +65,7 @@ jQuery(document).ready(function() {
 
   $("#toSearch").on('click', function () {
 window.console.log("Calling toSearch..");
-        CSM.freshSearch(0); // type = 0, first one
+        CSM.freshSearch();
   });
 
 

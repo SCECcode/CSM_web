@@ -233,7 +233,6 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                   <option value="shaded relief">Shaded Relief</option>
               </select>
             </div> <!-- end of basemap -->
-
           </div> <!-- row -->
         </div> <!-- top-control-row2 -->
 
@@ -350,6 +349,13 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
              <div class="spinDialog" style="position:absolute;top:40%;left:50%; z-index:9999;">
                <div id="csm-wait-spin" align="center" style="display:none;"><i class="glyphicon glyphicon-cog fa-spin" style="color:red"></i></div>
              </div>
+
+<!-- legend -->
+  <div id="segement-legend" class="legend geometry top center hide">
+    <div class="wrapper">
+      <div id="segment-legend-content" class="content"></div>
+    </div>
+  </div> <!-- legend -->
 
           </div>
        </div>
