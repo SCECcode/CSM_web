@@ -31,5 +31,6 @@ for file in ../data/*csv ; do
 
     cat sql_template/setup_meta_tb.sql | sed "s/%%CSMTB%/${CSMTB}/g" | sed "s/%%csmtb%/${csmtb}/g" | sed "s/%%jblob%/${jmeta}/g" >> ../sql/setup_meta_tb.sql
 
+exit
 
 done
