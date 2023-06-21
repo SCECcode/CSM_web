@@ -15,10 +15,11 @@ var CSM = new function () {
     //   { "model": mn,
     //     "meta": { "dataCount": cnt, "dataByDEP": [ { "dep":d, "cnt":lcnt,  "aphi_max":max, "aphi_min":min}..] },
     //     "aphiRange": [mmax, mmin],
-    //     "metric" : [ "aphi" ] }
+    //     "metric" : [ "aphi" ],
+    //     "header" : "..." }
     this.csm_models = [];
 
-    //  pixi layers for for each model metric for each depth, 
+    //  track pixi gid for for each model metric for each depth, 
     //  made on-demand
     //  csm_model_pixi_layers['model_id]['metric_id']['depth_id']
     //  to avoid generate these repeatly
@@ -150,6 +151,7 @@ v3azi:'V3azi',
 
 // reset from the reset button
 // reset option button, the map to original state
+// clear the pixi layer and also pixi segment 
 // but leave the external model state the same
     this.resetAll = function () {
 
@@ -172,8 +174,13 @@ window.console.log("calling reset");
         viewermap.setView(this.defaultMapView.coordinates, this.defaultMapView.zoom);
         // reset model/metric to initial state
         CSM.resetModelType();
+
         // reset search type
 	CSM.resetSearchType();
+
+        // clear pixi layer
+        pixiClearAllPixiOverlay();
+        CSM.setupPixiSegment(0);
    };
  
    // given a dataset's db_tb name, return matching dataset name
@@ -196,6 +203,8 @@ window.console.log("calling --->> resetSearch.");
         this.resetLatlon();
     };
 
+// HOW TO DEFINE spec
+
     this.getSpec = function() {
       let tidx=parseInt($("#modelType").val());
       let model=this.csm_models[tidx];
@@ -217,6 +226,9 @@ window.console.log("calling --->> resetSearch.");
       let spec = [ tmodel, ddepth, mmetric ];
       let spec_idx = [ tidx,midx,didx ];
 
+window.console.log("spec is: ",spec);
+window.console.log("spec_idx is: ",spec_idx);
+
       return [spec, spec_idx];
     }
 
@@ -234,17 +246,24 @@ window.console.log("calling, new freshSearch...");
 
 // initiate search if it is for whole model or
 // wait for a region 
+
       if(this.searchingType == this.searchType.model) {
 window.console.log("in freshSearch --model");
-        var pixilayer= CSM.lookupModelLayers(
+        var pixigid= CSM.lookupModelLayers(
                        spec_idx[0], spec_idx[1], spec_idx[2]);
 
-        if(pixilayer) { // reuse and add to viewer map 
-          clearAllPixiOverlay();
-          viewermap.addLayer(pixilayer);
+        pixiClearAllPixiOverlay();
+        CSM.setupPixiSegment(0);
+
+        if(pixigid != null) { // reuse and add to viewer map 
+          let pixioverlay=pixiFindOverlayWithGid(pixigid);
+          viewermap.addLayer(pixioverlay);
+          let cnt=pixiFindSegmentWithGid(pixigid);
+          CSM.setupPixiSegment(cnt);
           } else {
-            pixilayer = this.search(this.searchType.model, spec, spec_idx);
+            pixigid = this.search(this.searchType.model, spec, spec_idx);
         }
+
         return;
       }
 
@@ -253,6 +272,33 @@ window.console.log("in freshSearch --latlon");
          this.searchLatlon(0, []);
       }
     };
+
+// a layer is always generated with the full set of segments 
+// so pop up the pixi segment selector on dashboard
+// max n would be 20
+   function _segmentoption(label,idx) {
+      var html = "<input type=\"checkbox\" class='mr-1' id=\"pixiSegment_"+idx+"\" onclick=\"CSM.togglePixiSegment("+idx+")\" checked >";
+          html=html+"<label class='form-check-label mr-2 mini-option' for=\"pixiSegment_\"+idx+\"><span>"+label+"</span></label>";
+      return html;
+    }
+
+    this.setupPixiSegment = function(n) {
+      if(n>20) return;
+      let html = "";
+      for(let i=0; i<n; i++) {
+	 html=html+_segmentoption(i,i);
+	 if( (i+1) % 8 === 0 ) {
+             html=html+"<br>";
+         }
+      }
+      $("#pixi-segment").html(html);
+    }
+
+    this.togglePixiSegment = function(n) {
+      let gid=this.current_pixi_gid;
+window.console.log("calling togglePixiSegment.. with ",n,"on ",gid);
+      pixiToggleMarkerContainer(gid,n);
+    }
 
     this.startWaitSpin = function() {
       $("#csm-wait-spin").css('display','');
@@ -293,18 +339,35 @@ window.console.log("Did not find any PHP result");
                     lonlist=tmp['lon'];
                     vallist=tmp['val'];
 
-                    clearAllPixiOverlay();
+                    pixiClearAllPixiOverlay();
+                    CSM.setupPixiSegment(0);
                     CSM.current_pixi_gid++;
 
-                    let spec = {'data_max':3.0, 'data_min':1.0};
+/*  pixi_spec:
+       seg_cnt  sets  DATA_SEGMENT_COUNT
+       data_max sets  DATA_MAX_V
+       data_min sets  DATA_MIN_V
+*/
+window.console.log("SEARCH :",criteria);
 
-                    var pixi=makePixiOverlayLayerWithList(
+                    let pixi_spec = { 'seg_cnt' : 20};
+                    
+                    // if metric is "aphi"
+                    if( 1 ) {	
+                       pixi_spec.data_max=3.0;
+                       pixi_spec.data_min=0.0;
+                    }
+
+//pixiOverlayList.push({"gid":gid,"vis":1,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
+// returning overlay
+                    var pgid=makePixiOverlayLayerWithList(
                              CSM.current_pixi_gid,
-                             latlist,lonlist,vallist,spec);
+                             latlist,lonlist,vallist,pixi_spec);
                     CSM.removeWaitSpin();
 
-                    CSM.addModelLayers(criteria[0],criteria[1],criteria[2],pixi);
-                    return pixi;
+                    CSM.addModelLayers(criteria[0],criteria[1],criteria[2],pgid);
+                    CSM.setupPixiSegment(pixi_spec.seg_cnt);
+                    return pgid;
                 }
                 if(type==CSM.searchType.latlon) { 
                     let jblob=JSON.parse(search_result); 
@@ -320,7 +383,7 @@ window.console.log("Did not find any PHP result");
                       scec_properties.lon2=criteria[2];
                       scec_properties.lat2=criteria[3];
                       scec_properties.dataset=dataset;
-                      scec_properties.note="sz="+sz;
+                      scec_properties.note="N="+sz;
                       let result={"scec_properties":scec_properties, "jblob":jblob}; 
                       CSM.csm_downloads.push(result);
                       CSM.addToMetadataTable(result);
@@ -328,11 +391,15 @@ window.console.log("Did not find any PHP result");
                       CSM.flyToDownloadBounds();
                       CSM.removeWaitSpin();
                     }        
+                    return;
                 }
             }
         });
     };
 
+    this.redrawModel = function(v) {
+    };
+	     
     // special case, Latlon can be from text inputs or from the map
     // fromWhere=0 is from text
     // fromWhere=1 from drawRectangle call
@@ -370,7 +437,8 @@ window.console.log("calling searchLatlon..");
                 $("#csm-secondLonTxt").val(criteria[3]);
         }
 
-        let pixi= this.search(CSM.searchType.latlon, spec, criteria);
+        // not expecting anything 
+        let ret= this.search(CSM.searchType.latlon, spec, criteria);
 
 /****
         let regionLocations = [];
@@ -495,7 +563,8 @@ window.console.log("calling searchLatlon..");
 
     // clear the model layer from the map
     this.unselectAllModel = function() {
-       clearAllPixiOverlay();
+       pixiClearAllPixiOverlay();
+       this.setupPixiSegment(0);
     }
 
     var generateMetadataTable = function (results) {
@@ -664,22 +733,22 @@ window.console.log("resetModelType");
 
     this.lookupModelLayers = function (midx, mmidx, didx) {
 //window.console.log(" ===> LOOKING FOR", midx, mmidx, didx);
-      let alayer=CSM.csm_model_pixi_layers[midx][mmidx][didx];
-      if(alayer != undefined) {
+      let pixigid=CSM.csm_model_pixi_layers[midx][mmidx][didx];
+      if(pixigid != undefined) {
 //        window.console.log(" === FOUND an existing layer..");
-        return alayer;
+        return pixigid;
         } else {
 //          window.console.log(" === DID not Find an existing layer..");
           return null;
       }
     } 
-    this.addModelLayers = function(midx,mmidx,didx,pixilayer) {
+    this.addModelLayers = function(midx,mmidx,didx,pixigid) {
 //window.console.log(" ===> ADDING FOR", midx, mmidx, didx);
-      let alayer=CSM.csm_model_pixi_layers[midx][mmidx][didx];
-      if(alayer != undefined) {
+      let tmp=CSM.csm_model_pixi_layers[midx][mmidx][didx];
+      if(tmp != undefined) {
         window.console.log(" === BAD BAD BAD - found  an existing layer..");
         } else {
-          CSM.csm_model_pixi_layers[midx][mmidx][didx]=pixilayer;
+          CSM.csm_model_pixi_layers[midx][mmidx][didx]=pixigid;
       }
     } 
 
@@ -746,9 +815,11 @@ window.console.log("resetModelType");
     }
 
    this.changeModelDepth = function(v) {
+window.console.log("change ModelDepth with ..",v);
         this.current_modelDepth_idx=v; 
    };
    this.changeModelMetric = function(v) {
+window.console.log("change ModelMetric with ..",v);
         this.current_modelMetric_idx=v; 
    };
 
@@ -764,6 +835,9 @@ window.console.log("resetModelType");
           let tmp=CSM.csm_downloads[i];
           let tmp_gid=tmp.scec_properties.gid;
 
+//XXX ???
+//          let hdata=tmp.scec_properties.header;
+
           if(tmp_gid == gid) {
             let timestamp=$.now();
             let mlist = tmp.jblob;
@@ -773,15 +847,20 @@ window.console.log("resetModelType");
         }
     };
 
+    function getModelHeader(dataset) {
+        let fname="dataset+"
+        var hblob="";
+    };
+
     function getCSVFromMeta(mlist) {
-        var len=mlist.length;  // each data is a meta data format
-        var last=len-1;
+        let len=mlist.length;  // each data is a meta data format
+        let last=len-1;
 
     // grab the first meta data and generate the title..
-        var meta=mlist[0];
-        var keys=Object.keys(meta);
-        var jfirst=0;
-        var jlen=keys.length;
+        let meta=mlist[0];
+        let keys=Object.keys(meta);
+        let jfirst=0;
+        let jlen=keys.length;
         
    // skip gid and geom (key==0,45)
 	if(keys[0] == "gid") { 

@@ -233,7 +233,6 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                   <option value="shaded relief">Shaded Relief</option>
               </select>
             </div> <!-- end of basemap -->
-
           </div> <!-- row -->
         </div> <!-- top-control-row2 -->
 
@@ -266,7 +265,13 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
 <!-- search-option -->
          <div id="search-option" style="border:solid 0px green" >
             <ul id="option" class="navigation" style="padding: 0 0 0 0;">
-              <li id='csm-model' class='navigationLi' style="display:none;border:solid 1px red">
+              <li id='csm-model' class='navigationLi' style="display:none;border:solid 1px green">
+                <div class="row">
+                  <div class="col-1">
+                  </div>
+                  <div id="pixi-segment" class="col-10">
+                  </div>
+                </div>
               </li>
               <li id='csm-latlon' class='navigationLi mt-1' style="display:none; border:solid 1px red">
                 <div id='latlonMenu' class='menu'>
@@ -274,7 +279,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                     <div class="col-5">
                           <p>Draw a rectangle on the map or enter latitudes and longitudes.</p>
                     </div>
-                  <div class="col-2 pl-0 pr-0">
+                    <div class="col-2 pl-0 pr-0">
                       <input type="text"
                           placeholder="Latitude"
                           id="csm-firstLatTxt"
@@ -344,6 +349,13 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
              <div class="spinDialog" style="position:absolute;top:40%;left:50%; z-index:9999;">
                <div id="csm-wait-spin" align="center" style="display:none;"><i class="glyphicon glyphicon-cog fa-spin" style="color:red"></i></div>
              </div>
+
+<!-- legend -->
+  <div id="segement-legend" class="legend geometry top center hide">
+    <div class="wrapper">
+      <div id="segment-legend-content" class="content"></div>
+    </div>
+  </div> <!-- legend -->
 
           </div>
        </div>
