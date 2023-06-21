@@ -267,13 +267,12 @@ function _loadup_data_list(gid,latlist,lonlist,vallist) {
 window.console.log("PIXI: HUMHUM..",DATA_count);
    pixiLatlngList= {"gid":gid,"data":datalist} ; 
 
-   return [DATA_count, pixiLatlngList];
+   return pixiLatlngList;
 }
 
 // this is from csm
 function makePixiOverlayLayerWithList(gid,latlist,lonlist,vallist,spec) {
     var pixiLatlngList;
-    var count;	 
 
     if(spec.seg_cnt) { 
       DATA_SEGMENT_COUNT = spec.seg_cnt;
@@ -291,8 +290,7 @@ function makePixiOverlayLayerWithList(gid,latlist,lonlist,vallist,spec) {
         DATA_MIN_V = undefined;
     }
 
-    [count, pixiLatlngList]=_loadup_data_list(gid,latlist,lonlist,vallist);
-    spec.scale_hint=count;
+    pixiLatlngList=_loadup_data_list(gid,latlist,lonlist,vallist);
 
 window.console.log("PIXI:SEG_COUNT " + DATA_SEGMENT_COUNT);
 window.console.log("PIXI:DATA_MAX " + DATA_MAX_V);
@@ -444,12 +442,15 @@ window.console.log("PIXI: add event");
 
         var origin = pixi_project([mapcenter['lat'], mapcenter['lng']]);
 
-        let scaleFactor=7; // when len is 70k
-        //let scaleFactor=8; // when len is 70k
-        if(spec.scale_hint != 0) {
-          if( spec.scale_hint < 15000) { scaleFactor=5; }
+        let scaleFactor=16; // default came from seismicity
+        if(spec.scale_hint == 2 ) { // when grid points are about 2km len is 70k
+          scaleFactor=7.2;
+        }
+        if(spec.scale_hint == 5) {  // when grid points are about 5km
+          scaleFactor=3; 
         }
 
+window.console.log("PIXI: scale_hint", spec.scale_hint);
 window.console.log("PIXI: using scale factor",scaleFactor);
 
         // fill in the particles one group at a time

@@ -349,13 +349,26 @@ window.console.log("Did not find any PHP result");
        data_min sets  DATA_MIN_V
 */
 window.console.log("SEARCH :",criteria);
+window.console.log("SEARCH :",spec);
+
 
                     let pixi_spec = { 'seg_cnt' : 20};
                     
+window.console.log("SEARCHING for ",spec[2]);
                     // if metric is "aphi"
-                    if( 1 ) {	
+                    if(spec[2]=="aphi") {	
                        pixi_spec.data_max=3.0;
                        pixi_spec.data_min=0.0;
+                    }
+                    if(spec[2]=="shmax") {
+                       pixi_spec.data_max=90.0;
+                       pixi_spec.data_min=-90.0;
+                    }
+
+                    // 2km grid or 5km grid  
+                    pixi_spec.scale_hint=2;
+                    if(spec[1] >= 50) {
+                      pixi_spec.scale_hint=5;
                     }
 
 //pixiOverlayList.push({"gid":gid,"vis":1,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
