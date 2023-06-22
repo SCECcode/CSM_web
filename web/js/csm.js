@@ -687,8 +687,7 @@ window.console.log("generateMetadataTable..");
             this.setupModelMetric(this.csm_models,0);
             this.setupModelLayers(this.csm_models);
 
-/* click the first search type..*/
-	    $("searchType_0").click();
+            $("#searchType_0").click();
     };
      
     // need to trigger modelType change to first model

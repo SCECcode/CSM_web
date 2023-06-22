@@ -245,25 +245,15 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
        <div id="metricData" class="col-5 button-container flex-column pr-0" style="overflow:hidden;border:solid 1px red;">
 
 <!-- search method -->
-         <div class="row">
-<!--
-           <div class="input-group filters mt-1 mb-1" style="margin-left:15px; border:1px solid blue">
-             <select id="csm-search-type" class="custom-select custom-select-sm">
-               <option value="none">Search by </option>
-               <option value="model">Model</option>
-               <option value="latlon">Latitude &amp; Longitude</option>
-             </select>
-             <div class="input-group-append">
-               <button id="toReset" type="button" class="btn btn-dark" >Reset</button>
+         <div class="row" style="border:solid 1px blue">
+             <div class="col-7">
+               <form id="csm-search-type">
+                 <label><input type="radio" id="searchType_0" name="searchtype" onclick="CSM.showSearch('model')"><span>Model</span></label>
+                 <label><input type="radio" id="searchType_1" name="searchtype" onclick="CSM.showSearch('latlon')"><span>Get Data</span></label>
+               </form>
              </div>
-           </div>
--->
-             <form id="csm-search-type">
-               <label><input type="radio" id="searchType_0" name="searchtype" onclick="CSM.showSearch('model')"><span>Model</span></label>
-               <label><input type="radio" id="searchType_1" name="searchtype" onclick="CSM.showSearch('latlon')"><span>Get Data</span></label>
-             </form>
 
-             <div id="csm-search-btn" class="row" style="margin-left:10px;">
+             <div id="csm-search-btn" class="row">
                <button id="toSearch" class="btn" style="color:#395057;background-color:#f2f2f2;border:1px solid #ced4da;border-radius:0.2rem;"><span>SEARCH</span></button>
              </div>
              <div id="csm-reset-btn" class="row" style="margin-left:30px;">

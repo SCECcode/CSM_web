@@ -97,8 +97,7 @@ window.console.log("Calling toReset..");
 // setup the interface 
   CSM.setupCSMInterface();
 
-window.console.log("after main");
-window.console.log("current zoom ", viewermap.getZoom());
+window.console.log("DONE with main");
 
 }); // end of MAIN
 
