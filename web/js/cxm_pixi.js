@@ -15,6 +15,29 @@ var DATA_MAX_V=undefined;
 var DATA_MIN_V=undefined;
 var DATA_count=0;
 
+/* color list
+rgb(233,213,117)
+rgb(198,220,100)
+rgb(161,227,95)
+rgb(161,227,95)
+rgb(124,231,103)
+rgb(93,229,120)
+rgb(71,223,145)
+rgb(60,210,172)
+rgb(60,210,172)
+rgb(59,192,197)
+rgb(69,170,215)
+rgb(84,146,223)
+rgb(103,123,220)
+rgb(103,123,220)
+rgb(121,102,207)
+rgb(135,85,185)
+rgb(143,72,157)
+rgb(143,64,127)
+rgb(143,64,127)
+rgb(135,59,97)
+*/
+
 /********************************************/
 /* a place to park all the pixiOverlay from the session */
 /* [ {"gid":gid, "vis":true, "segment":20, "layer": overlay,         */
