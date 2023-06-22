@@ -624,7 +624,3 @@ window.console.log("PIXI: which gid to toggle PixiOverlay out..",gid);
   }
 }
 
-function setupLegend(gid) {
-var elt=document.getElementById('segment-legend');
-var elt2=document.getElementById('segment-legend-content');
-}
