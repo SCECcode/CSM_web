@@ -58,16 +58,10 @@ jQuery(document).ready(function() {
      });
   });
 
-  $("#csm-search-type").on('change', function () {
-      let type=$(this).val();
-      CSM.showSearch(type);
-  });
-
   $("#toSearch").on('click', function () {
 window.console.log("Calling toSearch..");
         CSM.freshSearch();
   });
-
 
   $("#toReset").on('click', function () {
 window.console.log("Calling toReset..");

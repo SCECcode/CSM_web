@@ -1,5 +1,29 @@
 /* csm */
 
+#csm-search-type input[type="radio"] {
+  display: none;
+}
+
+#csm-search-type span {
+  padding: 0.25rem 1.0rem;
+  border: 1px solid #ced4da;
+  border-radius: 0.2rem;
+  background-color: #f2f2f2;
+  color: #395057;
+  cursor: pointer;
+}
+
+#csm-search-type input[type="radio"]:checked + span {
+  background-color: #990000;
+  border: 1px solid #990000;
+  color: white;
+}
+
+#csm-search-type label {
+    font-weight: normal;
+    margin-bottom: 0.5rem;
+}
+
 .csm-btn {
     background: white;
     border: 0px solid #D5D5D5;
@@ -111,35 +135,6 @@ div.latlon-input-boxes input[type='text']{
 #result-table-container {
     max-height:576px;
     overflow:auto;
-}
-
-#id_select_dataset input[type="radio"] {
-  display: none;
-}
-
-#id_select_dataset span {
-  margin-left: 0.6rem;
-  padding: 0.40rem 1.5rem;
-  border: 1px solid #ced4da;
-  border-radius: 0.2rem;
-  background-color: #f2f2f2;
-  color: #395057;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-#id_select_dataset input[type="radio"]:checked + span {
-  background-color: #990000;
-  border: 1px solid #990000;
-  color: white;
-}
-
-#id_select_dataset label {
-    font-weight: normal;
-}
-
-#id_select_dataset label:first-child {
-    font-weight: bold;
 }
 
 #model-options label {

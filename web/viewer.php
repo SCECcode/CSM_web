@@ -246,6 +246,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
 
 <!-- search method -->
          <div class="row">
+<!--
            <div class="input-group filters mt-1 mb-1" style="margin-left:15px; border:1px solid blue">
              <select id="csm-search-type" class="custom-select custom-select-sm">
                <option value="none">Search by </option>
@@ -256,10 +257,18 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                <button id="toReset" type="button" class="btn btn-dark" >Reset</button>
              </div>
            </div>
+-->
+             <form id="csm-search-type">
+               <label><input type="radio" id="searchType_0" name="searchtype" onclick="CSM.showSearch('model')"><span>Model</span></label>
+               <label><input type="radio" id="searchType_1" name="searchtype" onclick="CSM.showSearch('latlon')"><span>Get Data</span></label>
+             </form>
 
-           <div id="csm-search-btn" class="row" style="margin-left:30px;;display:none;">
-             <button id="toSearch" class="btn" style="color:#395057;background-color:#f2f2f2;border:1px solid #ced4da;border-radius:0.2rem;"><span>SEARCH</span></button>
-           </div>
+             <div id="csm-search-btn" class="row" style="margin-left:10px;">
+               <button id="toSearch" class="btn" style="color:#395057;background-color:#f2f2f2;border:1px solid #ced4da;border-radius:0.2rem;"><span>SEARCH</span></button>
+             </div>
+             <div id="csm-reset-btn" class="row" style="margin-left:30px;">
+               <button id="toReset" type="button" class="btn btn-dark" >Reset</button>
+             </div>
          </div>
 
 <!-- search-option -->
@@ -351,7 +360,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
              </div>
 
 <!-- legend -->
-  <div id="segement-legend" class="legend geometry top center hide">
+  <div id="segement-legend" class="main-legend" style="bottom:125px;">
     <div class="wrapper">
       <div id="segment-legend-content" class="content"></div>
     </div>

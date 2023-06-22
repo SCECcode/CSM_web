@@ -47,11 +47,10 @@ var CSM = new function () {
     };
 
     this.searchType = {
-        none: 'none', 
         model: 'model',
         latlon: 'latlon'
     };
-    this.searchingType=this.searchType.none;
+    this.searchingType=this.searchType.model;
 
 
 var csm_csv_keys= {
@@ -123,22 +122,12 @@ v3azi:'V3azi',
 
         this.searchingType = type;
         switch (type) {
-            case this.searchType.none:
-               $("#csm-search-btn").css('display','none');
-               $("#csm-model").hide();
-               $("#csm-latlon").hide();
-               skipRectangle();
-               break;
             case this.searchType.model:
-        // enable search btn
-               $("#csm-search-btn").css('display','');
                $("#csm-model").show();
                $("#csm-latlon").hide();
                skipRectangle();
                break;
             case this.searchType.latlon:
-        // enable search btn
-               $("#csm-search-btn").css('display','');
         // enable latlon 
                $("#csm-model").hide();
                $("#csm-latlon").show();
@@ -198,7 +187,6 @@ window.console.log("calling reset");
 // reset just the search only
     this.resetSearch = function (){
 window.console.log("calling --->> resetSearch.");
-        $("#csm-search-btn").css('display','none');
         this.resetModel();
         this.resetLatlon();
     };
@@ -698,16 +686,11 @@ window.console.log("generateMetadataTable..");
             this.setupModelDepth(this.csm_models,0);
             this.setupModelMetric(this.csm_models,0);
             this.setupModelLayers(this.csm_models);
+
+/* click the first search type..*/
+	    $("searchType_0").click();
     };
      
-    // need to trigger csm-search-type change to none
-    this.resetSearchType = function () {
-window.console.log("resetSerchType");
-       let elt=document.getElementById('csm-search-type');
-       elt.value = "none";
-       $("#csm-search-type").change();
-    }
-
     // need to trigger modelType change to first model
     this.resetModelType = function () {
 window.console.log("resetModelType");
