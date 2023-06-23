@@ -283,7 +283,7 @@ for f in file_list:
   jblob['meta']['difRange']=Overall_Dif_range
   jblob['meta']['s3Range']=Overall_S3_range
   jblob['meta']['dataByDEP']=DEP_range
-  jblob['metric'] = [ 'shmax', 'aphi', 'iso', 'dif' 's3' ] 
+  jblob['metric'] = [ 'shmax', 'aphi', 'iso', 'dif', 's3' ] 
 #  jstr=json.dumps(jblob, indent=2)
   jstr=json.dumps(jblob)
   f.write(jstr)

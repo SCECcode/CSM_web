@@ -169,7 +169,7 @@ window.console.log("calling reset");
 
         // clear pixi layer
         pixiClearAllPixiOverlay();
-        CSM.setupPixiSegment(0);
+        CSM.setupPixiSegment(0,0);
    };
  
    // given a dataset's db_tb name, return matching dataset name
@@ -241,13 +241,13 @@ window.console.log("in freshSearch --model");
                        spec_idx[0], spec_idx[1], spec_idx[2]);
 
         pixiClearAllPixiOverlay();
-        CSM.setupPixiSegment(0);
+        CSM.setupPixiSegment(0,0);
 
         if(pixigid != null) { // reuse and add to viewer map 
           let pixioverlay=pixiFindOverlayWithGid(pixigid);
           viewermap.addLayer(pixioverlay);
           let cnt=pixiFindSegmentWithGid(pixigid);
-          CSM.setupPixiSegment(cnt);
+          CSM.setupPixiSegment(pixigid,cnt);
           } else {
             pixigid = this.search(this.searchType.model, spec, spec_idx);
         }
@@ -270,7 +270,7 @@ window.console.log("in freshSearch --latlon");
       return html;
     }
 
-    this.setupPixiSegment = function(n) {
+    this.setupPixiSegment = function(gid,n) {
       if(n>20) return;
       let html = "";
       for(let i=0; i<n; i++) {
@@ -328,7 +328,7 @@ window.console.log("Did not find any PHP result");
                     vallist=tmp['val'];
 
                     pixiClearAllPixiOverlay();
-                    CSM.setupPixiSegment(0);
+                    CSM.setupPixiSegment(0,0);
                     CSM.current_pixi_gid++;
 
 /*  pixi_spec:
@@ -367,7 +367,7 @@ window.console.log("SEARCHING for ",spec[2]);
                     CSM.removeWaitSpin();
 
                     CSM.addModelLayers(criteria[0],criteria[1],criteria[2],pgid);
-                    CSM.setupPixiSegment(pixi_spec.seg_cnt);
+                    CSM.setupPixiSegment(pgid,pixi_spec.seg_cnt);
                     return pgid;
                 }
                 if(type==CSM.searchType.latlon) { 
@@ -565,7 +565,7 @@ window.console.log("calling searchLatlon..");
     // clear the model layer from the map
     this.unselectAllModel = function() {
        pixiClearAllPixiOverlay();
-       this.setupPixiSegment(0);
+       this.setupPixiSegment(0,0);
     }
 
     var generateMetadataTable = function (results) {
