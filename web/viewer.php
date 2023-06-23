@@ -261,6 +261,23 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
              </div>
          </div>
 
+<!-- model select -->
+         <div class="input-group input-group-sm custom-control-inline">
+            <div class="input-group-prepend">
+                  <label class="input-group-text" for="modelType">Select CSM Model</label>
+            </div>
+            <select id="modelType" class="custom-select custom-select-sm"></select>
+         </div> <!-- model select -->
+
+<!-- model depth list -->
+         <div id="modelDepth" class="mt-2" style="border:solid 1px green">
+           <div id="modelDepth-options" class="form-check"> </div>
+         </div>
+<!-- metric list -->
+         <div id="modelMetric" class="mt-2" style="border:solid 1px blue">
+           <div id="modelMetric-options" class="form-check"> </div>
+         </div>
+
 <!-- search-option -->
          <div id="search-option" style="border:solid 0px green" >
             <ul id="option" class="navigation" style="padding: 0 0 0 0;">
@@ -312,24 +329,6 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
             </ul> <!-- option -->
          </div>
 
-<!-- model select -->
-         <div class="input-group input-group-sm custom-control-inline">
-            <div class="input-group-prepend">
-                  <label class="input-group-text" for="modelType">Select CSM Model</label>
-            </div>
-            <select id="modelType" class="custom-select custom-select-sm"></select>
-         </div> <!-- model select -->
-
-
-<!-- model depth list -->
-         <div id="modelDepth" class="mt-2" style="border:solid 1px green">
-           <div id="modelDepth-options" class="form-check"> </div>
-         </div>
-<!-- metric list -->
-         <div id="modelMetric" class="mt-2" style="border:solid 1px blue">
-           <div id="modelMetric-options" class="form-check"> </div>
-         </div>
-
 <!-- result parking location -->
          <div id="parkingLot" style="display:none">
 <!--  metric range for model/depth/metric combo  -->
@@ -349,12 +348,20 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                <div id="csm-wait-spin" align="center" style="display:none;"><i class="glyphicon glyphicon-cog fa-spin" style="color:red"></i></div>
              </div>
 
-<!-- legend -->
-  <div id="segement-legend" class="main-legend" style="bottom:125px;">
+<!-- legend ????-->
+<div id="segement-legend" class="legend geometry top right">
     <div class="wrapper">
       <div id="segment-legend-content" class="content"></div>
     </div>
-  </div> <!-- legend -->
+</div> <!-- legend -->
+<div class="main-legend" style="bottom: 125px;">
+    <ul>
+      <li><span class="color" style="background-color: #b61d1d;"></span>ABC</li>
+      <li><span class="color" style="background-color: #f7704a;"></span>XYZ</li>
+      <li><span class="color" style="background-color: #dc2a1b;"></span>123</li>
+      <li><span class="color" style="background-color: #f19ec7;"></span>789</li>
+    </ul>
+</div>
 
           </div>
        </div>

@@ -266,8 +266,7 @@ window.console.log("in freshSearch --latlon");
 // max n would be 20
    function _segmentoption(label,idx) {
       var html = "<input type=\"checkbox\" class='mr-1' id=\"pixiSegment_"+idx+"\" onclick=\"CSM.togglePixiSegment("+idx+")\" checked >";
-          html=html+"<label class='form-check-label mr-2 mini-option' for=\"pixiSegment_\"+idx+\"><span>
-<button class=\"btn btn-sm cxm-small-btn\">ccc</button>"+label+"</span></label>";
+          html=html+"<label class='form-check-label mr-2 mini-option' for=\"pixiSegment_\"+idx+\"><span><button class=\"btn btn-sm cxm-small-btn\">ccc</button>"+label+"</span></label>";
       return html;
     }
 
@@ -830,9 +829,6 @@ window.console.log("change ModelMetric with ..",v);
           let timestamp=$.now();
           let tmp=CSM.csm_downloads[i];
           let tmp_gid=tmp.scec_properties.gid;
-
-//XXX ???
-//          let hdata=tmp.scec_properties.header;
 
           if(tmp_gid == gid) {
             let timestamp=$.now();
