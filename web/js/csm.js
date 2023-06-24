@@ -24,8 +24,13 @@ var CSM = new function () {
     //  csm_model_pixi_layers['model_id]['metric_id']['depth_id']
     //  to avoid generate these repeatly
     this.csm_model_pixi_layers=[];
-    this.current_pixi_gid=0;
 
+    //  track number of layers (a count) being made -- uid
+    this.track_uid=1;  // start at 1 
+    
+    //  current pixi index being viewed
+    this.current_pixi_gid=0; // assume it starts at 0
+    
     // { "gid":gid, "scec_properties": prop, "jblob": jblob } 
     // from searchLatlon, to be downloaded
     // scec_properties : gid, depth, lon1, lat1, lon2, lat2, dataset, note, layer
@@ -169,7 +174,7 @@ window.console.log("calling reset");
 
         // clear pixi layer
         pixiClearAllPixiOverlay();
-        CSM.setupPixiSegment(0,0);
+        CSM.setupPixiSegment(0,{});
    };
  
    // given a dataset's db_tb name, return matching dataset name
@@ -237,17 +242,19 @@ window.console.log("calling, new freshSearch...");
 
       if(this.searchingType == this.searchType.model) {
 window.console.log("in freshSearch --model");
+        //pixiClearAllPixiOverlay();
+        pixiClearPixiOverlay(CSM.current_pixi_gid);
+        CSM.setupPixiSegment(0,{});
+
         var pixigid= CSM.lookupModelLayers(
                        spec_idx[0], spec_idx[1], spec_idx[2]);
 
-        pixiClearAllPixiOverlay();
-        CSM.setupPixiSegment(0,0);
-
         if(pixigid != null) { // reuse and add to viewer map 
-          let pixioverlay=pixiFindOverlayWithGid(pixigid);
+          let pixioverlay=pixiFindOverlayWithPixiGid(pixigid);
           viewermap.addLayer(pixioverlay);
-          let cnt=pixiFindSegmentWithGid(pixigid);
-          CSM.setupPixiSegment(pixigid,cnt);
+          let seglist=pixiFindSegmentsWithPixiGid(pixigid);
+          CSM.setupPixiSegment(pixigid,seglist);
+          CSM.current_pixi_gid=pixigid;
           } else {
             pixigid = this.search(this.searchType.model, spec, spec_idx);
         }
@@ -264,28 +271,27 @@ window.console.log("in freshSearch --latlon");
 // a layer is always generated with the full set of segments 
 // so pop up the pixi segment selector on dashboard
 // max n would be 20
-   function _segmentoption(label,idx) {
-      var html = "<input type=\"checkbox\" class='mr-1' id=\"pixiSegment_"+idx+"\" onclick=\"CSM.togglePixiSegment("+idx+")\" checked >";
-          html=html+"<label class='form-check-label mr-2 mini-option' for=\"pixiSegment_\"+idx+\"><span><button class=\"btn btn-sm cxm-small-btn\">ccc</button>"+label+"</span></label>";
+   function _segmentoption(label,pixigid,idx) {
+      var html = "<input type=\"checkbox\" class='mr-1' id=\"pixiSegment_"+idx+"\" onclick=\"CSM.togglePixiSegment("+pixigid+","+idx+")\" checked >";
+          html=html+"<label class='form-check-label mr-2 mini-option' for=\"pixiSegment_\"+idx+\"><span><button class=\"btn btn-sm\"></button>"+label+"</span></label>";
       return html;
     }
 
-    this.setupPixiSegment = function(gid,n) {
-      if(n>20) return;
+    this.setupPixiSegment = function(pixigid,seglist) {
+      let n=seglist.length;
       let html = "";
       for(let i=0; i<n; i++) {
-	 html=html+_segmentoption(i,i);
-	 if( (i+1) % 8 === 0 ) {
-             html=html+"<br>";
-         }
+         let cnt=seglist[i];
+         let v=i+1;
+         let label=v+"("+cnt+")";
+	 html=html+_segmentoption(label,pixigid,i)+"<br>";
       }
       $("#pixi-segment").html(html);
     }
 
-    this.togglePixiSegment = function(n) {
-      let gid=this.current_pixi_gid;
-window.console.log("calling togglePixiSegment.. with ",n,"on ",gid);
-      pixiToggleMarkerContainer(gid,n);
+    this.togglePixiSegment = function(pixigid, n) {
+window.console.log("calling togglePixiSegment.. with ",n,"on ",pixigid);
+      pixiToggleMarkerContainer(pixigid,n);
     }
 
     this.startWaitSpin = function() {
@@ -328,8 +334,7 @@ window.console.log("Did not find any PHP result");
                     vallist=tmp['val'];
 
                     pixiClearAllPixiOverlay();
-                    CSM.setupPixiSegment(0,0);
-                    CSM.current_pixi_gid++;
+                    CSM.setupPixiSegment(0,{});
 
 /*  pixi_spec:
        seg_cnt  sets  DATA_SEGMENT_COUNT
@@ -361,14 +366,17 @@ window.console.log("SEARCHING for ",spec[2]);
 
 //pixiOverlayList.push({"gid":gid,"vis":1,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
 // returning overlay
-                    var pgid=makePixiOverlayLayerWithList(
-                             CSM.current_pixi_gid,
+                    var pixigid=makePixiOverlayLayerWithList(
+                             CSM.track_uid,
                              latlist,lonlist,vallist,pixi_spec);
                     CSM.removeWaitSpin();
 
-                    CSM.addModelLayers(criteria[0],criteria[1],criteria[2],pgid);
-                    CSM.setupPixiSegment(pgid,pixi_spec.seg_cnt);
-                    return pgid;
+                    CSM.addModelLayers(criteria[0],criteria[1],criteria[2],pixigid);
+                    let seglist=pixiFindSegmentsWithPixiGid(pixigid);
+                    CSM.setupPixiSegment(pixigid,seglist);
+                    CSM.track_uid++; 
+                    CSM.current_pixi_gid=pixigid;
+                    return pixigid;
                 }
                 if(type==CSM.searchType.latlon) { 
                     let jblob=JSON.parse(search_result); 
@@ -565,7 +573,7 @@ window.console.log("calling searchLatlon..");
     // clear the model layer from the map
     this.unselectAllModel = function() {
        pixiClearAllPixiOverlay();
-       this.setupPixiSegment(0,0);
+       this.setupPixiSegment(0,{});
     }
 
     var generateMetadataTable = function (results) {

@@ -279,17 +279,14 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
          </div>
 
 <!-- search-option -->
-         <div id="search-option" style="border:solid 0px green" >
+         <div id="search-option" class="mt-3"style="border:solid 0px green" >
             <ul id="option" class="navigation" style="padding: 0 0 0 0;">
-              <li id='csm-model' class='navigationLi' style="display:none;border:solid 1px green">
-                <div class="row">
-                  <div class="col-1">
-                  </div>
-                  <div id="pixi-segment" class="col-10">
-                  </div>
+              <li id='csm-model' class='navigationLi' style="display:none;border:solid 1px red">
+                <div class="col-10">
+                  <div id="pixi-segment"></div>
                 </div>
               </li>
-              <li id='csm-latlon' class='navigationLi mt-1' style="display:none; border:solid 1px red">
+              <li id='csm-latlon' class='navigationLi' style="display:none; border:solid 1px red">
                 <div id='latlonMenu' class='menu'>
                   <div class="row">
                     <div class="col-5">

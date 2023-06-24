@@ -49,7 +49,7 @@ rgb(143,64,127)
 
 /********************************************/
 /* a place to park all the pixiOverlay from the session */
-/* [ {"gid":gid, "vis":true, "segment":20, "layer": overlay,         */
+/* [ {"uid":uid, "vis":true, "segment":20, "layer": overlay,         */
 /*    "top":pixiContainer,"inner":[ {"container":c0, "vis":1 }, ...], "latlnglist":pixiLatlngList} ] */
 var pixiOverlayList=[];
 
@@ -67,7 +67,7 @@ var loadOnce=1;
 
 function printMarkerLatlngInfo(plist) {
   let sum=0;
-  window.console.log("PIXI: For: "+plist.gid);
+  window.console.log("PIXI: For: "+plist.uid);
   for(let i=0; i<DATA_SEGMENT_COUNT; i++) {
     let dlist=plist[i];
     sum=sum+data.length;
@@ -184,10 +184,10 @@ function setup_pixi() {
   }
 }
 
-function makeOnePixiLayer(gid,file) {
+function makeOnePixiLayer(uid,file) {
 
-  makePixiOverlayLayer(gid,file);
-  let pixiLayer = pixiFindPixiWithGid(gid);
+  makePixiOverlayLayer(uid,file);
+  let pixiLayer = pixiFindPixiWithUid(uid);
 
   let ticker = new PIXI.Ticker();
 
@@ -205,10 +205,10 @@ function makeOnePixiLayer(gid,file) {
 }
 
 // toggle off a child container from an overlay layer
-function pixiToggleMarkerContainer(gid,target_segment) {
+function pixiToggleMarkerContainer(pixigid,target_segment) {
 
 window.console.log("PIXI: toggleMarker container..which segment..",target_segment);
-  let pixi=pixiFindPixiWithGid(gid);
+  let pixi=pixiFindPixiWithPixiGid(pixigid);
 
   if(pixi.visible==false) {
     window.console.log("PIXI: layer not visible To TOGGLE!!\n");
@@ -225,7 +225,7 @@ window.console.log("PIXI: toggleMarker container..which segment..",target_segmen
     top.removeChildAt(target_segment);
     } else {
       citem.visible=true;
-      top.addChildAt(citem, target_segment);
+      top.addChildAt(citem, target_segment-1);
   }
 // need to refresh the layer
   layer.redraw(target_segment);
@@ -236,8 +236,8 @@ window.console.log("PIXI: toggleMarker container..which segment..",target_segmen
 // break up data into buckets (one per segment)
 // input : latlist, lonlist, vallist
 // returns :
-//    {"gid":gid,"data":[ [{"lat":lat,"lng":lng},...], ...] }
-function _loadup_data_list(gid,latlist,lonlist,vallist) {
+//    {"uid":uid,"data":[ [{"lat":lat,"lng":lng},...], ...] }
+function _loadup_data_list(uid,latlist,lonlist,vallist) {
 
    let data_max_v=null;
    let data_min_v=null;
@@ -297,13 +297,13 @@ function _loadup_data_list(gid,latlist,lonlist,vallist) {
       updateMarkerLatlng(datalist,idx,lat,lon);
    }
 window.console.log("PIXI: HUMHUM..",DATA_count);
-   pixiLatlngList= {"gid":gid,"data":datalist} ; 
+   pixiLatlngList= {"uid":uid,"data":datalist} ; 
 
    return pixiLatlngList;
 }
 
 // this is from csm
-function makePixiOverlayLayerWithList(gid,latlist,lonlist,vallist,spec) {
+function makePixiOverlayLayerWithList(uid,latlist,lonlist,vallist,spec) {
     var pixiLatlngList;
 
     if(spec.seg_cnt) { 
@@ -322,21 +322,21 @@ function makePixiOverlayLayerWithList(gid,latlist,lonlist,vallist,spec) {
         DATA_MIN_V = undefined;
     }
 
-    pixiLatlngList=_loadup_data_list(gid,latlist,lonlist,vallist);
+    pixiLatlngList=_loadup_data_list(uid,latlist,lonlist,vallist);
 
 window.console.log("PIXI:SEG_COUNT " + DATA_SEGMENT_COUNT);
 window.console.log("PIXI:DATA_MAX " + DATA_MAX_V);
 window.console.log("PIXI:DATA_MIN " + DATA_MIN_V);
 
-    return makePixiOverlayLayer(gid,pixiLatlngList,spec);
+    return makePixiOverlayLayer(uid,pixiLatlngList,spec);
 }
 
 // order everything into a sorted array
 // break up data into buckets (one per segment)
 // input : lon lat vel
 // returns :
-//    {"gid":gid,"data":[ [{"lat":lat,"lng":lng},...], ...] }
-function _loadup_data_url(gid,url) {
+//    {"uid":uid,"data":[ [{"lat":lat,"lng":lng},...], ...] }
+function _loadup_data_url(uid,url) {
    let data_max_v=null;
    let data_min_v=null;
    DATA_count=0;
@@ -405,31 +405,32 @@ function _loadup_data_url(gid,url) {
       let idx=getRangeIdx(vel, DATA_MAX_V, DATA_MIN_V);
       updateMarkerLatlng(datalist,idx,lat,lon);
    }
-   pixiLatlngList= {"gid":gid,"data":datalist} ; 
+   pixiLatlngList= {"uid":uid,"data":datalist} ; 
 
    window.console.log("PIXI: FILE:"+url+" total data:"+DATA_count+"("+data_min_v+","+data_max_v+")");
    return pixiLatlngList;
 }
 
 // this is from cgm
-function makePixiOverlayLayerWithFile(gid,file) {
-    var pixiLatlngList=_loadup_data_url(gid,file)
+function makePixiOverlayLayerWithFile(uid,file) {
+    var pixiLatlngList=_loadup_data_url(uid,file)
     let spec={'hint':0};
-    return makePixiOverlayLayer(gid,pixiLatlngList,spec);
+    return makePixiOverlayLayer(uid,pixiLatlngList,spec);
 }
 
 // spec = {'data_max':3.0, 'data_min':1.0, 'seg_cnt':20};
 // data_max and data_min is client specified limits
 //
-// pixiOverlayList.push({"gid":gid,"vis":1,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
-// return 'gid'
+// pixiOverlayList.push({"uid":uid,"vis":1,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
+// return 'uid'
 // 
-function makePixiOverlayLayer(gid,pixiLatlngList,spec) {
+function makePixiOverlayLayer(uid,pixiLatlngList,spec) {
 
     let zoomChangeTs = null;
 
     let pixiContainer = new PIXI.Container();
     let pContainers=[]; //particle container
+    let segments=[];
 
     for(var i=0; i<DATA_SEGMENT_COUNT; i++) {
       var length=getMarkerCount(pixiLatlngList,i);
@@ -465,7 +466,7 @@ window.console.log("PIXI: redraw event");
       if (event.type === 'add') {
 window.console.log("PIXI: add event");
 
-        if (_foundOverlay(gid)) { // only add it first time
+        if (_foundOverlay(uid)) { // only add it first time
           return;
         }
 
@@ -487,6 +488,7 @@ window.console.log("PIXI: using scale factor",scaleFactor);
 
         // fill in the particles one group at a time
         let collect_len=0;
+        segments=[];
         for(var i=0; i< DATA_SEGMENT_COUNT; i++ ) {
 
            var latlngs=getMarkerLatlngs(pixiLatlngList,i);
@@ -499,6 +501,7 @@ window.console.log("PIXI: using scale factor",scaleFactor);
 
            collect_len=collect_len+len;
 window.console.log("PIXI: group ",i," len is ",len);
+           segments.push(len);
            for (var j = 0; j < len; j++) {
               var latlng=latlngs[j];
               var ll=latlng['lat'];
@@ -546,70 +549,109 @@ window.console.log("PIXI: total of len, ",collect_len);
       destroyInteractionManager: true
     }).addTo(viewermap);
 
-    pixiOverlayList.push({"gid":gid,"vis":1,"segment":DATA_SEGMENT_COUNT,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
+    let t=pixiOverlayList.push({"uid":uid,"vis":1,"segment":segments,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
 
-window.console.log(">>> PIXI..adding into poxiOverlayList with gid of:",gid);
+window.console.log(">>> PIXI..adding into poxiOverlayList with uid of:",uid);
 window.console.log(">>> PIXI..size:",pixiOverlayList.length);
 
-    return gid;
+    return (pixiOverlayList.length-1);
 }
 
-function pixiFindSegmentWithGid(gid) {
+
+function pixiFindSegCntWithUid(uid) {
+   let seg=pixiFindSegmentsWithUid(uid);
+   if(seg) return seg.length;
+   return 0;
+}
+	
+/// { val1, val2, val3, .. val20 }
+function pixiFindSegmentsWithUid(uid) {
   for(let i=0; i<pixiOverlayList.length; i++) {
      let pixi=pixiOverlayList[i];
-     if(pixi.gid == gid) {
-       return pixi.segment;
+     if(pixi.uid == uid) {
+       return pixi.segments;
      }
   }
   return 0;
 }
-function pixiFindOverlayWithGid(gid) {
+
+function pixiFindSegmentsWithPixiGid(pixigid) {
+    let pixi=pixiFindPixiWithPixiGid(pixigid);
+    if(pixi) return pixi.segment;
+    return null;
+}
+
+function pixiFindOverlayWithPixiGid(pixigid) {
+    let pixi=pixiFindPixiWithPixiGid(pixigid);
+    if(pixi) return pixi.overlay;
+    return null;
+}
+
+function pixiFindOverlayWithUid(uid) {
   for(let i=0; i<pixiOverlayList.length; i++) {
      let pixi=pixiOverlayList[i];
-     if(pixi.gid == gid) {
+     if(pixi.uid == uid) {
        return pixi.overlay;
      }
   }
   return null;
 }
 
-function pixiFindPixiWithGid(gid) {
+function pixiFindPixiWithPixiGid(pixigid) {
+    if(pixigid >= pixiOverlayList.length) {
+      return null;
+    }
+    let pixi=pixiOverlayList[pixigid];
+    return pixi;
+}
+
+function pixiFindPixiWithUid(uid) {
   for(let i=0; i<pixiOverlayList.length; i++) {
      let pixi=pixiOverlayList[i];
-     if(pixi.gid == gid) {
+     if(pixi.uid == uid) {
        return pixi;
      }
   }
   return null;
 }
-function _foundOverlay(gid) {
+function _foundOverlay(uid) {
   for(let i=0; i<pixiOverlayList.length; i++) {
      let pixi=pixiOverlayList[i];
-     if(pixi["gid"] == gid) {
+     if(pixi.uid == uid) {
        return 1;
      }
   }
   return 0;
 }
 
-function pixiClearAllPixiOverlay() {
-  pixiOverlayList.forEach(function(pixi) {
-    if(pixi !=null || pixi.length !=0) {
-      if(pixi["vis"]==1) {
-        var layer=pixi["overlay"];
-        viewermap.removeLayer(layer);
-        pixi["vis"]=0;
-window.console.log("PIXI: clear All..",pixi["gid"]);
-      }
+function pixiClearPixiOverlay(pixigid) {
+    let pixi=pixiOverlayList[pixigid];
+    if(pixi.vis == 1) {
+       let layer=pixi.overlay;
+       viewermap.removeLayer(layer);
+       pixi.vis=0;
+window.console.log("PIXI: clear One..pixigid=",pixigid);
     }
-  });
 }
 
-function togglePixiOverlay(gid) {
-window.console.log("PIXI: which gid to toggle PixiOverlay out..",gid);
+function pixiClearAllPixiOverlay() {
+  let cnt=pixiOverlayList.length;
+  for(let i=0; i<cnt; i++) {
+    let pixi=pixiOverlayList[i];
+    if(pixi.vis == 1) {
+       let layer=pixi.overlay;
+       viewermap.removeLayer(layer);
+       pixi.vis=0;
+window.console.log("PIXI: clear All..pixigid=",i);
+    }
+  }
+}
+
+function togglePixiOverlay(uid) {
+window.console.log("PIXI: which uid to toggle PixiOverlay out..",uid);
   for(let i=0; i<pixiOverlayList.length; i++) {
      let pixi=pixiOverlayList[i];
-     if(pixi["gid"] == gid) {
+     if(pixi.uid == uid) {
        let v=pixi["vis"];
        let layer=pixi["overlay"];
        if(v==1) {
