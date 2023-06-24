@@ -242,8 +242,8 @@ window.console.log("calling, new freshSearch...");
 
       if(this.searchingType == this.searchType.model) {
 window.console.log("in freshSearch --model");
-        //pixiClearAllPixiOverlay();
-        pixiClearPixiOverlay(CSM.current_pixi_gid);
+        pixiClearAllPixiOverlay();
+        //pixiClearPixiOverlay(CSM.current_pixi_gid);
         CSM.setupPixiSegment(0,{});
 
         var pixigid= CSM.lookupModelLayers(
@@ -254,11 +254,11 @@ window.console.log("in freshSearch --model");
           viewermap.addLayer(pixioverlay);
           let seglist=pixiFindSegmentsWithPixiGid(pixigid);
           CSM.setupPixiSegment(pixigid,seglist);
-          CSM.current_pixi_gid=pixigid;
           } else {
             pixigid = this.search(this.searchType.model, spec, spec_idx);
         }
 
+        CSM.current_pixi_gid=pixigid;
         return;
       }
 
@@ -375,7 +375,6 @@ window.console.log("SEARCHING for ",spec[2]);
                     let seglist=pixiFindSegmentsWithPixiGid(pixigid);
                     CSM.setupPixiSegment(pixigid,seglist);
                     CSM.track_uid++; 
-                    CSM.current_pixi_gid=pixigid;
                     return pixigid;
                 }
                 if(type==CSM.searchType.latlon) { 

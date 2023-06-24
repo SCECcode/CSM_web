@@ -626,7 +626,7 @@ function _foundOverlay(uid) {
 
 function pixiClearPixiOverlay(pixigid) {
     let pixi=pixiOverlayList[pixigid];
-    if(pixi.vis == 1) {
+    if(pixi && pixi.vis == 1) {
        let layer=pixi.overlay;
        viewermap.removeLayer(layer);
        pixi.vis=0;
