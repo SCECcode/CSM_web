@@ -92,16 +92,83 @@ function getMarkerLatlngs(latlonlist,idx) {
   return dlist;
 }
 
-function getRangeIdx(vs_target, vs_max, vs_min) {
+function getSegmentRangeIdx(vs_target, N, vs_max, vs_min) {
   if(vs_target <= vs_min) {
     return 0;  
   }
   if(vs_target >= vs_max) {
-    return DATA_SEGMENT_COUNT-1;
+    return N-1;
   }
-  var step = (vs_max - vs_min)/DATA_SEGMENT_COUNT;
+  var step = (vs_max - vs_min)/N;
   var offset= Math.floor((vs_target-vs_min)/step);
   return offset;
+}
+
+function pixiFindSegmentPropertiesWithPixiGid(pixigid) {
+  let rlist={};
+  let namelist=[];
+  let colorlist=[];
+  let labellist=[];
+  let lengthlist=[];
+  let pixi=pixiFindPixiWithPixiGid(pixigid);
+
+  if(pixi) {
+    let clist=pixi.inner;
+    let sz=clist.length;
+
+    let term;
+    for(let i=0; i<sz; i++) {
+      let citem=clist[i];
+      let term=citem.csm_properties;
+      namelist.push(term.segment_name);
+      lengthlist.push(term.segment_cnt);
+      labellist.push(term.segment_label);
+      colorlist.push(term.segment_color);
+    }
+    
+    rlist={ names: namelist, 
+	    counts:lengthlist,
+	    labels:labellist,
+            colors:colorlist};
+  }
+  return rlist;
+}
+
+
+// create a list of N values
+function getSegmentRangeList(N, vs_max, vs_min) {
+  var step = (vs_max - vs_min)/N;
+  var slist= [];
+  for(let i=0; i<N; i++) {
+    let v= Math.floor((vs_min + (step * i ))*100)/100;
+    slist.push(v);
+  }
+  return slist;
+}
+
+function getSegmentMarkerColorList() {
+  var mlist= [];
+  mlist.push("#e9d575");
+  mlist.push("#c6dc64");
+  mlist.push("#a1e35f");
+  mlist.push("#a1e35f");
+  mlist.push("#7ce767");
+  mlist.push("#5de578");
+  mlist.push("#47df91");
+  mlist.push("#3cd2ac");
+  mlist.push("#3cd2ac");
+  mlist.push("#rbc0c5");
+  mlist.push("#45aad7");
+  mlist.push("#5492df");
+  mlist.push("#677bdc");
+  mlist.push("#677bdc");
+  mlist.push("#7966cf");
+  mlist.push("#8755b9");
+  mlist.push("#8f489d");
+  mlist.push("#8f407f");
+  mlist.push("#8f407f");
+  mlist.push("#873B57");
+  return mlist;
 }
 
 // from pixi,
@@ -205,9 +272,9 @@ function makeOnePixiLayer(uid,file) {
 }
 
 // toggle off a child container from an overlay layer
-function pixiToggleMarkerContainer(pixigid,target_segment) {
+function pixiToggleMarkerContainer(pixigid,target_segment_idx) {
 
-window.console.log("PIXI: toggleMarker container..which segment..",target_segment);
+window.console.log("PIXI: toggleMarker container..which segment..",target_segment_idx);
   let pixi=pixiFindPixiWithPixiGid(pixigid);
 
   if(pixi.visible==false) {
@@ -217,18 +284,48 @@ window.console.log("PIXI: toggleMarker container..which segment..",target_segmen
   let layer=pixi.overlay;
   let clist=pixi.inner;
   let top=pixi.top;
-  let segcnt=pixi.segment;
+  let seglist=pixi.segment;
+  let sz=clist.length;
 
-  let citem=clist[target_segment]; // target particalContainer
+  let target_segment="segment_"+target_segment_idx;
+  let tloc=0;
+
+  let citem=clist[target_segment_idx]; // target particalContainer
+  let term;
+  for(let i=0; i<sz; i++) {
+    let citem=clist[i];
+    let term=citem.csm_properties;
+    if(term.segment_name == target_segment) { // found the item
+      tloc=i;
+      if(citem.visible) { // toggle off
+        top.removeChildAt(tloc);
+        citem.visible=false;
+        } else { // toggle on
+          citem.visible=true;
+          top.addChildAt(citem,tloc);
+      }
+window.console.log("pixi: new t location ",tloc," from ", target_segment_idx);
+      let foo=clist.length;
+window.console.log("XXX pixi: new clist length ", foo);
+      // need to refresh the layer
+      layer.redraw(tloc);
+      return;
+    }
+  }
+  
+/*
   if(citem.visible) { // toggle off
     citem.visible=false;
-    top.removeChildAt(target_segment);
+    t=top.removeChildAt(target_segment_idx);
     } else {
       citem.visible=true;
-      top.addChildAt(citem, target_segment-1);
+      t=top.addChildAt(citem, target_segment_idx);
   }
+
+window.console.log("pixi: new t location ",t," from ", target_segment_idx);
 // need to refresh the layer
-  layer.redraw(target_segment);
+  layer.redraw(target_segment_idx);
+*/
 }
 
 
@@ -293,7 +390,7 @@ function _loadup_data_list(uid,latlist,lonlist,vallist) {
       let lon=item[2];
       let lat=item[1];
       let val=item[0];
-      let idx=getRangeIdx(val, DATA_MAX_V, DATA_MIN_V);
+      let idx=getSegmentRangeIdx(val, DATA_SEGMENT_COUNT, DATA_MAX_V, DATA_MIN_V);
       updateMarkerLatlng(datalist,idx,lat,lon);
    }
 window.console.log("PIXI: HUMHUM..",DATA_count);
@@ -402,7 +499,7 @@ function _loadup_data_url(uid,url) {
       let lon=item[2];
       let lat=item[1];
       let vel=item[0];
-      let idx=getRangeIdx(vel, DATA_MAX_V, DATA_MIN_V);
+      let idx=getSegmentRangeIdx(vel, DATA_SEGMENT_COUNT, DATA_MAX_V, DATA_MIN_V);
       updateMarkerLatlng(datalist,idx,lat,lon);
    }
    pixiLatlngList= {"uid":uid,"data":datalist} ; 
@@ -432,14 +529,22 @@ function makePixiOverlayLayer(uid,pixiLatlngList,spec) {
     let pContainers=[]; //particle container
     let segments=[];
 
+    let segment_label_list=getSegmentRangeList(DATA_SEGMENT_COUNT, DATA_MAX_V, DATA_MIN_V);
+    let segment_color_list=getSegmentMarkerColorList();
+
     for(var i=0; i<DATA_SEGMENT_COUNT; i++) {
       var length=getMarkerCount(pixiLatlngList,i);
-//XXX,  new PIXI.particles.ParticleContainer(maxSize, properties, batchSize)
       var a = new PIXI.ParticleContainer(length, {vertices: true, tint: true});
       // add properties for our patched particleRenderer:
       a.texture = markerTextures[i];
       a.baseTexture = markerTextures[i].baseTexture;
       a.anchor = {x: 0.5, y: 0.5};
+      a.visible = 1;
+
+      a.csm_properties = { segment_name:"segment_"+i,
+	                   segment_cnt:length,
+	                   segment_label: segment_label_list[i],
+                           segment_color: segment_color_list[i]};	     
 
       pixiContainer.addChild(a);
       pContainers.push(a);
@@ -450,6 +555,10 @@ function makePixiOverlayLayer(uid,pixiLatlngList,spec) {
     var overlay=L.pixiOverlay(function(utils, event) {
 
 window.console.log("PIXI:event type --- ", event.type);
+
+if(event.type == "undefined") {
+    window.console.log(" ???? XXX why is event type of undefined ???");
+}
 
       var zoom = utils.getMap().getZoom();
       var container = utils.getContainer();

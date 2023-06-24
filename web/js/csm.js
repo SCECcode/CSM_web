@@ -253,7 +253,9 @@ window.console.log("in freshSearch --model");
           let pixioverlay=pixiFindOverlayWithPixiGid(pixigid);
           viewermap.addLayer(pixioverlay);
           let seglist=pixiFindSegmentsWithPixiGid(pixigid);
-          CSM.setupPixiSegment(pixigid,seglist);
+          let segcolorlist=getSegmentMarkerColorList();
+		XXX
+          CSM.setupPixiSegment(pixigid,seglist,segcolorlist);
           } else {
             pixigid = this.search(this.searchType.model, spec, spec_idx);
         }
@@ -271,26 +273,36 @@ window.console.log("in freshSearch --latlon");
 // a layer is always generated with the full set of segments 
 // so pop up the pixi segment selector on dashboard
 // max n would be 20
-   function _segmentoption(label,pixigid,idx) {
-      var html = "<input type=\"checkbox\" class='mr-1' id=\"pixiSegment_"+idx+"\" onclick=\"CSM.togglePixiSegment("+pixigid+","+idx+")\" checked >";
-          html=html+"<label class='form-check-label mr-2 mini-option' for=\"pixiSegment_\"+idx+\"><span><button class=\"btn btn-sm\"></button>"+label+"</span></label>";
+   function _segmentoption(label,pixigid,idx,color) {
+     var html = "<input type=\"checkbox\" class='mr-1' id=\"pixiSegment_"+idx+"\" onclick=\"CSM.togglePixiSegment("+pixigid+","+idx+")\" style=\"accent-color:"+color+"\" checked >";
+          html=html+"<label class='form-check-label mr-2 mini-option' for=\"pixiSegment_\"+idx+\"><span>"+label+"</span></label>";
       return html;
     }
 
-    this.setupPixiSegment = function(pixigid,seglist) {
-      let n=seglist.length;
+    //seginfo is { names: nlist, counts:clist, labels:llist };
+    this.setupPixiSegment = function(pixigid,seginfo) {
+      if(jQuery.isEmptyObject(seginfo)) return;
+
+      let namelist=seginfo['names'];
+      let lengthlist=seginfo['counts'];
+      let labellist=seginfo['labels'];
+      let colorlist=seginfo['colors'];
+      let n=namelist.length;
       let html = "";
       for(let i=0; i<n; i++) {
-         let cnt=seglist[i];
+         let name=namelist[i];
+         let color=colorlist[i];
+         let label=labellist[i]; // segment's label 
+         let length=lengthlist[i];
          let v=i+1;
-         let label=v+"("+cnt+")";
-	 html=html+_segmentoption(label,pixigid,i)+"<br>";
+         let foo=label+"&nbsp;&nbsp;&nbsp;("+length+":"+name+")";
+	 html=html+_segmentoption(foo,pixigid,i,color)+"<br>";
       }
       $("#pixi-segment").html(html);
     }
 
     this.togglePixiSegment = function(pixigid, n) {
-window.console.log("calling togglePixiSegment.. with ",n,"on ",pixigid);
+window.console.log("calling togglePixiSegment.. with ",n,"on pixigid ",pixigid);
       pixiToggleMarkerContainer(pixigid,n);
     }
 
@@ -334,7 +346,7 @@ window.console.log("Did not find any PHP result");
                     vallist=tmp['val'];
 
                     pixiClearAllPixiOverlay();
-                    CSM.setupPixiSegment(0,{});
+                    CSM.setupPixiSegment(0,{},[]);
 
 /*  pixi_spec:
        seg_cnt  sets  DATA_SEGMENT_COUNT
@@ -372,8 +384,10 @@ window.console.log("SEARCHING for ",spec[2]);
                     CSM.removeWaitSpin();
 
                     CSM.addModelLayers(criteria[0],criteria[1],criteria[2],pixigid);
-                    let seglist=pixiFindSegmentsWithPixiGid(pixigid);
-                    CSM.setupPixiSegment(pixigid,seglist);
+
+                    // need to get segment information from csm_pixi.js
+                    let seginfo=pixiFindSegmentPropertiesWithPixiGid(pixigid);
+                    CSM.setupPixiSegment(pixigid,seginfo);
                     CSM.track_uid++; 
                     return pixigid;
                 }
