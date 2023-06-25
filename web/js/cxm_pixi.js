@@ -125,7 +125,7 @@ function pixiFindSegmentPropertiesWithPixiGid(pixigid) {
       lengthlist.push(term.segment_cnt);
       labellist.push(term.segment_label);
       colorlist.push(term.segment_color);
-      if(term.visible) {
+      if(citem.visible) {
         checklist.push(1);
         } else {
           checklist.push(0);

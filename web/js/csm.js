@@ -297,8 +297,11 @@ window.console.log("in freshSearch --latlon");
          let label=labellist[i]; // segment's label 
          let length=lengthlist[i];
          let check=checklist[i];
+         if(length == 0) {
+	    check=0;
+         }
          let v=i+1;
-         let foo=label+"&nbsp;&nbsp;&nbsp;("+length+":"+name+")";
+         let foo=label+"&nbsp;&nbsp;&nbsp;(N="+length+")";
 	 html=html+_segmentoption(foo,pixigid,i,color,check)+"<br>";
       }
       $("#pixi-segment").html(html);
