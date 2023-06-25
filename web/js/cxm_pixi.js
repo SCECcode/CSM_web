@@ -50,7 +50,7 @@ rgb(143,64,127)
 /********************************************/
 /* a place to park all the pixiOverlay from the session */
 /* [ {"uid":uid, "vis":true, "segment":20, "layer": overlay,         */
-/*    "top":pixiContainer,"inner":[ {"container":c0, "vis":1 }, ...], "latlnglist":pixiLatlngList} ] */
+/*    "top":pixiContainer,"inner":[ {"container":c0, "visible":1 }, ...], "latlnglist":pixiLatlngList} ] */
 var pixiOverlayList=[];
 
 /* PixiOverlayLayer */
@@ -110,6 +110,7 @@ function pixiFindSegmentPropertiesWithPixiGid(pixigid) {
   let colorlist=[];
   let labellist=[];
   let lengthlist=[];
+  let checklist=[];
   let pixi=pixiFindPixiWithPixiGid(pixigid);
 
   if(pixi) {
@@ -124,12 +125,18 @@ function pixiFindSegmentPropertiesWithPixiGid(pixigid) {
       lengthlist.push(term.segment_cnt);
       labellist.push(term.segment_label);
       colorlist.push(term.segment_color);
+      if(term.visible) {
+        checklist.push(1);
+        } else {
+          checklist.push(0);
+      }
     }
     
     rlist={ names: namelist, 
 	    counts:lengthlist,
 	    labels:labellist,
-            colors:colorlist};
+            colors:colorlist,
+            checks:checklist};
   }
   return rlist;
 }
@@ -304,10 +311,8 @@ window.console.log("PIXI: toggleMarker container..which segment..",target_segmen
           citem.visible=true;
           top.addChild(citem);
       }
-      let foo=clist.length;
-window.console.log("XXX pixi: new clist length ", foo);
       // need to refresh the layer
-      layer.redraw();
+      layer.redraw(citem);
       return;
     }
   }
@@ -643,7 +648,7 @@ window.console.log("PIXI: total of len, ",collect_len);
       destroyInteractionManager: true
     }).addTo(viewermap);
 
-    let t=pixiOverlayList.push({"uid":uid,"vis":1,"segment":segments,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
+    let t=pixiOverlayList.push({"uid":uid,"visible":1,"segment":segments,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
 
 window.console.log(">>> PIXI..adding into poxiOverlayList with uid of:",uid);
 window.console.log(">>> PIXI..size:",pixiOverlayList.length);
@@ -720,40 +725,54 @@ function _foundOverlay(uid) {
 
 function pixiClearPixiOverlay(pixigid) {
     let pixi=pixiOverlayList[pixigid];
-    if(pixi && pixi.vis == 1) {
+    if(pixi && pixi.visible == 1) {
        let layer=pixi.overlay;
        viewermap.removeLayer(layer);
-       pixi.vis=0;
+       pixi.visible=0;
 window.console.log("PIXI: clear One..pixigid=",pixigid);
     }
 }
 
 function pixiClearAllPixiOverlay() {
   let cnt=pixiOverlayList.length;
+window.console.log("HERE.. clear All..", cnt);
   for(let i=0; i<cnt; i++) {
     let pixi=pixiOverlayList[i];
-    if(pixi.vis == 1) {
+    if(pixi.visible == 1) {
        let layer=pixi.overlay;
        viewermap.removeLayer(layer);
-       pixi.vis=0;
+       pixi.visible=0;
 window.console.log("PIXI: clear All..pixigid=",i);
     }
   }
 }
 
-function togglePixiOverlay(uid) {
+function pixiTogglePixiOverlay(pixigid) {
+    let pixi=pixiOverlayList[pixigid];
+    let v=pixi.visible;
+    let layer=pixi.overlay;
+    if(v==1) {
+       pixi.visible=0;
+       viewermap.removeLayer(layer);
+       } else {
+         viewermap.addLayer(layer);
+         pixi.visible=1;
+    }
+}
+
+function togglePixiOverlayWithUid(uid) {
 window.console.log("PIXI: which uid to toggle PixiOverlay out..",uid);
   for(let i=0; i<pixiOverlayList.length; i++) {
      let pixi=pixiOverlayList[i];
      if(pixi.uid == uid) {
-       let v=pixi["vis"];
-       let layer=pixi["overlay"];
+       let v=pixi.visible;
+       let layer=pixi.overlay;
        if(v==1) {
-         pixi["vis"]=0;
+         pixi.visible=0;
          viewermap.removeLayer(layer);
          } else {
            viewermap.addLayer(layer);
-           pixi["vis"]=1;
+           pixi.visible=1;
        }
        return;
      }

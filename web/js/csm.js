@@ -243,19 +243,15 @@ window.console.log("calling, new freshSearch...");
       if(this.searchingType == this.searchType.model) {
 window.console.log("in freshSearch --model");
         pixiClearAllPixiOverlay();
-        //pixiClearPixiOverlay(CSM.current_pixi_gid);
         CSM.setupPixiSegment(0,{});
 
         var pixigid= CSM.lookupModelLayers(
                        spec_idx[0], spec_idx[1], spec_idx[2]);
 
         if(pixigid != null) { // reuse and add to viewer map 
-          let pixioverlay=pixiFindOverlayWithPixiGid(pixigid);
-          viewermap.addLayer(pixioverlay);
-          let seglist=pixiFindSegmentsWithPixiGid(pixigid);
-          let segcolorlist=getSegmentMarkerColorList();
-		XXX
-          CSM.setupPixiSegment(pixigid,seglist,segcolorlist);
+          pixiTogglePixiOverlay(pixigid);
+          let seginfo=pixiFindSegmentPropertiesWithPixiGid(pixigid);
+          CSM.setupPixiSegment(pixigid,seginfo);
           } else {
             pixigid = this.search(this.searchType.model, spec, spec_idx);
         }
@@ -273,9 +269,14 @@ window.console.log("in freshSearch --latlon");
 // a layer is always generated with the full set of segments 
 // so pop up the pixi segment selector on dashboard
 // max n would be 20
-   function _segmentoption(label,pixigid,idx,color) {
-     var html = "<input type=\"checkbox\" class='mr-1' id=\"pixiSegment_"+idx+"\" onclick=\"CSM.togglePixiSegment("+pixigid+","+idx+")\" style=\"accent-color:"+color+"\" checked >";
-          html=html+"<label class='form-check-label mr-2 mini-option' for=\"pixiSegment_\"+idx+\"><span>"+label+"</span></label>";
+   function _segmentoption(label,pixigid,idx,color,check) {
+     var html="";
+     if(check) {
+       html=html+ "<input type=\"checkbox\" class='mr-1' id=\"pixiSegment_"+idx+"\" onclick=\"CSM.togglePixiSegment("+pixigid+","+idx+")\" style=\"accent-color:"+color+"\" checked >";
+       } else {
+         html=html+ "<input type=\"checkbox\" class='mr-1' id=\"pixiSegment_"+idx+"\" onclick=\"CSM.togglePixiSegment("+pixigid+","+idx+")\" style=\"accent-color:"+color+"\" >";
+     }
+     html=html+"<label class='form-check-label mr-2 mini-option' for=\"pixiSegment_\"+idx+\"><span>"+label+"</span></label>";
       return html;
     }
 
@@ -287,6 +288,7 @@ window.console.log("in freshSearch --latlon");
       let lengthlist=seginfo['counts'];
       let labellist=seginfo['labels'];
       let colorlist=seginfo['colors'];
+      let checklist=seginfo['checks'];
       let n=namelist.length;
       let html = "";
       for(let i=0; i<n; i++) {
@@ -294,9 +296,10 @@ window.console.log("in freshSearch --latlon");
          let color=colorlist[i];
          let label=labellist[i]; // segment's label 
          let length=lengthlist[i];
+         let check=checklist[i];
          let v=i+1;
          let foo=label+"&nbsp;&nbsp;&nbsp;("+length+":"+name+")";
-	 html=html+_segmentoption(foo,pixigid,i,color)+"<br>";
+	 html=html+_segmentoption(foo,pixigid,i,color,check)+"<br>";
       }
       $("#pixi-segment").html(html);
     }
@@ -346,7 +349,7 @@ window.console.log("Did not find any PHP result");
                     vallist=tmp['val'];
 
                     pixiClearAllPixiOverlay();
-                    CSM.setupPixiSegment(0,{},[]);
+                    CSM.setupPixiSegment(0,{});
 
 /*  pixi_spec:
        seg_cnt  sets  DATA_SEGMENT_COUNT
