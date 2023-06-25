@@ -603,7 +603,7 @@ window.console.log("generateMetadataTable..");
 <tr>
         <th class="text-center button-container" style="width:2rem">
         </th>
-        <th class="hoverColor" style="width:5rem" >Id&nbsp<span></span></th>
+        <th class="hoverColor" style="width:12rem" >Id&nbsp<span></span></th>
         <th class="hoverColor" onClick="sortMetadataTableByRow(2,'a')">Dataset Name&nbsp<span id='sortCol_2' class="fas fa-angle-down"></span></th>
         <th class="hoverColor" onClick="sortMetadataTableByRow(3,'n')">Depth&nbsp<span id='sortCol_3' class="fas fa-angle-down"></span></th>
         <th class="hoverColor">Note&nbsp</th>
