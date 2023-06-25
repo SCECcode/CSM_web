@@ -1,4 +1,12 @@
 /* csm */
+.glyphicon.glyphicon-download {
+   font-size: 18px;
+   color: #990000;
+}
+
+.glyphicon.glyphicon-download:hover {
+   color: #e60000;
+}
 
 #csm-search-type input[type="radio"] {
   display: none;
