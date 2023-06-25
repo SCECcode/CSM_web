@@ -298,34 +298,19 @@ window.console.log("PIXI: toggleMarker container..which segment..",target_segmen
     if(term.segment_name == target_segment) { // found the item
       tloc=i;
       if(citem.visible) { // toggle off
-        top.removeChildAt(tloc);
+        top.removeChild(citem);
         citem.visible=false;
         } else { // toggle on
           citem.visible=true;
-          top.addChildAt(citem,tloc);
+          top.addChild(citem);
       }
-window.console.log("pixi: new t location ",tloc," from ", target_segment_idx);
       let foo=clist.length;
 window.console.log("XXX pixi: new clist length ", foo);
       // need to refresh the layer
-      layer.redraw(tloc);
+      layer.redraw();
       return;
     }
   }
-  
-/*
-  if(citem.visible) { // toggle off
-    citem.visible=false;
-    t=top.removeChildAt(target_segment_idx);
-    } else {
-      citem.visible=true;
-      t=top.addChildAt(citem, target_segment_idx);
-  }
-
-window.console.log("pixi: new t location ",t," from ", target_segment_idx);
-// need to refresh the layer
-  layer.redraw(target_segment_idx);
-*/
 }
 
 
