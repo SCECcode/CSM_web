@@ -362,7 +362,8 @@ function switchLayer(layerString) {
 // input from the key-in
 function add_bounding_rectangle(a,b,c,d) {
   var layer=addRectangleLayer(a,b,c,d);
-  let gid=csm_latlon_area_list.length+1;
+  let gid=getRnd("");
+// ??? old one	csm_latlon_area_list.length+1;
   layer.on({
     mouseover: function(e) {
       layer.setStyle({color:default_highlight_color, weight: default_highlight_weight});
@@ -379,7 +380,8 @@ function add_bounding_rectangle(a,b,c,d) {
 }
 
 function get_bounding_rectangle_layer_idx() {
-   return csm_latlon_area_list.length;
+   return getRnd("");
+//??? old one	csm_latlon_area_list.length;
 }
 
 // idx starts from 1

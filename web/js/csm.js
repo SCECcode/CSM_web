@@ -25,8 +25,8 @@ var CSM = new function () {
     //  to avoid generate these repeatly
     this.csm_model_pixi_layers=[];
 
-    //  track number of layers (a count) being made -- uid
-    this.track_uid=1;  // start at 1 
+    //  track uid of layer being looked at
+    this.track_uid;  // unique id
     
     //  current pixi index being viewed
     this.current_pixi_gid=0; // assume it starts at 0
@@ -301,7 +301,7 @@ window.console.log("in freshSearch --latlon");
 	    check=0;
          }
          let v=i+1;
-         let foo=label+"&nbsp;&nbsp;&nbsp;(N="+length+")";
+         let foo=label+"&nbsp;&nbsp;&nbsp;(n="+length+")";
 	 html=html+_segmentoption(foo,pixigid,i,color,check)+"<br>";
       }
       $("#pixi-segment").html(html);
@@ -384,6 +384,7 @@ window.console.log("SEARCHING for ",spec[2]);
 
 //pixiOverlayList.push({"gid":gid,"vis":1,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
 // returning overlay
+	            CSM.track_uid=getRnd("csm");
                     var pixigid=makePixiOverlayLayerWithList(
                              CSM.track_uid,
                              latlist,lonlist,vallist,pixi_spec);
@@ -394,7 +395,6 @@ window.console.log("SEARCHING for ",spec[2]);
                     // need to get segment information from csm_pixi.js
                     let seginfo=pixiFindSegmentPropertiesWithPixiGid(pixigid);
                     CSM.setupPixiSegment(pixigid,seginfo);
-                    CSM.track_uid++; 
                     return pixigid;
                 }
                 if(type==CSM.searchType.latlon) { 
@@ -411,7 +411,7 @@ window.console.log("SEARCHING for ",spec[2]);
                       scec_properties.lon2=criteria[2];
                       scec_properties.lat2=criteria[3];
                       scec_properties.dataset=dataset;
-                      scec_properties.note="N="+sz;
+                      scec_properties.note="n="+sz;
                       let result={"scec_properties":scec_properties, "jblob":jblob}; 
                       CSM.csm_downloads.push(result);
                       CSM.addToMetadataTable(result);
@@ -853,15 +853,13 @@ window.console.log("change ModelMetric with ..",v);
     this.downloadData = function(gid) {
         let cnt=CSM.csm_downloads.length;
         for(let i=0; i<cnt; i++) {
-          let timestamp=$.now();
           let tmp=CSM.csm_downloads[i];
           let tmp_gid=tmp.scec_properties.gid;
-
           if(tmp_gid == gid) {
-            let timestamp=$.now();
+            let tstamp=getRnd("");
             let mlist = tmp.jblob;
             let data=getCSVFromMeta(mlist);
-            saveAsCSVBlobFile(data, timestamp);
+            saveAsCSVBlobFile(data, tstamp);
           }
         }
     };

@@ -62,6 +62,19 @@ function makeRGB(val, maxV, minV) {
     return color;
 }
 
+
+function getRnd(stub) {
+//https://stackoverflow.com/questions/221294/how-do-you-get-a-timestamp-in-javascript
+    let timestamp = $.now();
+    let rnd;
+    if(stub == "") { 
+      rnd=timestamp;
+      } else {
+        rnd="stub"+"_"+timestamp;
+    }
+    return rnd;
+}
+
 // should be a very small file and used for testing and so can ignore
 // >>Synchronous XMLHttpRequest on the main thread is deprecated
 // >>because of its detrimental effects to the end user's experience.

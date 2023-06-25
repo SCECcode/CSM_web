@@ -1,5 +1,7 @@
 /***
    csm_ui.js
+
+   specific to csm's viewer.php to expand the leaflet map view
 ***/
 
 var showing_key = false;
