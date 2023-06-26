@@ -1,4 +1,12 @@
 /* csm */
+.radio-group {
+  display:inline-block;
+}
+.radio-group-label {
+  vertical-align:middle;
+  width: 3rem;
+}
+
 .glyphicon.glyphicon-download {
    font-size: 18px;
    color: #990000;

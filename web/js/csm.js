@@ -276,7 +276,7 @@ window.console.log("in freshSearch --latlon");
        } else {
          html=html+ "<input type=\"checkbox\" class='mr-1' id=\"pixiSegment_"+idx+"\" onclick=\"CSM.togglePixiSegment("+pixigid+","+idx+")\" style=\"accent-color:"+color+"\" >";
      }
-     html=html+"<label class='form-check-label mr-2 mini-option' for=\"pixiSegment_\"+idx+\"><span>"+label+"</span></label>";
+     html=html+"<label class='radio-group-label mr-2 mini-option' for=\"pixiSegment_\"+idx+\"><span>"+label+"</span></label>";
       return html;
     }
 
@@ -796,7 +796,7 @@ window.console.log("resetModelType");
 
     function _metricoption(label,idx) {
       var html = "<input type=\"radio\" class='mr-1' id=\"modelMetric_"+idx+"\" name=\"modelMetric_idx\" onclick=\"CSM.changeModelMetric("+idx+")\">";
-          html=html+"<label class='form-check-label mr-2 mini-option' for=\"modelMetric_\"+idx+\"><span>"+label+"</span></label>";
+          html=html+"<label class='radio-group-label mr-2 mini-option' for=\"modelMetric_\"+idx+\"><span>"+label+"</span></label>";
       return html;
     }
 
@@ -824,15 +824,9 @@ window.console.log("resetModelType");
        $("#modelDepth_0").click();
     };
 
-    /*
-        <input class='form-check-inline mr-1'
-            type="checkbox" id="modelDepth_1" value=1>
-        <label class='form-check-label mr-2 mini-option' for="modelDepth_1">
-            <span id="modelDepth_1_string">place_holder</span></label>
-    */
     function _depthoption(label,idx) {
-      var html = "<input type=\"radio\" class='mr-1' id=\"modelDepth_"+idx+"\" name=\"modelDepth_idx\" onclick=\"CSM.changeModelDepth("+idx+")\">";
-          html=html+"<label class='form-check-label mr-2 mini-option' for=\"modelDepth_\"+idx+\"><span>"+label+" km</span></label>";
+      var html = "<input type=\"radio\" class='mr-1' id=\"modelDepth_"+idx+"\" name=\"modelDepth_idx\"  onclick=\"CSM.changeModelDepth("+idx+")\">";
+          html=html+"<label class='radio-group-label mr-2 mini-option' for=\"modelDepth_\"+idx+\"><span>"+label+" km</span></label>";
       return html;
     }
 

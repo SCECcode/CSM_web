@@ -271,11 +271,11 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
 
 <!-- model depth list -->
          <div id="modelDepth" class="mt-2" style="border:solid 1px green">
-           <div id="modelDepth-options" class="form-check"> </div>
+           <div id="modelDepth-options" class="radio-group"> </div>
          </div>
 <!-- metric list -->
          <div id="modelMetric" class="mt-2" style="border:solid 1px blue">
-           <div id="modelMetric-options" class="form-check"> </div>
+           <div id="modelMetric-options" class="radio-group"> </div>
          </div>
 
 <!-- search-option -->
