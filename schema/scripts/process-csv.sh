@@ -19,7 +19,7 @@ for file in $CSMPATH/*csv ; do
 ## remove _ and -
     nfilename=`echo $filename | sed "s/-//g" | sed "s/_//g"`
     CSMTB=${nfilename%.csv}
-    sfilename=$CSMTB".stub"
+    sfilename=$CSMTB".csv_header"
 
 ## remove #-lines
 ## put in the csv header row 

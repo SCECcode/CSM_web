@@ -859,15 +859,17 @@ window.console.log("change ModelMetric with ..",v);
     };
 
     function getModelHeader(dataset) {
-        let fname="dataset+"
-        var hblob="";
+        let fname="./csm_data/"+dataset+"csv_header";
+XX
+        var hdrblob="";
+        return (hdrblob);
     };
 
     function getCSVFromMeta(mlist) {
         let len=mlist.length;  // each data is a meta data format
         let last=len-1;
 
-    // grab the first meta data and generate the title..
+// grab the first meta data and generate the title..
         let meta=mlist[0];
         let keys=Object.keys(meta);
         let jfirst=0;
@@ -888,6 +890,7 @@ window.console.log("change ModelMetric with ..",v);
         }
         csvblob +='\n';
 
+// grab rest of the data
         for(let i=0; i< len; i++) {
             meta=mlist[i];
             var values=Object.values(meta)

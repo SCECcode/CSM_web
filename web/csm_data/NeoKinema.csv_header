@@ -1,0 +1,48 @@
+# CSM model "NeoKinema" contributed by author Hearn,
+# original CSM filename CSM_NeoKinema_Bird_Hearn_2013.
+# This *.csv version assembled by Luttrell in 2023.
+#
+# This is a stressing_rate model.
+# Tension is taken as positive (physics convention).
+# This model provides both meaningful orientation and meaningful magnitude.
+# It is defined for depths from 1 km to 15 km.
+# These model values do not vary with depth.
+#
+# Data Columns:
+# 1) Longitude in degrees, WGS84 (California has negative LON)
+# 2) Latitude in degrees, WGS84
+# 3) Depth in km relative to mean sea level (positive: below sea-level; negative: above sea-level)
+# 4) See stressing rate tensor component in MPa/yr
+# 5) Sen stressing rate tensor component in MPa/yr
+# 6) Seu stressing rate tensor component in MPa/yr
+# 7) Snn stressing rate tensor component in MPa/yr
+# 8) Snu stressing rate tensor component in MPa/yr
+# 9) Suu stressing rate tensor component in MPa/yr
+# 10) SHmax angle in degrees East of North (calculated from tensor using Lund and Townend [2007] eqn. 11)
+# 11) SHmax angle uncertainty in degrees (if provided by the author, NaN otherwise)
+# 12) phi shape parameter (S1-S2)/(S1-S3) for positive tension (calculated from tensor as in Angelier [1979])
+# 13) R stress ratio (S2-S3)/(S1-S3) for positive tension (calculated from tensor as in Gephart and Forsyth [1984])
+# 14) Aphi Anderson modified shape parameter (calculated from tensor as in Simpson [1997])
+# 15) isotropic pressure rate (S1+S2+S3)/3 in MPa/yr (calculated from tensor)
+# 16) differential stressing rate (S1-S3) in MPa/yr (calculated from tensor)
+# 17) maximum shear stressing rate (S1-S3)/2 in MPa/yr (calculated from tensor)
+# 18) S1 most tensional principal stress rate in MPa/yr
+# 19) S2 intermediate principal stress rate in MPa/yr
+# 20) S3 most compressional principal stress rate in MPa/yr
+# 21) V1x unit vector component of most tensional pricipal axis (eigenvectors calculated from tensor)
+# 22) V1y unit vector component of most tensional pricipal axis (NOTE: principal axes are bi-directional)
+# 23) V1z unit vector component of most tensional pricipal axis (unit vector given for above-horizontal end)
+# 24) V2x unit vector component of intermediate pricipal axis
+# 25) V2y unit vector component of intermediate pricipal axis
+# 26) V2z unit vector component of intermediate pricipal axis
+# 27) V3x unit vector component of most compressional pricipal axis
+# 28) V3y unit vector component of most compressional pricipal axis
+# 29) V3z unit vector component of most compressional pricipal axis
+# 30) V1 plunge of most tensional pricipal axis in degrees below horizontal (calculated from eigenvectors)
+# 31) V2 plunge of intermediate pricipal axis in degrees below horizontal
+# 32) V3 plunge of most compressional pricipal axis in degrees below horizontal
+# 33) V1 azimuth of most tensional pricipal axis in degrees East of North     (calculated from eigenvectors)
+# 34) V2 azimuth of intermediate pricipal axis in degrees East of North       (NOTE: principal axes are bi-directional)
+# 35) V3 azimuth of most compressional pricipal axis in degrees East of North (azimuth given for below-horizontal end)
+# 
+# LON,LAT,DEP,See,Sen,Seu,Snn,Snu,Suu,SHmax,SHmax_unc,phi,R,Aphi,iso,dif,mss,S1,S2,S3,V1x,V1y,V1z,V2x,V2y,V2z,V3x,V3y,V3z,V1pl,V2pl,V3pl,V1azi,V2azi,V3azi
