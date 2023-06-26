@@ -852,17 +852,17 @@ window.console.log("change ModelMetric with ..",v);
           if(tmp_gid == gid) {
             let tstamp=getRnd("");
             let mlist = tmp.jblob;
+            let hdata=getModelHeader(tmp.scec_properties.dataset);
             let data=getCSVFromMeta(mlist);
-            saveAsCSVBlobFile(data, tstamp);
+            saveAsCSVBlobFile(hdata+data, tstamp);
           }
         }
     };
 
     function getModelHeader(dataset) {
-        let fname="./csm_data/"+dataset+"csv_header";
-XX
-        var hdrblob="";
-        return (hdrblob);
+        let url="./csm_data/"+dataset+".csv_header";
+        var hdrblob=ckExist(url);
+        return hdrblob;
     };
 
     function getCSVFromMeta(mlist) {
