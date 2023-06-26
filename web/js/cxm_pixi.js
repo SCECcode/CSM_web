@@ -15,46 +15,11 @@ var DATA_MAX_V=undefined;
 var DATA_MIN_V=undefined;
 var DATA_count=0;
 
-/* color list
-#e9d575 rgb(233,213,117)
-#c6dc64 rgb(198,220,100)
-#a1e35f rgb(161,227,95)
-
-# rgb(161,227,95)
-
-#7ce767 rgb(124,231,103)
-#5de578 rgb(93,229,120)
-#47df91 rgb(71,223,145)
-#3cd2ac rgb(60,210,172)
-
-rgb(60,210,172)
-
-#rbc0c5 rgb(59,192,197)
-#45aad7 rgb(69,170,215)
-
-#5492df rgb(84,146,223)
-#677bdc rgb(103,123,220)
-
-rgb(103,123,220)
-
-#7966cf rgb(121,102,207)
-#8755b9 rgb(135,85,185)
-#8f489d rgb(143,72,157)
-#8f407f rgb(143,64,127)
-
-rgb(143,64,127)
-
-#873B57 rgb(135,59,97)
-*/
-
 /********************************************/
 /* a place to park all the pixiOverlay from the session */
 /* [ {"uid":uid, "vis":true, "segment":20, "layer": overlay,         */
 /*    "top":pixiContainer,"inner":[ {"container":c0, "visible":1 }, ...], "latlnglist":pixiLatlngList} ] */
 var pixiOverlayList=[];
-
-/* PixiOverlayLayer */
-var pixiLayer = null;
 
 /* expose pixiOverlay's util to global scope */
 var pixi_project=null;
