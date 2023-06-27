@@ -617,9 +617,8 @@ window.console.log("PIXI: total of len, ",collect_len);
     let t=pixiOverlayList.push({"uid":uid,"visible":1,"segment":segments,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
 
 window.console.log(">>> PIXI..adding into poxiOverlayList with uid of:",uid);
-window.console.log(">>> PIXI..size:",pixiOverlayList.length);
 
-    return (pixiOverlayList.length-1);
+    return uid;
 }
 
 
