@@ -743,7 +743,7 @@ window.console.log("generateMetadataTable..");
                     jblob: jblob,
               */
                
-             var elt=document.getElementById('modelType');
+            var elt=document.getElementById('modelType');
                 let option = document.createElement("option");
                 option.text = term.model_name;
                 option.label = term.model_name;
@@ -753,6 +753,8 @@ window.console.log("generateMetadataTable..");
 /* create the default model depth list to 1st one for model */
             this.setupModelDepth(this.csm_models,0);
             this.setupModelMetric(this.csm_models,0);
+            this.setupModelMetric2(this.csm_models,3);
+            this.setupModelDepth2(this.csm_models,3);
             this.setupModelLayers(this.csm_models);
 
             $("#searchType_0").click();
@@ -819,13 +821,13 @@ window.console.log("generateMetadataTable..");
       let dlist=mlist[model_idx]['jblob']['metric'];
       let sz=dlist.length;
       let html="";
-      for(let i=0;i<sz;i++) {  
+      for(let i=0;i<sz;i++) {
          let label=dlist[i];
          let h=_metricoption(label,i);
          html=html+h;
          if( (i+1) % 6 === 0 ) {
             html=html+"<br>";
-         }            
+         }
       }
       $("#modelMetric-options").html(html);
       $("#modelMetric_0").click();
@@ -840,6 +842,41 @@ window.console.log("generateMetadataTable..");
           html=html+"<label class='radio-group-label mr-2 mini-option' for=\"modelMetric_\"+idx+\"><span>"+label+"</span></label>";
       return html;
     }
+
+// option disabled all.
+    this.setupModelMetric2 = function (mlist,model_idx) {
+      //preset all option to disable	     
+      $("select option[name='csmmetric']").attr('disabled', true);
+
+      let dlist=mlist[model_idx]['jblob']['metric'];
+      let sz=dlist.length;
+      for(let i=0;i<sz;i++) {
+         let n='metric_'+dlist[i];
+         $("select option[id='"+n+"']").attr('disabled', false);
+      }
+    };
+
+    // set to first metric
+    this.resetModelMetric2 = function () {
+    };
+
+// option disabled all.
+    this.setupModelDepth2 = function (mlist,model_idx) {
+      //preset all option to disable
+      $("select option[name='csmdepth']").attr('disabled', true);
+
+      let dlist=mlist[model_idx]['jblob']['depth'];
+      let sz=dlist.length;
+      for(let i=0;i<sz;i++) {
+         let n='depth_'+dlist[i];
+         $("select option[id='"+n+"']").attr('disabled', false);
+      }
+    };
+
+    // set to first metric
+    this.resetModelDepth2 = function () {
+    };
+
 
     this.setupModelDepth = function (mlist,model_idx) {
       let jblob=mlist[model_idx]['jblob'];
