@@ -180,12 +180,16 @@ window.console.log("calling reset");
 // reset just the search only
     this.resetSearch = function (){
 window.console.log("calling --->> resetSearch.");
+	pixiClearAllPixiOverlay();
+
         this.resetModel();
         this.resetLatlon();
     };
 
     this.clearSearch = function (){
 window.console.log("calling --->> clearSearch.");
+	pixiClearAllPixiOverlay();
+
         this.clearModel();
         this.clearLatlon();
     };
@@ -255,7 +259,7 @@ window.console.log("in freshSearch --model");
 
       if(this.searchingType == this.searchType.latlon) {
 window.console.log("in freshSearch --latlon");
-         this.searchLatlon(0, []);
+        this.searchLatlon(0, []);
       }
     };
 
@@ -265,9 +269,9 @@ window.console.log("in freshSearch --latlon");
    function _segmentoption(label,pixiuid,idx,color,check) {
      var html="";
      if(check) {
-       html=html+ "<input type=\"checkbox\" class='checkboxk-group mr-1' id=\"pixiSegment_"+idx+"\" onclick=\"CSM.togglePixiSegment("+pixiuid+","+idx+")\" style=\"accent-color:"+color+"\" checked >";
+       html=html+ "<input type=\"checkbox\" class='checkboxk-group mr-1' id=\"pixiSegment_"+idx+"\" onclick=CSM.togglePixiSegment(\""+pixiuid+"\","+idx+") style=\"accent-color:"+color+"\" checked >";
        } else {
-         html=html+ "<input type=\"checkbox\" class='checkboxk-group mr-1' id=\"pixiSegment_"+idx+"\" onclick=\"CSM.togglePixiSegment("+pixiuid+","+idx+")\" style=\"accent-color:"+color+"\" >";
+         html=html+ "<input type=\"checkbox\" class='checkboxk-group mr-1' id=\"pixiSegment_"+idx+"\" onclick=CSM.togglePixiSegment(\""+pixiuid+"\","+idx+") style=\"accent-color:"+color+"\" >";
      }
      html=html+"<label class='checkbox-group-label mr-2 mini-option' for=\"pixiSegment_\"+idx+\"><span>"+label+"</span></label>";
       return html;
@@ -435,6 +439,17 @@ window.console.log("calling searchLatlon..");
 
         [spec, spec_info] = this.getSpec();
 
+	// make sure the displayed background is correct,
+        var pixiuid= CSM.lookupModelLayers(
+                       spec_idx[0], spec_idx[1], spec_idx[2]);
+
+        if(pixiuid != null) { // reuse and add to viewer map
+          pixiClearAllPixiOverlay();
+          pixiTogglePixiOverlay(pixiuid);
+          } else {
+            pixiuid = this.search(this.searchType.model, spec, spec_idx);
+        }
+
         if( fromWhere == 0) {
             let lat1=$("#csm-firstLatTxt").val();
             let lon1=$("#csm-firstLonTxt").val();
@@ -581,6 +596,7 @@ window.console.log("unhighlight box ",gid);
       let len=this.csm_downloads.length;
       for(let i=0; i< len; i++) {
         let tmp=this.csm_downloads[i].scec_properties;
+window.console.log("HERE...???");
         this.removeFromMetadataTable(tmp.gid);
         remove_bounding_rectangle_layer(tmp.gid);
       }
@@ -676,7 +692,7 @@ window.console.log("generateMetadataTable..");
           $("#csm-firstLatTxt").val("");
           $("#csm-firstLonTxt").val("");
           $("#csm-secondLatTxt").val("");
-          $("#csm-scecondLonTxt").val("");
+          $("#csm-secondLonTxt").val("");
           skipRectangle();
 	  this.unselectAllRegion();
           //$("#csm-latlon").hide();
@@ -687,7 +703,7 @@ window.console.log("generateMetadataTable..");
           $("#csm-firstLatTxt").val("");
           $("#csm-firstLonTxt").val("");
           $("#csm-secondLatTxt").val("");
-          $("#csm-scecondLonTxt").val("");
+          $("#csm-secondLonTxt").val("");
           skipRectangle();
 	  this.unselectAllRegion();
           $("#csm-latlon").hide();
@@ -798,7 +814,7 @@ window.console.log("generateMetadataTable..");
          let label=dlist[i];
          let h=_metricoption(label,i);
          html=html+h;
-         if( (i+1) % 5 === 0 ) {
+         if( (i+1) % 6 === 0 ) {
             html=html+"<br>";
          }            
       }
@@ -827,7 +843,7 @@ window.console.log("generateMetadataTable..");
          let label=term['dep'];
          let h=_depthoption(label,i);
          html=html+h;
-         if( (i+1) % 5 === 0 ) {
+         if( (i+1) % 6 === 0 ) {
             html=html+"<br>";
          }            
        }
