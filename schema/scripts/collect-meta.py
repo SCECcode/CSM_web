@@ -15,6 +15,7 @@ from os import walk
 import csv
 import pdb
 import json 
+import math
 from pathlib import Path
 
 ## extract meta data info from the csv file
@@ -32,6 +33,9 @@ for f in file_list:
     continue
 
   print("file:",f) 
+
+  Overall_Metrics = []
+  Overall_Deps = []
 
 # [ { 'dep': val, 'aphi_min': val, 'aphi_max': val, 'cnt': val }, ...] # index = 2
   DEP_range = []
@@ -57,11 +61,6 @@ for f in file_list:
   Overall_Dif_min = None
   Overall_Dif_max = None 
   Overall_Dif_range = []
-
-# index = 19 
-  Overall_S3_min = None
-  Overall_S3_max = None 
-  Overall_S3_range = []
 
   found = 0
   with open('../data/'+f, encoding="utf8") as f:
@@ -90,16 +89,12 @@ for f in file_list:
             else:
               Dif = None
 
-            if(line[19] != "") : ## set if not empty
-              S3 = float(line[19])
-            else:
-              S3 = None
-
 ## DEP
             if (len(DEP_range) == 0) : # first one
               found=1
-              nitem={ 'dep': DEP, 'shmax_min': SHmax, 'shmax_max': SHmax, 'aphi_min': Aphi, 'aphi_max': Aphi, 'iso_min': Iso, 'iso_max': Iso, 'dif_min': Dif, 'dif_max': Dif, 's3_min': S3, 's3_max': S3, 'cnt': 1 }
+              nitem={ 'dep': DEP, 'shmax_min': SHmax, 'shmax_max': SHmax, 'aphi_min': Aphi, 'aphi_max': Aphi, 'iso_min': Iso, 'iso_max': Iso, 'dif_min': Dif, 'dif_max': Dif, 'cnt': 1 }
               DEP_range.append(nitem)
+              Overall_Deps.append(math.floor(DEP))
             else:  # iterate through and see where to fit them
               found=0
               for item in DEP_range:
@@ -116,9 +111,6 @@ for f in file_list:
 
                  dif_min=item['dif_min']
                  dif_max=item['dif_max']
-
-                 s3_min=item['s3_min']
-                 s3_max=item['s3_max']
 
                  cnt = item['cnt']
                  if(dep == DEP) :
@@ -146,14 +138,11 @@ for f in file_list:
                       if (dif_max == None or Dif > dif_max) :
                          item['dif_max'] = Dif;
 
-                      if (s3_min == None or S3 < s3_min) :
-                         item['s3_min'] = S3;
-                      if (s3_max == None or S3 > s3_max) :
-                         item['s3_max'] = S3;
                     break
             if(found == 0) :
-              nitem={ 'dep': DEP, 'shmax_min': SHmax, 'shmax_max': SHmax, 'aphi_min': Aphi, 'aphi_max': Aphi, 'iso_min': Iso, 'iso_max': Iso, 'dif_min': Dif, 'dif_max': Dif, 's3_min': S3, 's3_max': S3, 'cnt': 1 }
+              nitem={ 'dep': DEP, 'shmax_min': SHmax, 'shmax_max': SHmax, 'aphi_min': Aphi, 'aphi_max': Aphi, 'iso_min': Iso, 'iso_max': Iso, 'dif_min': Dif, 'dif_max': Dif, 'cnt': 1 }
               DEP_range.append(nitem)
+              Overall_Deps.append(math.floor(DEP))
 
 ## SHmax
             if(Overall_SHmax_min == None):
@@ -192,23 +181,21 @@ for f in file_list:
                   Overall_Dif_min = Dif
                 if(Overall_Dif_max == None or Dif > Overall_Dif_max) :
                   Overall_Dif_max = Dif
-## S3
-            if(Overall_S3_min == None):
-              Overall_S3_min = Overall_S3_max = S3
-            else :
-              if(S3 != None) :
-                if(Overall_S3_min == None or S3 < Overall_S3_min) : 
-                  Overall_S3_min = S3
-                if(Overall_S3_max == None or S3 > Overall_S3_max) :
-                  Overall_S3_max = S3
 
             Overall_data_total = line_no - 1
 
   Overall_SHmax_range= [Overall_SHmax_min, Overall_SHmax_max]
+  if ( Overall_SHmax_min != None ):
+    Overall_Metrics.append("SHmax") 
   Overall_Aphi_range= [Overall_Aphi_min, Overall_Aphi_max]
+  if ( Overall_Aphi_min != None ):
+    Overall_Metrics.append("Aphi") 
   Overall_Iso_range= [Overall_Iso_min, Overall_Iso_max]
+  if ( Overall_Iso_min != None ):
+    Overall_Metrics.append("Iso") 
   Overall_Dif_range= [Overall_Dif_min, Overall_Dif_max]
-  Overall_S3_range= [Overall_S3_min, Overall_S3_max]
+  if ( Overall_Dif_min != None ):
+    Overall_Metrics.append("Dif") 
 
 #  {
 #      "meta": {
@@ -233,8 +220,6 @@ for f in file_list:
   iso_max_list = []
   dif_min_list = []
   dif_max_list = []
-  s3_min_list = []
-  s3_max_list = []
   for item in DEP_range:
     dep=item['dep']
     dep_list.append(dep)
@@ -261,11 +246,6 @@ for f in file_list:
     dif_min_list.append(dif_min)
     dif_max_list.append(dif_max)
 
-    s3_min=item['s3_min']
-    s3_max=item['s3_max']
-    s3_min_list.append(s3_min)
-    s3_max_list.append(s3_max)
-
 #  print("total data:", Overall_data_total)
 #  print("DEP range:", DEP_range)
 #  print("dep_list ->", dep_list)
@@ -281,9 +261,9 @@ for f in file_list:
   jblob['meta']['aphiRange']=Overall_Aphi_range
   jblob['meta']['isoRange']=Overall_Iso_range
   jblob['meta']['difRange']=Overall_Dif_range
-  jblob['meta']['s3Range']=Overall_S3_range
   jblob['meta']['dataByDEP']=DEP_range
-  jblob['metric'] = [ 'shmax', 'aphi', 'iso', 'dif', 's3' ] 
+  jblob['metric'] = Overall_Metrics
+  jblob['depth'] = Overall_Deps
 #  jstr=json.dumps(jblob, indent=2)
   jstr=json.dumps(jblob)
   f.write(jstr)
