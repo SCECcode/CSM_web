@@ -31,8 +31,21 @@ jQuery(document).ready(function() {
       let model_type=$(this).val();
       CSM.setupModelDepth(CSM.csm_models,model_type);
       CSM.setupModelMetric(CSM.csm_models,0);
+	  
+      CSM.setupModelMetric2(CSM.csm_models,model_type);
+
       CSM.clearSearch();
   });
+
+  $('#modelMetric2').on("change", function() {
+      let model_metric=$(this).val();
+      window.console.log("Switching to different metric..",model_metric);
+ 
+      CSM.setupModelDepth(CSM.csm_models,model_type);
+      CSM.setupModelMetric(CSM.csm_models,0);
+      CSM.clearSearch();
+  });
+
 
   $("#toSearch").on('click', function () {
 window.console.log("Calling toSearch..");
