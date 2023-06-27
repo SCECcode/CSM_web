@@ -28,10 +28,10 @@ jQuery(document).ready(function() {
   viewermap=setup_viewer();
 
   $('#modelType').on("change", function() {
-      let type=$(this).val();
-      CSM.setupModelDepth(CSM.csm_models,type);
-      // reset metric to 0
+      let model_type=$(this).val();
+      CSM.setupModelDepth(CSM.csm_models,model_type);
       CSM.setupModelMetric(CSM.csm_models,0);
+      CSM.clearSearch();
   });
 
   $('.csm-model-item').on("focus", function() {

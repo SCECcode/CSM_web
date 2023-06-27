@@ -166,15 +166,6 @@ window.console.log("calling reset");
 
         // go back to default view,
         viewermap.setView(this.defaultMapView.coordinates, this.defaultMapView.zoom);
-        // reset model/metric to initial state
-        CSM.resetModelType();
-
-        // reset search type
-	CSM.resetSearchType();
-
-        // clear pixi layer
-        pixiClearAllPixiOverlay();
-        CSM.setupPixiSegment(0,{});
    };
  
    // given a dataset's db_tb name, return matching dataset name
@@ -194,6 +185,12 @@ window.console.log("calling reset");
 window.console.log("calling --->> resetSearch.");
         this.resetModel();
         this.resetLatlon();
+    };
+
+    this.clearSearch = function (){
+window.console.log("calling --->> clearSearch.");
+        this.clearModel();
+        this.clearLatlon();
     };
 
 // HOW TO DEFINE spec
@@ -272,17 +269,20 @@ window.console.log("in freshSearch --latlon");
    function _segmentoption(label,pixigid,idx,color,check) {
      var html="";
      if(check) {
-       html=html+ "<input type=\"checkbox\" class='mr-1' id=\"pixiSegment_"+idx+"\" onclick=\"CSM.togglePixiSegment("+pixigid+","+idx+")\" style=\"accent-color:"+color+"\" checked >";
+       html=html+ "<input type=\"checkbox\" class='checkboxk-group mr-1' id=\"pixiSegment_"+idx+"\" onclick=\"CSM.togglePixiSegment("+pixigid+","+idx+")\" style=\"accent-color:"+color+"\" checked >";
        } else {
-         html=html+ "<input type=\"checkbox\" class='mr-1' id=\"pixiSegment_"+idx+"\" onclick=\"CSM.togglePixiSegment("+pixigid+","+idx+")\" style=\"accent-color:"+color+"\" >";
+         html=html+ "<input type=\"checkbox\" class='checkboxk-group mr-1' id=\"pixiSegment_"+idx+"\" onclick=\"CSM.togglePixiSegment("+pixigid+","+idx+")\" style=\"accent-color:"+color+"\" >";
      }
-     html=html+"<label class='radio-group-label mr-2 mini-option' for=\"pixiSegment_\"+idx+\"><span>"+label+"</span></label>";
+     html=html+"<label class='checkbox-group-label mr-2 mini-option' for=\"pixiSegment_\"+idx+\"><span>"+label+"</span></label>";
       return html;
     }
 
     //seginfo is { names: nlist, counts:clist, labels:llist };
     this.setupPixiSegment = function(pixigid,seginfo) {
-      if(jQuery.isEmptyObject(seginfo)) return;
+      if(jQuery.isEmptyObject(seginfo)) {
+        $("#pixi-segment").html("");
+        return;
+      }
 
       let namelist=seginfo['names'];
       let lengthlist=seginfo['counts'];
@@ -403,7 +403,7 @@ window.console.log("SEARCHING for ",spec[2]);
                     if(sz > 0) { 
                       let first = jblob[0];
                       let scec_properties={};
-                      let gid = get_bounding_rectangle_layer_idx();
+                      let gid = get_bounding_rectangle_layer_gid();
                       scec_properties.gid=gid; 
                       scec_properties.depth=first.dep;
                       scec_properties.lon1=criteria[0];
@@ -569,11 +569,13 @@ window.console.log("calling searchLatlon..");
        this.removeFromDownloads(gid); 
     };
     this.mouseoverRegion = function(gid) {
+window.console.log("highlight box ",gid);
 	highlight_bounding_rectangle_layer(gid);
 	this.highlight_metadata_row(gid);
     };
     // mouseout the entry
     this.mouseoutRegion = function(gid) {
+window.console.log("unhighlight box ",gid);
 	unhighlight_bounding_rectangle_layer(gid);
 	this.unhighlight_metadata_row(gid);
     };
@@ -659,10 +661,29 @@ window.console.log("generateMetadataTable..");
           return false;
         }
 
+        this.clearModel = function () {
+          if( this.searchingType != this.searchType.model) return;
+          pixiClearAllPixiOverlay();
+          this.setupPixiSegment(0,{});
+        }
+
         this.resetModel = function () {
           if( this.searchingType != this.searchType.model) return;
-          this.unselectAllModel();
+          pixiClearAllPixiOverlay();
+          this.setupPixiSegment(0,{});
+	  this.resetModelType();
           $("#csm-model").hide();
+        }
+
+        this.clearLatlon = function () {
+          if( this.searchingType != this.searchType.latlon) return;
+          $("#csm-firstLatTxt").val("");
+          $("#csm-firstLonTxt").val("");
+          $("#csm-secondLatTxt").val("");
+          $("#csm-scecondLonTxt").val("");
+          skipRectangle();
+	  this.unselectAllRegion();
+          //$("#csm-latlon").hide();
         }
 
         this.resetLatlon = function () {
@@ -719,7 +740,6 @@ window.console.log("generateMetadataTable..");
      
     // need to trigger modelType change to first model
     this.resetModelType = function () {
-window.console.log("resetModelType");
        let elt=document.getElementById('modelType');
        elt.value = 0;
        $("#modelType").change();
@@ -850,11 +870,15 @@ window.console.log("change ModelMetric with ..",v);
           let tmp=CSM.csm_downloads[i];
           let tmp_gid=tmp.scec_properties.gid;
           if(tmp_gid == gid) {
-            let tstamp=getRnd("");
             let mlist = tmp.jblob;
             let hdata=getModelHeader(tmp.scec_properties.dataset);
-            let data=getCSVFromMeta(mlist);
-            saveAsCSVBlobFile(hdata+data, tstamp);
+            let data="";
+            if(hdata != "") {
+              data=getCSVFromMeta(0,mlist);
+              } else {
+                data=getCSVFromMeta(1,mlist);
+            }
+            saveAsCSVBlobFile(hdata+data, gid);
           }
         }
     };
@@ -865,9 +889,10 @@ window.console.log("change ModelMetric with ..",v);
         return hdrblob;
     };
 
-    function getCSVFromMeta(mlist) {
+    function getCSVFromMeta(needtitle,mlist) {
         let len=mlist.length;  // each data is a meta data format
         let last=len-1;
+        var csvblob="";
 
 // grab the first meta data and generate the title..
         let meta=mlist[0];
@@ -883,13 +908,17 @@ window.console.log("change ModelMetric with ..",v);
         if(keys[jlen] == "geom") {
            jlen=jlen-1;
         }
+  
 
-        var csvblob=csm_csv_keys[keys[jfirst]];
-        for(let k=jfirst+1; k< jlen; k++) {
-           csvblob += (','+csm_csv_keys[keys[k]]);
+        if(needtitle) {
+// grab the first meta data and generate the title..
+          csvblob=csm_csv_keys[keys[jfirst]];
+          for(let k=jfirst+1; k< jlen; k++) {
+             csvblob += (','+csm_csv_keys[keys[k]]);
+          }
+          csvblob +='\n';
         }
-        csvblob +='\n';
-
+  
 // grab rest of the data
         for(let i=0; i< len; i++) {
             meta=mlist[i];

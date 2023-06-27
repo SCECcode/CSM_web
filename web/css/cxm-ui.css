@@ -1,10 +1,19 @@
 /* csm */
+.checkbox-group {
+  display:inline-block;
+}
+.checkbox-group-label {
+  vertical-align:middle;
+  margin-bottom:0rem;
+}
+
 .radio-group {
   display:inline-block;
 }
 .radio-group-label {
   vertical-align:middle;
   width: 3rem;
+  margin-bottom:0.1rem;
 }
 
 .glyphicon.glyphicon-download {
@@ -21,7 +30,7 @@
 }
 
 #csm-search-type span {
-  padding: 0.25rem 1.0rem;
+  padding: 1rem 1.5rem 0.25rem 1.5rem;
   border: 1px solid #ced4da;
   border-radius: 0.2rem;
   background-color: #f2f2f2;

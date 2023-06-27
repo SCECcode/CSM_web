@@ -4,7 +4,6 @@
    These are pixi util support for csm specific data
 
 ***/
-
 // pixi, Leafle.overlayLayer.js
 /* data sections, to matching marker name markerN_icon.png */
 const DEFAULT_DATA_SEGMENT_COUNT= 20; // marker name from 1 to 20

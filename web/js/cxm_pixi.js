@@ -246,7 +246,6 @@ function makeOnePixiLayer(uid,file) {
 // toggle off a child container from an overlay layer
 function pixiToggleMarkerContainer(pixigid,target_segment_idx) {
 
-window.console.log("PIXI: toggleMarker container..which segment..",target_segment_idx);
   let pixi=pixiFindPixiWithPixiGid(pixigid);
 
   if(pixi.visible==false) {
@@ -521,7 +520,6 @@ if(event.type == "undefined") {
       pixi_project = utils.latLngToLayerPoint;
       var getScale = utils.getScale;
       var invScale = 1 / getScale();
-window.console.log("PIXI:in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>"+getScale()+" invScale"+invScale);
 
       if (event.type === "redraw") {
 window.console.log("PIXI: redraw event");
@@ -547,8 +545,11 @@ window.console.log("PIXI: add event");
           scaleFactor=3; 
         }
 
-window.console.log("PIXI: scale_hint", spec.scale_hint);
-window.console.log("PIXI: using scale factor",scaleFactor);
+// :-) very hacky, just in case it got zoomed in before search
+        let t= (8/invScale);
+        scaleFactor=scaleFactor / t;
+
+window.console.log("PIXI:in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>"+getScale()+" invScale"+invScale+"localscale is "+(invScale/scaleFactor));
 
         // fill in the particles one group at a time
         let collect_len=0;
@@ -564,7 +565,7 @@ window.console.log("PIXI: using scale factor",scaleFactor);
            a.localScale = invScale/scaleFactor;
 
            collect_len=collect_len+len;
-window.console.log("PIXI: group ",i," len is ",len);
+//window.console.log("PIXI: group ",i," len is ",len);
            segments.push(len);
            for (var j = 0; j < len; j++) {
               var latlng=latlngs[j];
@@ -700,14 +701,13 @@ window.console.log("PIXI: clear One..pixigid=",pixigid);
 
 function pixiClearAllPixiOverlay() {
   let cnt=pixiOverlayList.length;
-window.console.log("HERE.. clear All..", cnt);
   for(let i=0; i<cnt; i++) {
     let pixi=pixiOverlayList[i];
     if(pixi.visible == 1) {
        let layer=pixi.overlay;
        viewermap.removeLayer(layer);
        pixi.visible=0;
-window.console.log("PIXI: clear All..pixigid=",i);
+window.console.log("PIXI: clear All..pixigid=",pixi.uid);
     }
   }
 }

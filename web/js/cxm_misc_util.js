@@ -63,14 +63,14 @@ function makeRGB(val, maxV, minV) {
 }
 
 
-function getRnd(stub) {
+function getRnd(stub="") {
 //https://stackoverflow.com/questions/221294/how-do-you-get-a-timestamp-in-javascript
     let timestamp = $.now();
     let rnd;
     if(stub == "") { 
       rnd=timestamp;
       } else {
-        rnd="stub"+"_"+timestamp;
+        rnd=stub+"_"+timestamp;
     }
     return rnd;
 }
