@@ -34,30 +34,6 @@ jQuery(document).ready(function() {
       CSM.clearSearch();
   });
 
-  $('.csm-model-item').on("focus", function() {
-     $('.csm-model-item').on("blur mouseout", function() {
-       $('.csm-model-item').off("mouseout");
-       $('.csm-model-item').off("blur");
-       if( $(this).val() != '' ) {
-         window.console.log(" need to redraw the pixi overlay with the given string", $(this).val());
-         CSM.redrawModel($(this).val());
-       }
-       $(this).blur();
-     });
-  });
-
-  $('.csm-latlon-item').on("focus", function() {
-     $('.csm-latlon-item').on("blur mouseout", function() {
-       $('.csm-latlon-item').off("mouseout");
-       $('.csm-latlon-item').off("blur");
-       if( $(this).val() != '' ) {
-         window.console.log(" need to call search by latlon ");
-         CSM.searchLatlon(0, []);
-       }
-       $(this).blur();
-     });
-  });
-
   $("#toSearch").on('click', function () {
 window.console.log("Calling toSearch..");
         CSM.freshSearch();

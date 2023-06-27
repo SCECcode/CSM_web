@@ -7,6 +7,7 @@
 
 var CSM = new function () {
 
+    this.model_initialized = false;
     // 
     // complete set of csm models info from the backend-service,
     // { "gid":gid, "model_name":mn, "table_name":tn, "jblob":jblob } 
@@ -344,6 +345,7 @@ window.console.log("calling togglePixiSegment.. with ",n,"on pixiuid ",pixiuid);
             let vallist;
             if(search_result === "[]") {
 window.console.log("Did not find any PHP result");
+                CSM.removeWaitSpin();
             } else {
                 if(type==CSM.searchType.model) { 
                     let tmp=JSON.parse(search_result); 
@@ -425,7 +427,24 @@ window.console.log("SEARCHING for ",spec[2]);
         });
     };
 
-    this.redrawModel = function(v) {
+    // make sure the displayed background is correct,
+    this._redrawModel = function() {
+        if( this.model_initialized == false ) return;     
+
+	let spec = [];
+        let spec_idx = [];
+        [ spec, spec_idx ] = this.getSpec();
+
+        // make sure the displayed background is correct,
+        var pixiuid= CSM.lookupModelLayers(
+                       spec_idx[0], spec_idx[1], spec_idx[2]);
+
+        if(pixiuid != null) { // reuse and add to viewer map
+          pixiClearAllPixiOverlay();
+          pixiTogglePixiOverlay(pixiuid);
+          } else {
+            pixiuid = this.search(this.searchType.model, spec, spec_idx);
+        }
     };
 	     
     // special case, Latlon can be from text inputs or from the map
@@ -438,18 +457,6 @@ window.console.log("calling searchLatlon..");
         let spec = [];
         let spec_idx = [];
         [ spec, spec_idx ] = this.getSpec();
-
-
-	// make sure the displayed background is correct,
-        var pixiuid= CSM.lookupModelLayers(
-                       spec_idx[0], spec_idx[1], spec_idx[2]);
-
-        if(pixiuid != null) { // reuse and add to viewer map
-          pixiClearAllPixiOverlay();
-          pixiTogglePixiOverlay(pixiuid);
-          } else {
-            pixiuid = this.search(this.searchType.model, spec, spec_idx);
-        }
 
         if( fromWhere == 0) {
             let lat1=$("#csm-firstLatTxt").val();
@@ -749,6 +756,7 @@ window.console.log("generateMetadataTable..");
             this.setupModelLayers(this.csm_models);
 
             $("#searchType_0").click();
+            this.model_initialized=true;
     };
      
     // need to trigger modelType change to first model
@@ -866,10 +874,12 @@ window.console.log("generateMetadataTable..");
    this.changeModelDepth = function(v) {
 window.console.log("change ModelDepth with ..",v);
         this.current_modelDepth_idx=v; 
+        this._redrawModel();
    };
    this.changeModelMetric = function(v) {
 window.console.log("change ModelMetric with ..",v);
         this.current_modelMetric_idx=v; 
+        this._redrawModel();
    };
 
 /********************** zip utilities functions *************************/
