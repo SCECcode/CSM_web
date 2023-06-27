@@ -69,14 +69,14 @@ function getSegmentRangeIdx(vs_target, N, vs_max, vs_min) {
   return offset;
 }
 
-function pixiFindSegmentPropertiesWithPixiGid(pixigid) {
+function pixiFindSegmentProperties(uid) {
   let rlist={};
   let namelist=[];
   let colorlist=[];
   let labellist=[];
   let lengthlist=[];
   let checklist=[];
-  let pixi=pixiFindPixiWithPixiGid(pixigid);
+  let pixi=pixiFindPixiWithUid(uid);
 
   if(pixi) {
     let clist=pixi.inner;
@@ -244,9 +244,9 @@ function makeOnePixiLayer(uid,file) {
 }
 
 // toggle off a child container from an overlay layer
-function pixiToggleMarkerContainer(pixigid,target_segment_idx) {
+function pixiToggleMarkerContainer(uid,target_segment_idx) {
 
-  let pixi=pixiFindPixiWithPixiGid(pixigid);
+  let pixi=pixiFindPixiWithUid(uid);
 
   if(pixi.visible==false) {
     window.console.log("PIXI: layer not visible To TOGGLE!!\n");
@@ -640,34 +640,16 @@ function pixiFindSegmentsWithUid(uid) {
   return 0;
 }
 
-function pixiFindSegmentsWithPixiGid(pixigid) {
-    let pixi=pixiFindPixiWithPixiGid(pixigid);
+function pixiFindSegmentsWithUid(uid) {
+    let pixi=pixiFindPixiWithUid(uid);
     if(pixi) return pixi.segment;
     return null;
 }
 
-function pixiFindOverlayWithPixiGid(pixigid) {
-    let pixi=pixiFindPixiWithPixiGid(pixigid);
+function pixiFindOverlayWithUid(uid) {
+    let pixi=pixiFindPixiWithUid(uid);
     if(pixi) return pixi.overlay;
     return null;
-}
-
-function pixiFindOverlayWithUid(uid) {
-  for(let i=0; i<pixiOverlayList.length; i++) {
-     let pixi=pixiOverlayList[i];
-     if(pixi.uid == uid) {
-       return pixi.overlay;
-     }
-  }
-  return null;
-}
-
-function pixiFindPixiWithPixiGid(pixigid) {
-    if(pixigid >= pixiOverlayList.length) {
-      return null;
-    }
-    let pixi=pixiOverlayList[pixigid];
-    return pixi;
 }
 
 function pixiFindPixiWithUid(uid) {
@@ -689,13 +671,13 @@ function _foundOverlay(uid) {
   return 0;
 }
 
-function pixiClearPixiOverlay(pixigid) {
-    let pixi=pixiOverlayList[pixigid];
+function pixiClearPixiOverlay(uid) {
+    let pixi=pixiFindPixiWithUid(uid);
     if(pixi && pixi.visible == 1) {
        let layer=pixi.overlay;
        viewermap.removeLayer(layer);
        pixi.visible=0;
-window.console.log("PIXI: clear One..pixigid=",pixigid);
+window.console.log("PIXI: clear one..uid=",pixi.uid);
     }
 }
 
@@ -707,13 +689,13 @@ function pixiClearAllPixiOverlay() {
        let layer=pixi.overlay;
        viewermap.removeLayer(layer);
        pixi.visible=0;
-window.console.log("PIXI: clear All..pixigid=",pixi.uid);
+window.console.log("PIXI: clear All..uid=",pixi.uid);
     }
   }
 }
 
-function pixiTogglePixiOverlay(pixigid) {
-    let pixi=pixiOverlayList[pixigid];
+function pixiTogglePixiOverlay(uid) {
+    let pixi=pixiFindPixiWithUid(uid);
     let v=pixi.visible;
     let layer=pixi.overlay;
     if(v==1) {
@@ -724,23 +706,3 @@ function pixiTogglePixiOverlay(pixigid) {
          pixi.visible=1;
     }
 }
-
-function togglePixiOverlayWithUid(uid) {
-window.console.log("PIXI: which uid to toggle PixiOverlay out..",uid);
-  for(let i=0; i<pixiOverlayList.length; i++) {
-     let pixi=pixiOverlayList[i];
-     if(pixi.uid == uid) {
-       let v=pixi.visible;
-       let layer=pixi.overlay;
-       if(v==1) {
-         pixi.visible=0;
-         viewermap.removeLayer(layer);
-         } else {
-           viewermap.addLayer(layer);
-           pixi.visible=1;
-       }
-       return;
-     }
-  }
-}
-

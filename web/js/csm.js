@@ -25,11 +25,8 @@ var CSM = new function () {
     //  to avoid generate these repeatly
     this.csm_model_pixi_layers=[];
 
-    //  track uid of layer being looked at
+    //  track pixi's uid of current layer being looked at
     this.track_uid;  // unique id
-    
-    //  current pixi index being viewed
-    this.current_pixi_gid=0; // assume it starts at 0
     
     // { "gid":gid, "scec_properties": prop, "jblob": jblob } 
     // from searchLatlon, to be downloaded
@@ -242,18 +239,17 @@ window.console.log("in freshSearch --model");
         pixiClearAllPixiOverlay();
         CSM.setupPixiSegment(0,{});
 
-        var pixigid= CSM.lookupModelLayers(
+        var pixiuid= CSM.lookupModelLayers(
                        spec_idx[0], spec_idx[1], spec_idx[2]);
 
-        if(pixigid != null) { // reuse and add to viewer map 
-          pixiTogglePixiOverlay(pixigid);
-          let seginfo=pixiFindSegmentPropertiesWithPixiGid(pixigid);
-          CSM.setupPixiSegment(pixigid,seginfo);
+        if(pixiuid != null) { // reuse and add to viewer map 
+          pixiTogglePixiOverlay(pixiuid);
+          let seginfo=pixiFindSegmentProperties(pixiuid);
+          CSM.setupPixiSegment(pixiuid,seginfo);
           } else {
-            pixigid = this.search(this.searchType.model, spec, spec_idx);
+            pixiuid = this.search(this.searchType.model, spec, spec_idx);
         }
 
-        CSM.current_pixi_gid=pixigid;
         return;
       }
 
@@ -266,19 +262,19 @@ window.console.log("in freshSearch --latlon");
 // a layer is always generated with the full set of segments 
 // so pop up the pixi segment selector on dashboard
 // max n would be 20
-   function _segmentoption(label,pixigid,idx,color,check) {
+   function _segmentoption(label,pixiuid,idx,color,check) {
      var html="";
      if(check) {
-       html=html+ "<input type=\"checkbox\" class='checkboxk-group mr-1' id=\"pixiSegment_"+idx+"\" onclick=\"CSM.togglePixiSegment("+pixigid+","+idx+")\" style=\"accent-color:"+color+"\" checked >";
+       html=html+ "<input type=\"checkbox\" class='checkboxk-group mr-1' id=\"pixiSegment_"+idx+"\" onclick=\"CSM.togglePixiSegment("+pixiuid+","+idx+")\" style=\"accent-color:"+color+"\" checked >";
        } else {
-         html=html+ "<input type=\"checkbox\" class='checkboxk-group mr-1' id=\"pixiSegment_"+idx+"\" onclick=\"CSM.togglePixiSegment("+pixigid+","+idx+")\" style=\"accent-color:"+color+"\" >";
+         html=html+ "<input type=\"checkbox\" class='checkboxk-group mr-1' id=\"pixiSegment_"+idx+"\" onclick=\"CSM.togglePixiSegment("+pixiuid+","+idx+")\" style=\"accent-color:"+color+"\" >";
      }
      html=html+"<label class='checkbox-group-label mr-2 mini-option' for=\"pixiSegment_\"+idx+\"><span>"+label+"</span></label>";
       return html;
     }
 
     //seginfo is { names: nlist, counts:clist, labels:llist };
-    this.setupPixiSegment = function(pixigid,seginfo) {
+    this.setupPixiSegment = function(pixiuid,seginfo) {
       if(jQuery.isEmptyObject(seginfo)) {
         $("#pixi-segment").html("");
         return;
@@ -302,14 +298,14 @@ window.console.log("in freshSearch --latlon");
          }
          let v=i+1;
          let foo=label+"&nbsp;&nbsp;&nbsp;(n="+length+")";
-	 html=html+_segmentoption(foo,pixigid,i,color,check)+"<br>";
+	 html=html+_segmentoption(foo,pixiuid,i,color,check)+"<br>";
       }
       $("#pixi-segment").html(html);
     }
 
-    this.togglePixiSegment = function(pixigid, n) {
-window.console.log("calling togglePixiSegment.. with ",n,"on pixigid ",pixigid);
-      pixiToggleMarkerContainer(pixigid,n);
+    this.togglePixiSegment = function(pixiuid, n) {
+window.console.log("calling togglePixiSegment.. with ",n,"on pixiuid ",pixiuid);
+      pixiToggleMarkerContainer(pixiuid,n);
     }
 
     this.startWaitSpin = function() {
@@ -385,17 +381,17 @@ window.console.log("SEARCHING for ",spec[2]);
 //pixiOverlayList.push({"gid":gid,"vis":1,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
 // returning overlay
 	            CSM.track_uid=getRnd("csm");
-                    var pixigid=makePixiOverlayLayerWithList(
+                    var pixiuid=makePixiOverlayLayerWithList(
                              CSM.track_uid,
                              latlist,lonlist,vallist,pixi_spec);
                     CSM.removeWaitSpin();
 
-                    CSM.addModelLayers(criteria[0],criteria[1],criteria[2],pixigid);
+                    CSM.addModelLayers(criteria[0],criteria[1],criteria[2],pixiuid);
 
                     // need to get segment information from csm_pixi.js
-                    let seginfo=pixiFindSegmentPropertiesWithPixiGid(pixigid);
-                    CSM.setupPixiSegment(pixigid,seginfo);
-                    return pixigid;
+                    let seginfo=pixiFindSegmentProperties(pixiuid);
+                    CSM.setupPixiSegment(pixiuid,seginfo);
+                    return pixiuid;
                 }
                 if(type==CSM.searchType.latlon) { 
                     let jblob=JSON.parse(search_result); 
@@ -775,22 +771,22 @@ window.console.log("generateMetadataTable..");
 
     this.lookupModelLayers = function (midx, mmidx, didx) {
 //window.console.log(" ===> LOOKING FOR", midx, mmidx, didx);
-      let pixigid=CSM.csm_model_pixi_layers[midx][mmidx][didx];
-      if(pixigid != undefined) {
+      let pixiuid=CSM.csm_model_pixi_layers[midx][mmidx][didx];
+      if(pixiuid != undefined) {
 //        window.console.log(" === FOUND an existing layer..");
-        return pixigid;
+        return pixiuid;
         } else {
 //          window.console.log(" === DID not Find an existing layer..");
           return null;
       }
     } 
-    this.addModelLayers = function(midx,mmidx,didx,pixigid) {
+    this.addModelLayers = function(midx,mmidx,didx,pixiuid) {
 //window.console.log(" ===> ADDING FOR", midx, mmidx, didx);
       let tmp=CSM.csm_model_pixi_layers[midx][mmidx][didx];
       if(tmp != undefined) {
         window.console.log(" === BAD BAD BAD - found  an existing layer..");
         } else {
-          CSM.csm_model_pixi_layers[midx][mmidx][didx]=pixigid;
+          CSM.csm_model_pixi_layers[midx][mmidx][didx]=pixiuid;
       }
     } 
 
