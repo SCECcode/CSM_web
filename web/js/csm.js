@@ -434,10 +434,11 @@ window.console.log("SEARCHING for ",spec[2]);
     this.searchLatlon = function (fromWhere, rect) {
 window.console.log("calling searchLatlon..");
         let criteria = [];
-        let spec = [];
-        let spec_info = [];
 
-        [spec, spec_info] = this.getSpec();
+        let spec = [];
+        let spec_idx = [];
+        [ spec, spec_idx ] = this.getSpec();
+
 
 	// make sure the displayed background is correct,
         var pixiuid= CSM.lookupModelLayers(
