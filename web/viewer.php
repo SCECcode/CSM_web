@@ -274,10 +274,10 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                   <label class="input-group-text" for="modelType">Select Model Metric</label>
             </div>
 	    <select id="modelMetric2" class="custom-select custom-select-sm">
-                  <option name="csmmetric" id="metric_shmax" value="0">SHmax</option>
-                  <option name="csmmetric" id="metric_aphi" value="1">Aphi</option>
-                  <option name="csmmetric" id="metric_iso" value="2">Iso</option>
-                  <option name="csmmetric" id="metric_dif" value="3">Dif</option>
+                  <option name="csmmetric" id="metric_SHmax" value="0">SHmax</option>
+                  <option name="csmmetric" id="metric_Aphi" value="1">Aphi</option>
+                  <option name="csmmetric" id="metric_Iso" value="2">Iso</option>
+                  <option name="csmmetric" id="metric_Dif" value="3">Dif</option>
             </select>
 	 </div> 
 
