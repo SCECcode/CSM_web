@@ -16,7 +16,8 @@ var CSM = new function () {
     //   { "model": mn,
     //     "meta": { "dataCount": cnt, "dataByDEP": [ { "dep":d, "cnt":lcnt,  "aphi_max":max, "aphi_min":min}..] },
     //     "aphiRange": [mmax, mmin],
-    //     "metric" : [ "aphi" ],
+    //     "metric" : [ "shmas","aphi" ],
+    //     "depths" : [ 1, 3, 5 ],
     //     "header" : "..." }
     this.csm_models = [];
 
@@ -776,6 +777,7 @@ window.console.log("generateMetadataTable..");
     //     "meta": { "dataCount": cnt, "dataByDEP": [ { "dep":d, "cnt":lcnt,  "aphi_max":max, "aphi_min":min}..] },
     //     "aphiRange": [mmax, mmin],
     //     "metric" : [ "aphi" ] }
+    //     "depth" : [ d ] }
   
     //  csm_model_pixi_layers['model_id]['metric_id']['depth_id']
     this.setupModelLayers = function (mlist) {
