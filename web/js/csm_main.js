@@ -29,43 +29,23 @@ jQuery(document).ready(function() {
 
   $('#modelType').on("change", function() {
       let model_type=$(this).val();
-      CSM.setupModelDepth(CSM.csm_models,model_type);
-      CSM.setupModelMetric(CSM.csm_models,0);
 	  
-      CSM.setupModelMetric2(CSM.csm_models,model_type);
-      CSM.setupModelDepth2(CSM.csm_models,model_type);
-
-      CSM.clearSearch();
+      CSM.setupModelMetric(CSM.csm_models,model_type);
+      CSM.setupModelDepth(CSM.csm_models,model_type);
+      CSM.freshSearch();
   });
 
-  $('#modelDepth2').on("change", function() {
+  $('#modelDepth').on("change", function() {
       let model_depth=$(this).val();
       CSM.changeModelDepth(model_depth);
-window.console.log("changing modelDepth2");
-/*
-      window.console.log("Switching to different metric..",model_metric);
-      CSM.setupModelDepth(CSM.csm_models,model_type);
-      CSM.setupModelMetric(CSM.csm_models,0);
-      CSM.clearSearch();
-*/
+window.console.log("--- changing modelDepth");
   });
-  $('#modelMetric2').on("change", function() {
+  $('#modelMetric').on("change", function() {
       let model_metric=$(this).val();
       CSM.changeModelMetric(model_metric);
-window.console.log("changing modelMetric2");
-/*
-      window.console.log("Switching to different metric..",model_metric);
-      CSM.setupModelDepth(CSM.csm_models,model_type);
-      CSM.setupModelMetric(CSM.csm_models,0);
-      CSM.clearSearch();
-*/
+window.console.log("--- changing modelMetric");
   });
 
-
-  $("#toSearch").on('click', function () {
-window.console.log("Calling toSearch..");
-        CSM.freshSearch();
-  });
 
   $("#toReset").on('click', function () {
 window.console.log("Calling toReset..");
@@ -101,7 +81,7 @@ window.console.log("Calling toReset..");
 // setup the interface 
   CSM.setupCSMInterface();
 
-window.console.log("DONE with main");
+window.console.log("DONE initialize from  Main");
 
 }); // end of MAIN
 

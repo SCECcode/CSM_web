@@ -202,39 +202,35 @@ window.console.log("HERE..");
       let tidx=parseInt($("#modelType").val());
       let model=this.csm_models[tidx];
       let tmodel=model['table_name'];
-window.console.log("name is ", model['table_name']);
+window.console.log("SPEC: model name is ", model['table_name']);
 
-      let didx=this.current_modelDepth_idx;
       let d=model['jblob']['meta'];
       let dd=d['dataByDEP'];
 
-      let tdepth=parseInt($("#modelDepth2").val());
-      let didx2=0;
+      let tdepth=parseInt($("#modelDepth").val());
+      let didx=0;
       for(let i=0; i<dd.length; i++) {
          let t=dd[i];
          if(t["dep"] == tdepth) {
-           didx2=i; 
+           didx=i; 
            break;
          }
       }
       let ddd=dd[didx];
       let ddepth=ddd["dep"];
-window.console.log("modelDepth_idx is "+didx+"("+ddepth+"km)");
+window.console.log("SPEC:modelDepth_idx is "+didx+"("+ddepth+"km)");
 
-      let midx=this.current_modelMetric_idx;
       let m=model['jblob']['metric'];
-
-      let tmetric=$("#modelMetric2").val();
-      let mdix2=0;
+      let tmetric=$("#modelMetric").val();
+      let mdix=0;
       for(let i=0; i<m.length; i++) {
         if(m[i] == tmetric) {
-          midx2=i;
+          midx=i;
           break;
         }
       }
-
       let mmetric=m[midx];
-window.console.log("modelMetric_idx is "+midx+"("+mmetric+")");
+window.console.log("SPEC:modelMetric_idx is "+midx+"("+mmetric+")");
 
       let spec = [ tmodel, ddepth, mmetric ];
       let spec_idx = [ tidx,midx,didx ];
@@ -772,16 +768,15 @@ window.console.log("generateMetadataTable..");
             }
 
 /* create the default model depth list to 1st one for model */
-            this.setupModelDepth(this.csm_models,0);
             this.setupModelMetric(this.csm_models,0);
-
-            this.setupModelMetric2(this.csm_models,0);
-            this.setupModelDepth2(this.csm_models,0);
+            this.setupModelDepth(this.csm_models,0);
 
             this.setupModelLayers(this.csm_models);
 
-//            $("#searchType_0").click();
             this.model_initialized=true;
+	    this._redrawModel();
+
+            $("#searchType_0").click(); // start with model option
     };
      
     // need to trigger modelType change to first model
@@ -841,36 +836,10 @@ window.console.log("generateMetadataTable..");
       }
     } 
 
-    this.setupModelMetric = function (mlist,model_idx) {
-      let dlist=mlist[model_idx]['jblob']['metric'];
-      let sz=dlist.length;
-      let html="";
-      for(let i=0;i<sz;i++) {
-         let label=dlist[i];
-         let h=_metricoption(label,i);
-         html=html+h;
-         if( (i+1) % 5 === 0 ) {
-            html=html+"<br>";
-         }
-      }
-      $("#modelMetric-options").html(html);
-      $("#modelMetric_0").click();
-    };
-    // set to first metric
-    this.resetModelMetric = function () {
-      $("#modelMetric_0").click();
-    };
-
-    function _metricoption(label,idx) {
-      var html = "<input type=\"radio\" class='mr-1' id=\"modelMetric_"+idx+"\" name=\"modelMetric_idx\" onclick=\"CSM.changeModelMetric("+idx+")\">";
-          html=html+"<label class='radio-group-label mr-2 mini-option' for=\"modelMetric_\"+idx+\"><span>"+label+"</span></label>";
-      return html;
-    }
-
 // option disabled all.
-    this.setupModelMetric2 = function (mlist,model_idx) {
+    this.setupModelMetric = function (mlist,model_idx) {
       //preset all option to disable	     
-      $("select[id='modelMetric2'] option").attr('disabled', true);
+      $("select[id='modelMetric'] option").attr('disabled', true);
 
       let dlist=mlist[model_idx]['jblob']['metric'];
       let sz=dlist.length;
@@ -881,24 +850,25 @@ window.console.log("generateMetadataTable..");
       let first='csmmetric_'+dlist[0];
       let elt=document.getElementById(first);
       let val=elt.value;
-      let select=document.querySelector("#modelMetric2");
+      let select=document.querySelector("#modelMetric");
+window.console.log("HERE");
       select.value=val;
     };
 
     // set to first metric
-    this.resetModelMetric2 = function (mlist,model_idx) {
+    this.resetModelMetric = function (mlist,model_idx) {
       let dlist=mlist[model_idx]['jblob']['metric'];
       let first='csmmetric_'+dlist[0];
       let elt=document.getElementById(first);
       let val=elt.value;
-      let select=document.querySelector("#modelMetric2");
+      let select=document.querySelector("#modelMetric");
       select.value=val;
     };
 
 // option disabled all.
-    this.setupModelDepth2 = function (mlist,model_idx) {
+    this.setupModelDepth = function (mlist,model_idx) {
       //preset all option to disable
-      $("select[id='modelDepth2'] option").attr('disabled', true);
+      $("select[id='modelDepth'] option").attr('disabled', true);
 
       let dlist=mlist[model_idx]['jblob']['depth'];
       let sz=dlist.length;
@@ -909,59 +879,27 @@ window.console.log("generateMetadataTable..");
       let first='csmdepth_'+dlist[0];
       let elt=document.getElementById(first);
       let val=elt.value;
-      let select=document.querySelector("#modelDepth2");
+      let select=document.querySelector("#modelDepth");
       select.value=val;
     };
 
     // set to first metric
-    this.resetModelDepth2 = function (mlist,model_idx) {
+    this.resetModelDepth = function (mlist,model_idx) {
       let dlist=mlist[model_idx]['jblob']['depth'];
       let first='csmdepth_'+dlist[0];
       let elt=document.getElementById(first);
       let val=elt.value;
-      let select=document.querySelector("#modelDepth2");
+      let select=document.querySelector("#modelDepth");
       select.value=val;
     };
 
 
-    this.setupModelDepth = function (mlist,model_idx) {
-      let jblob=mlist[model_idx]['jblob'];
-      let dlist=jblob['meta']['dataByDEP'];
-      let sz=dlist.length;
-      let html="";
-
-      for(let i=0;i<sz;i++) {  
-         let term=dlist[i];
-         let label=term['dep'];
-         let h=_depthoption(label,i);
-         html=html+h;
-         if( (i+1) % 5 === 0 ) {
-            html=html+"<br>";
-         }            
-       }
-
-       $("#modelDepth-options").html(html);
-       $("#modelDepth_0").click();
-    };
-    // reset to depth of 0
-    this.resetModelDepth = function () {
-       $("#modelDepth_0").click();
-    };
-
-    function _depthoption(label,idx) {
-      var html = "<input type=\"radio\" class='mr-1' id=\"modelDepth_"+idx+"\" name=\"modelDepth_idx\"  onclick=\"CSM.changeModelDepth("+idx+")\">";
-          html=html+"<label class='radio-group-label mr-2 mini-option' for=\"modelDepth_\"+idx+\"><span>"+label+" km</span></label>";
-      return html;
-    }
-
    this.changeModelDepth = function(v) {
 window.console.log("change ModelDepth with ..",v);
-        this.current_modelDepth_idx=v; 
         this._redrawModel();
    };
    this.changeModelMetric = function(v) {
 window.console.log("change ModelMetric with ..",v);
-        this.current_modelMetric_idx=v; 
         this._redrawModel();
    };
 

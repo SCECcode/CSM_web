@@ -252,10 +252,6 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                </form>
              </div>
 
-             <div id="csm-search-btn" class="row">
-               <button id="toSearch" class="btn" style="color:#395057;background-color:#f2f2f2;border:1px solid #ced4da;border-radius:0.2rem;"><span>SEARCH</span></button>
-             </div>
-
              <div id="csm-reset-btn" class="row" style="margin-left:30px;">
                <button id="toReset" type="button" class="btn btn-dark" >Reset</button>
              </div>
@@ -273,7 +269,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
             <div class="input-group-prepend">
                   <label class="input-group-text" for="modelType">Select Model Metric</label>
             </div>
-	    <select id="modelMetric2" class="custom-select custom-select-sm">
+	    <select id="modelMetric" class="custom-select custom-select-sm">
                   <option id="csmmetric_SHmax" value="SHmax">SHmax</option>
                   <option id="csmmetric_Aphi" value="Aphi">Aphi</option>
                   <option id="csmmetric_Iso" value="Iso">Iso</option>
@@ -285,7 +281,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
             <div class="input-group-prepend">
                   <label class="input-group-text" for="modelType">Select Model Depth</label>
             </div>
-	      <select id="modelDepth2" class="custom-select custom-select-sm">
+	      <select id="modelDepth" class="custom-select custom-select-sm">
                   <option id="csmdepth_1" value=1>1 km</option>
                   <option id="csmdepth_3" value=3>3 km</option>
                   <option id="csmdepth_5" value=5>5 km</option>
@@ -305,18 +301,9 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
               </select>
 	 </div> 
 
-<!-- metric list -->
-         <div id="modelMetric" class="mt-2" style="border:solid 1px blue">
-           <div id="modelMetric-options" class="radio-group"> </div>
-         </div>
-<!-- model depth list -->
-         <div id="modelDepth" class="mt-2" style="border:solid 1px green">
-           <div id="modelDepth-options" class="radio-group"> </div>
-         </div>
-
 <!-- search-option -->
-         <div id="search-option" class="mt-2"style="border:solid 0px green" >
-            <ul id="option" class="navigation" style="padding: 0 0 0 0;">
+         <div id="search-option" class="col-10 mt-4"style="border:solid 1px green" >
+            <ul id="option" class="navigation mt-2" style="padding: 0 0 0 0;">
               <li id='csm-model' class='navigationLi' style="display:none;border:solid 0px red">
                 <div class="col-10">
                   <div id="pixi-segment"></div>
@@ -364,9 +351,6 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
 
 <!-- result parking location -->
          <div id="parkingLot" style="display:none">
-<!--  metric range for model/depth/metric combo  -->
-            <input type="text" id="parkingMaxMetricVal" value='' onchange="reset_maxMetric()">
-            <input type="text" id="parkingMinMetricVal" value='' onchange="reset_minMetric()">
             <div id="phpResponseTxt"></div>
          </div>
 
