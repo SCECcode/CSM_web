@@ -182,10 +182,15 @@ window.console.log("calling reset");
 // reset just the search only
     this.resetSearch = function (){
 window.console.log("calling --->> resetSearch.");
-	pixiClearAllPixiOverlay();
 
-        this.resetModel();
+        pixiClearAllPixiOverlay();
+        this.setupPixiSegment(0,{});
+	this.unselectAllRegion();
+
         this.resetLatlon();
+
+        $("#searchType_0").click(); // start with model option
+        this.resetModel();
     };
 
     this.clearSearch = function (){
@@ -291,6 +296,8 @@ window.console.log("in freshSearch --latlon");
           } else {
             pixiuid = this.search(this.searchType.model, spec, spec_idx);
         }
+        // go to original zoom/map
+        viewermap.setView(this.defaultMapView.coordinates, this.defaultMapView.zoom);
 
 // then call latlon search..
         this.searchLatlon(0, []);
@@ -723,10 +730,7 @@ window.console.log("generateMetadataTable..");
 
         this.resetModel = function () {
           if( this.searchingType != this.searchType.model) return;
-          pixiClearAllPixiOverlay();
-          this.setupPixiSegment(0,{});
 	  this.resetModelType();
-          $("#csm-model").hide();
         }
 
         this.clearLatlon = function () {
@@ -736,8 +740,6 @@ window.console.log("generateMetadataTable..");
           $("#csm-secondLatTxt").val("");
           $("#csm-secondLonTxt").val("");
           skipRectangle();
-	  this.unselectAllRegion();
-          //$("#csm-latlon").hide();
         }
 
         this.resetLatlon = function () {
