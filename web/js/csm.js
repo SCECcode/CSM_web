@@ -122,25 +122,6 @@ v3azi:'V3azi',
     };
 
 /********** search/layer  functions *********************/
-    function _enableModelSelect() {
-      let selectModel = document.querySelector("#modelType");
-      let selectMetric = document.querySelector("#modelMetric");
-      let selectDepth = document.querySelector("#modelDepth");
-      selectModel.disabled = true;
-      selectMetric.disabled = true;
-      selectDepth.disabled = true;
-window.console.log("in enableModelSelect..");
-    };
-    function _disableModelSelect() {
-      let selectModel = document.querySelector("#modelType");
-      let selectMetric = document.querySelector("#modelMetric");
-      let selectDepth = document.querySelector("#modelDepth");
-      selectModel.disabled = false;
-      selectMetric.disabled = false;
-      selectDepth.disabled = false;
-window.console.log("in disableModelSelect..");
-    };
-
     this.showSearch = function (type) {
 
         this.searchingType = type;
@@ -148,14 +129,12 @@ window.console.log("in disableModelSelect..");
             case this.searchType.model:
                $("#csm-model").show();
                $("#csm-latlon").hide();
-               _enableModelSelect();
                skipRectangle();
                break;
             case this.searchType.latlon:
         // enable latlon 
                $("#csm-model").hide();
                $("#csm-latlon").show();
-               _disableModelSelect();
                drawRectangle();
                break;
             default:
@@ -297,6 +276,23 @@ window.console.log("in freshSearch --model");
 
       if(this.searchingType == this.searchType.latlon) {
 window.console.log("in freshSearch --latlon");
+
+// in freshSearch/latlon, might need to clear the map");
+        pixiClearAllPixiOverlay();
+        CSM.setupPixiSegment(0,{});
+
+        var pixiuid= CSM.lookupModelLayers(
+                       spec_idx[0], spec_idx[1], spec_idx[2]);
+
+        if(pixiuid != null) { // reuse and add to viewer map 
+          pixiTogglePixiOverlay(pixiuid);
+          let seginfo=pixiFindSegmentProperties(pixiuid);
+          CSM.setupPixiSegment(pixiuid,seginfo);
+          } else {
+            pixiuid = this.search(this.searchType.model, spec, spec_idx);
+        }
+
+// then call latlon search..
         this.searchLatlon(0, []);
       }
     };
