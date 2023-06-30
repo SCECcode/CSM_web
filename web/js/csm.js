@@ -122,6 +122,25 @@ v3azi:'V3azi',
     };
 
 /********** search/layer  functions *********************/
+    function _enableModelSelect() {
+      let selectModel = document.querySelector("#modelType");
+      let selectMetric = document.querySelector("#modelMetric");
+      let selectDepth = document.querySelector("#modelDepth");
+      selectModel.disabled = true;
+      selectMetric.disabled = true;
+      selectDepth.disabled = true;
+window.console.log("in enableModelSelect..");
+    };
+    function _disableModelSelect() {
+      let selectModel = document.querySelector("#modelType");
+      let selectMetric = document.querySelector("#modelMetric");
+      let selectDepth = document.querySelector("#modelDepth");
+      selectModel.disabled = false;
+      selectMetric.disabled = false;
+      selectDepth.disabled = false;
+window.console.log("in disableModelSelect..");
+    };
+
     this.showSearch = function (type) {
 
         this.searchingType = type;
@@ -129,12 +148,14 @@ v3azi:'V3azi',
             case this.searchType.model:
                $("#csm-model").show();
                $("#csm-latlon").hide();
+               _enableModelSelect();
                skipRectangle();
                break;
             case this.searchType.latlon:
         // enable latlon 
                $("#csm-model").hide();
                $("#csm-latlon").show();
+               _disableModelSelect();
                drawRectangle();
                break;
             default:
@@ -198,7 +219,6 @@ window.console.log("calling --->> clearSearch.");
 
 // HOW TO DEFINE spec
     this.getSpec = function() {
-window.console.log("HERE..");
       let tidx=parseInt($("#modelType").val());
       let model=this.csm_models[tidx];
       let tmodel=model['table_name'];
@@ -362,6 +382,8 @@ window.console.log("calling togglePixiSegment.. with ",n,"on pixiuid ",pixiuid);
             let vallist;
             if(search_result === "[]") {
 window.console.log("Did not find any PHP result");
+                alert(" No data in the marked area!! ");
+// no result in the marked area..
                 CSM.removeWaitSpin();
             } else {
                 if(type==CSM.searchType.model) { 
@@ -851,7 +873,6 @@ window.console.log("generateMetadataTable..");
       let elt=document.getElementById(first);
       let val=elt.value;
       let select=document.querySelector("#modelMetric");
-window.console.log("HERE");
       select.value=val;
     };
 
