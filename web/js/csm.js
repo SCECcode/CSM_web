@@ -197,24 +197,44 @@ window.console.log("calling --->> clearSearch.");
     };
 
 // HOW TO DEFINE spec
-
     this.getSpec = function() {
+window.console.log("HERE..");
       let tidx=parseInt($("#modelType").val());
       let model=this.csm_models[tidx];
       let tmodel=model['table_name'];
-      window.console.log("name is ", model['table_name']);
+window.console.log("name is ", model['table_name']);
 
       let didx=this.current_modelDepth_idx;
       let d=model['jblob']['meta'];
       let dd=d['dataByDEP'];
+
+      let tdepth=parseInt($("#modelDepth2").val());
+      let didx2=0;
+      for(let i=0; i<dd.length; i++) {
+         let t=dd[i];
+         if(t["dep"] == tdepth) {
+           didx2=i; 
+           break;
+         }
+      }
       let ddd=dd[didx];
       let ddepth=ddd["dep"];
-      window.console.log("modelDepth_idx is "+didx+"("+ddepth+"km)");
+window.console.log("modelDepth_idx is "+didx+"("+ddepth+"km)");
 
       let midx=this.current_modelMetric_idx;
       let m=model['jblob']['metric'];
+
+      let tmetric=$("#modelMetric2").val();
+      let mdix2=0;
+      for(let i=0; i<m.length; i++) {
+        if(m[i] == tmetric) {
+          midx2=i;
+          break;
+        }
+      }
+
       let mmetric=m[midx];
-      window.console.log("modelMetric_idx is "+midx+"("+mmetric+")");
+window.console.log("modelMetric_idx is "+midx+"("+mmetric+")");
 
       let spec = [ tmodel, ddepth, mmetric ];
       let spec_idx = [ tidx,midx,didx ];
@@ -605,7 +625,6 @@ window.console.log("unhighlight box ",gid);
       let len=this.csm_downloads.length;
       for(let i=0; i< len; i++) {
         let tmp=this.csm_downloads[i].scec_properties;
-window.console.log("HERE...???");
         this.removeFromMetadataTable(tmp.gid);
         remove_bounding_rectangle_layer(tmp.gid);
       }
@@ -751,14 +770,17 @@ window.console.log("generateMetadataTable..");
                 option.value= term.idx;
                 elt.add(option);
             }
+
 /* create the default model depth list to 1st one for model */
             this.setupModelDepth(this.csm_models,0);
             this.setupModelMetric(this.csm_models,0);
-            this.setupModelMetric2(this.csm_models,3);
-            this.setupModelDepth2(this.csm_models,3);
+
+            this.setupModelMetric2(this.csm_models,0);
+            this.setupModelDepth2(this.csm_models,0);
+
             this.setupModelLayers(this.csm_models);
 
-            $("#searchType_0").click();
+//            $("#searchType_0").click();
             this.model_initialized=true;
     };
      
@@ -827,7 +849,7 @@ window.console.log("generateMetadataTable..");
          let label=dlist[i];
          let h=_metricoption(label,i);
          html=html+h;
-         if( (i+1) % 6 === 0 ) {
+         if( (i+1) % 5 === 0 ) {
             html=html+"<br>";
          }
       }
@@ -848,35 +870,57 @@ window.console.log("generateMetadataTable..");
 // option disabled all.
     this.setupModelMetric2 = function (mlist,model_idx) {
       //preset all option to disable	     
-      $("select option[name='csmmetric']").attr('disabled', true);
+      $("select[id='modelMetric2'] option").attr('disabled', true);
 
       let dlist=mlist[model_idx]['jblob']['metric'];
       let sz=dlist.length;
       for(let i=0;i<sz;i++) {
-         let n='metric_'+dlist[i];
+         let n='csmmetric_'+dlist[i];
          $("select option[id='"+n+"']").attr('disabled', false);
       }
+      let first='csmmetric_'+dlist[0];
+      let elt=document.getElementById(first);
+      let val=elt.value;
+      let select=document.querySelector("#modelMetric2");
+      select.value=val;
     };
 
     // set to first metric
-    this.resetModelMetric2 = function () {
+    this.resetModelMetric2 = function (mlist,model_idx) {
+      let dlist=mlist[model_idx]['jblob']['metric'];
+      let first='csmmetric_'+dlist[0];
+      let elt=document.getElementById(first);
+      let val=elt.value;
+      let select=document.querySelector("#modelMetric2");
+      select.value=val;
     };
 
 // option disabled all.
     this.setupModelDepth2 = function (mlist,model_idx) {
       //preset all option to disable
-      $("select option[name='csmdepth']").attr('disabled', true);
+      $("select[id='modelDepth2'] option").attr('disabled', true);
 
       let dlist=mlist[model_idx]['jblob']['depth'];
       let sz=dlist.length;
       for(let i=0;i<sz;i++) {
-         let n='depth_'+dlist[i];
+         let n='csmdepth_'+dlist[i];
          $("select option[id='"+n+"']").attr('disabled', false);
       }
+      let first='csmdepth_'+dlist[0];
+      let elt=document.getElementById(first);
+      let val=elt.value;
+      let select=document.querySelector("#modelDepth2");
+      select.value=val;
     };
 
     // set to first metric
-    this.resetModelDepth2 = function () {
+    this.resetModelDepth2 = function (mlist,model_idx) {
+      let dlist=mlist[model_idx]['jblob']['depth'];
+      let first='csmdepth_'+dlist[0];
+      let elt=document.getElementById(first);
+      let val=elt.value;
+      let select=document.querySelector("#modelDepth2");
+      select.value=val;
     };
 
 
@@ -891,7 +935,7 @@ window.console.log("generateMetadataTable..");
          let label=term['dep'];
          let h=_depthoption(label,i);
          html=html+h;
-         if( (i+1) % 6 === 0 ) {
+         if( (i+1) % 5 === 0 ) {
             html=html+"<br>";
          }            
        }

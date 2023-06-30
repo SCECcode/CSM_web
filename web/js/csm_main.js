@@ -33,17 +33,32 @@ jQuery(document).ready(function() {
       CSM.setupModelMetric(CSM.csm_models,0);
 	  
       CSM.setupModelMetric2(CSM.csm_models,model_type);
+      CSM.setupModelDepth2(CSM.csm_models,model_type);
 
       CSM.clearSearch();
   });
 
-  $('#modelMetric2').on("change", function() {
-      let model_metric=$(this).val();
+  $('#modelDepth2').on("change", function() {
+      let model_depth=$(this).val();
+      CSM.changeModelDepth(model_depth);
+window.console.log("changing modelDepth2");
+/*
       window.console.log("Switching to different metric..",model_metric);
- 
       CSM.setupModelDepth(CSM.csm_models,model_type);
       CSM.setupModelMetric(CSM.csm_models,0);
       CSM.clearSearch();
+*/
+  });
+  $('#modelMetric2').on("change", function() {
+      let model_metric=$(this).val();
+      CSM.changeModelMetric(model_metric);
+window.console.log("changing modelMetric2");
+/*
+      window.console.log("Switching to different metric..",model_metric);
+      CSM.setupModelDepth(CSM.csm_models,model_type);
+      CSM.setupModelMetric(CSM.csm_models,0);
+      CSM.clearSearch();
+*/
   });
 
 
