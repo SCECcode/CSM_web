@@ -67,7 +67,7 @@ for f in file_list:
     csv_reader = csv.reader(f)
     for line_no, line in enumerate(csv_reader, 1):
         if line_no != 1:
-            DEP = float(line[2])
+            DEP = math.floor(float(line[2]))
 
             if(line[9] != "") : ## set if not empty
               SHmax = float(line[9])
@@ -142,7 +142,7 @@ for f in file_list:
             if(found == 0) :
               nitem={ 'dep': DEP, 'shmax_min': SHmax, 'shmax_max': SHmax, 'aphi_min': Aphi, 'aphi_max': Aphi, 'iso_min': Iso, 'iso_max': Iso, 'dif_min': Dif, 'dif_max': Dif, 'cnt': 1 }
               DEP_range.append(nitem)
-              Overall_Deps.append(math.floor(DEP))
+              Overall_Deps.append(DEP)
 
 ## SHmax
             if(Overall_SHmax_min == None):
@@ -264,8 +264,8 @@ for f in file_list:
   jblob['meta']['dataByDEP']=DEP_range
   jblob['metric'] = Overall_Metrics
   jblob['depth'] = Overall_Deps
-#  jstr=json.dumps(jblob, indent=2)
-  jstr=json.dumps(jblob)
+  jstr=json.dumps(jblob, indent=2)
+#  jstr=json.dumps(jblob)
   f.write(jstr)
   f.close()
 

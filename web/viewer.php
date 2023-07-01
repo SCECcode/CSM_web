@@ -382,20 +382,24 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
              </div>
 
 <!-- legend 
-<div id="segment-legend" class="legend geometry top right">
+  <div class="legend geometry top center hide">
     <div class="wrapper">
-      <div id="segment-legend-content" class="content"></div>
+      <div class="content"></div>
     </div>
-</div> 
-<div class="main-legend" style="bottom: 125px;">
+  </div>
+  <div class="main-legend hide" style="bottom: 125px;">
     <ul>
-      <li><span class="color" style="background-color: #b61d1d;"></span>ABC</li>
-      <li><span class="color" style="background-color: #f7704a;"></span>XYZ</li>
-      <li><span class="color" style="background-color: #dc2a1b;"></span>123</li>
-      <li><span class="color" style="background-color: #f19ec7;"></span>789</li>
+      <li><span class="color" style="background-color: #b61d1d;"></span>Mme Nathalie ARTHAUD</li>
+      <li><span class="color" style="background-color: #f7704a;"></span>M. Philippe POUTOU</li>
+      <li><span class="color" style="background-color: #dc2a1b;"></span>M. Jean-Luc MÉLENCHON</li>
+      <li><span class="color" style="background-color: #f19ec7;"></span>M. Benoît HAMON</li>
+      <li><span class="color" style="background-color: #fed002;"></span>M. Emmanuel MACRON</li>
+      <li><span class="color" style="background-color: #cfe9f7;"></span>M. Jean LASSALLE</li>
+      <li><span class="color" style="background-color: #78bce0;"></span>M. François FILLON</li>
+      <li><span class="color" style="background-color: #0089c4;"></span>M. Nicolas DUPONT-AIGNAN</li>
+      <li><span class="color" style="background-color: #224466;"></span>M. François ASSELINEAU</li>
     </ul>
-</div>
--->
+  </div>
           </div>
        </div>
 

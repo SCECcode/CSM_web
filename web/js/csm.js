@@ -859,7 +859,12 @@ window.console.log("generateMetadataTable..");
     };
 
     // set to first metric
-    this.resetModelMetric2 = function () {
+    this.resetModelMetric2 = function (mlist, model_idx) {
+      // go to first enabled option
+      let dlist=mlist[model_idx]['jblob']['metric'];
+      let n='metric_'+dlist[0];
+// XXX???
+      $(#n").click();
     };
 
 // option disabled all.

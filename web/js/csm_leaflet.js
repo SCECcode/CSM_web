@@ -141,6 +141,13 @@ function setup_viewer()
   var basemap = L.layerGroup();
   currentLayer = esri_topographic;
 
+// ==> legend <==
+
+  L.control.legend = function(opts) { return new L.Control.Legend(opts); }
+  L.control.legend({ position: 'bottomright' }).addTo(map);
+  var legend = document.querySelector('div.legend.geometry');
+  var legendContent = legend.querySelector('.content');
+
 // ==> mymap <==
   mymap = L.map('CSM_plot', { drawControl:false, layers: [esri_topographic, basemap], zoomControl:true} );
   mymap.setView(init_map_coordinates, init_map_zoom_level);
