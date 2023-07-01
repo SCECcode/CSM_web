@@ -252,10 +252,6 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                </form>
              </div>
 
-             <div id="csm-search-btn" class="row">
-               <button id="toSearch" class="btn" style="color:#395057;background-color:#f2f2f2;border:1px solid #ced4da;border-radius:0.2rem;"><span>SEARCH</span></button>
-             </div>
-
              <div id="csm-reset-btn" class="row" style="margin-left:30px;">
                <button id="toReset" type="button" class="btn btn-dark" >Reset</button>
              </div>
@@ -273,11 +269,11 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
             <div class="input-group-prepend">
                   <label class="input-group-text" for="modelType">Select Model Metric</label>
             </div>
-	    <select id="modelMetric2" class="custom-select custom-select-sm">
-                  <option name="csmmetric" id="metric_SHmax" value="0">SHmax</option>
-                  <option name="csmmetric" id="metric_Aphi" value="1">Aphi</option>
-                  <option name="csmmetric" id="metric_Iso" value="2">Iso</option>
-                  <option name="csmmetric" id="metric_Dif" value="3">Dif</option>
+	    <select id="modelMetric" class="custom-select custom-select-sm">
+                  <option id="csmmetric_SHmax" value="SHmax">SHmax</option>
+                  <option id="csmmetric_Aphi" value="Aphi">Aphi</option>
+                  <option id="csmmetric_Iso" value="Iso">Iso</option>
+                  <option id="csmmetric_Dif" value="Dif">Dif</option>
             </select>
 	 </div> 
 
@@ -285,38 +281,29 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
             <div class="input-group-prepend">
                   <label class="input-group-text" for="modelType">Select Model Depth</label>
             </div>
-	    <select id="modelDepth2" class="custom-select custom-select-sm">
-                  <option name="csmdepth" id="depth_1" value="0">1 km</option>
-                  <option name="csmdepth" id="depth_3" value="1">3 km</option>
-                  <option name="csmdepth" id="depth_5" value="2">5 km</option>
-                  <option name="csmdepth" id="depth_7" value="3">7 km</option>
-                  <option name="csmdepth" id="depth_9" value="4">9 km</option>
-                  <option name="csmdepth" id="depth_11" value="5">11 km</option>
-                  <option name="csmdepth" id="depth_13" value="6">13 km</option>
-                  <option name="csmdepth" id="depth_15" value="7">15 km</option>
-                  <option name="csmdepth" id="depth_17" value="8">17 km</option>
-                  <option name="csmdepth" id="depth_19" value="9">19 km</option>
-                  <option name="csmdepth" id="depth_21" value="10">21 km</option>
-                  <option name="csmdepth" id="depth_23" value="11">23 km</option>
-                  <option name="csmdepth" id="depth_25" value="12">25 km</option>
-                  <option name="csmdepth" id="depth_50" value="13">50 km</option>
-                  <option name="csmdepth" id="depth_75" value="14">75 km</option>
-                  <option name="csmdepth" id="depth_100" value="15">100 km</option>
-            </select>
+	      <select id="modelDepth" class="custom-select custom-select-sm">
+                  <option id="csmdepth_1" value=1>1 km</option>
+                  <option id="csmdepth_3" value=3>3 km</option>
+                  <option id="csmdepth_5" value=5>5 km</option>
+                  <option id="csmdepth_7" value=7>7 km</option>
+                  <option id="csmdepth_9" value=9>9 km</option>
+                  <option id="csmdepth_11" value=11>11 km</option>
+                  <option id="csmdepth_13" value=13>13 km</option>
+                  <option id="csmdepth_15" value=15>15 km</option>
+                  <option id="csmdepth_17" value=17>17 km</option>
+                  <option id="csmdepth_19" value=19>19 km</option>
+                  <option id="csmdepth_21" value=21>21 km</option>
+                  <option id="csmdepth_23" value=23>23 km</option>
+                  <option id="csmdepth_25" value=25>25 km</option>
+                  <option id="csmdepth_50" value=50>50 km</option>
+                  <option id="csdmepth_75" value=75>75 km</option>
+                  <option id="csmdepth_100" value=100>100 km</option>
+              </select>
 	 </div> 
 
-<!-- metric list -->
-         <div id="modelMetric" class="mt-2" style="border:solid 1px blue">
-           <div id="modelMetric-options" class="radio-group"> </div>
-         </div>
-<!-- model depth list -->
-         <div id="modelDepth" class="mt-2" style="border:solid 1px green">
-           <div id="modelDepth-options" class="radio-group"> </div>
-         </div>
-
 <!-- search-option -->
-         <div id="search-option" class="mt-2"style="border:solid 0px green" >
-            <ul id="option" class="navigation" style="padding: 0 0 0 0;">
+         <div id="search-option" class="col-10 mt-4"style="border:solid 1px green" >
+            <ul id="option" class="navigation mt-2" style="padding: 0 0 0 0;">
               <li id='csm-model' class='navigationLi' style="display:none;border:solid 0px red">
                 <div class="col-10">
                   <div id="pixi-segment"></div>
@@ -364,9 +351,6 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
 
 <!-- result parking location -->
          <div id="parkingLot" style="display:none">
-<!--  metric range for model/depth/metric combo  -->
-            <input type="text" id="parkingMaxMetricVal" value='' onchange="reset_maxMetric()">
-            <input type="text" id="parkingMinMetricVal" value='' onchange="reset_minMetric()">
             <div id="phpResponseTxt"></div>
          </div>
 

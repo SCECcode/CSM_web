@@ -539,7 +539,7 @@ window.console.log("PIXI: add event");
 
         let scaleFactor=16; // default came from seismicity
         if(spec.scale_hint == 2 ) { // when grid points are about 2km len is 70k
-          scaleFactor=7.2;
+          scaleFactor=7.1;
         }
         if(spec.scale_hint == 5) {  // when grid points are about 5km
           scaleFactor=3; 
