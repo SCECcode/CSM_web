@@ -29,17 +29,9 @@ jQuery(document).ready(function() {
 
   $('#modelType').on("change", function() {
       let model_type=$(this).val();
-	  
-<<<<<<< HEAD
-      CSM.setupModelMetric2(CSM.csm_models,model_type);
-      CSM.setupModelDepth2(CSM.csm_models,model_type);
-
-      CSM.clearSearch();
-=======
       CSM.setupModelMetric(CSM.csm_models,model_type);
       CSM.setupModelDepth(CSM.csm_models,model_type);
       CSM.freshSearch();
->>>>>>> f2cf35843a20f3322a73da70732ce64336a80822
   });
 
   $('#modelDepth').on("change", function() {
