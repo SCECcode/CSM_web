@@ -373,7 +373,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
       <div class="content"></div>
     </div>
   </div>
-  <div class="main-legend" style="bottom: 125px;">
+  <div class="main-legend hide" style="bottom: 125px;">
     <ul>
       <li><span class="color" style="background-color: #b61d1d;"></span>color1</li>
       <li><span class="color" style="background-color: #f7704a;"></span>color2</li>
@@ -384,17 +384,6 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
       <li><span class="color" style="background-color: #78bce0;"></span>color7</li>
       <li><span class="color" style="background-color: #0089c4;"></span>color8</li>
       <li><span class="color" style="background-color: #0089c4;"></span>color9</li>
-      <li><span class="color" style="background-color: #224466;"></span>color10</li>
-      <li><span class="color" style="background-color: #b61d1d;"></span>color11</li>
-      <li><span class="color" style="background-color: #f7704a;"></span>color12</li>
-      <li><span class="color" style="background-color: #dc2a1b;"></span>color13</li>
-      <li><span class="color" style="background-color: #f19ec7;"></span>color14</li>
-      <li><span class="color" style="background-color: #fed002;"></span>color15</li>
-      <li><span class="color" style="background-color: #cfe9f7;"></span>color16</li>
-      <li><span class="color" style="background-color: #78bce0;"></span>color17</li>
-      <li><span class="color" style="background-color: #0089c4;"></span>color18</li>
-      <li><span class="color" style="background-color: #0089c4;"></span>color19</li>
-      <li><span class="color" style="background-color: #224466;"></span>color20</li>
     </ul>
   </div> <!-- legend -->
           </div>
