@@ -47,7 +47,7 @@ var rectangle_options = {
 var rectangleDrawer;
 var mymap, baseLayers, layerControl, currentLayer;
 var seismicityLegend;
-var modelLegend;
+var mainLegend;
 
 // track all rectangles, never remove
 // valid: 1 is visible, 0 is not(already got removed)
@@ -143,56 +143,39 @@ function setup_viewer()
   currentLayer = esri_topographic;
 
 // ==> legend <==
-
-				L.Control.Legend = L.Control.extend({
-				onAdd: function(map) {
-					var button = L.DomUtil.create('div');
-					L.DomUtil.addClass(button, 'leaflet-bar leaflet-legend');
-					var anchor = L.DomUtil.create('a');
-					anchor.setAttribute('href', '#');
-					anchor.setAttribute('title', 'Légende');
-					anchor.setAttribute('role', 'button');
-					anchor.setAttribute('aria-label', 'Légende');
-					button.appendChild(anchor);
-					L.DomEvent.on(button, 'dblclick', function(e) {
-						L.DomEvent.stopPropagation(e);
-					});
-					L.DomEvent.on(button, 'click', function(e) {
-						L.DomEvent.stopPropagation(e);
-						L.DomEvent.preventDefault(e);
-						if (L.DomUtil.hasClass(mainLegend, 'hide')) {
-							L.DomUtil.removeClass(mainLegend, 'hide');
-						} else L.DomUtil.addClass(mainLegend, 'hide');
-					});
-					return button;
-			},
-				onRemove: function(map) {}
-			});
-
-			L.control.legend = function(opts) {
-				return new L.Control.Legend(opts);
-			}
-
-			L.control.legend({ position: 'bottomright' }).addTo(map);
-
-
-window.console.log("HERE");
-
-
   L.Control.Legend = L.Control.extend({
-    onAdd: function(map) { },
-
-    onRemove: function(map) {
-        // Nothing to do here
-    }
+    onAdd: function(map) {
+           var button = L.DomUtil.create('div');
+           L.DomUtil.addClass(button, 'leaflet-bar leaflet-legend');
+           var anchor = L.DomUtil.create('a');
+           anchor.setAttribute('href', '#');
+           anchor.setAttribute('title', 'Stress Model');
+           anchor.setAttribute('role', 'button');
+           anchor.setAttribute('aria-label', 'Stress Model');
+           button.appendChild(anchor);
+           L.DomEvent.on(button, 'dblclick', function(e) { 
+             L.DomEvent.stopPropagation(e); });
+           L.DomEvent.on(button, 'click', function(e) {
+             L.DomEvent.stopPropagation(e);
+             L.DomEvent.preventDefault(e);
+             if (L.DomUtil.hasClass(mainLegend, 'hide')) {
+               L.DomUtil.removeClass(mainLegend, 'hide');
+               } else {
+                L.DomUtil.addClass(mainLegend, 'hide');
+             }
+           });
+           return button;
+    },
+    onRemove: function(map) {}
   });
 
-
-  L.control.legend = function(opts) { 
+  L.control.legend = function(opts) {
     return new L.Control.Legend(opts);
   }
 
   L.control.legend({ position: 'bottomright' }).addTo(map);
+
+window.console.log("HERE");
 
   var legend = document.querySelector('div.legend.geometry');
   var legendContent = legend.querySelector('.content');
