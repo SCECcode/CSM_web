@@ -47,6 +47,7 @@ var rectangle_options = {
 var rectangleDrawer;
 var mymap, baseLayers, layerControl, currentLayer;
 var seismicityLegend;
+var modelLegend;
 
 // track all rectangles, never remove
 // valid: 1 is visible, 0 is not(already got removed)
