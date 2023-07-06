@@ -373,7 +373,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
       <div class="content"></div>
     </div>
   </div>
-  <div class="main-legend hide" style="bottom: 125px;">
+  <div class="main-legend" style="bottom: 125px;">
     <ul>
       <li><span class="color" style="background-color: #b61d1d;"></span>color1</li>
       <li><span class="color" style="background-color: #f7704a;"></span>color2</li>

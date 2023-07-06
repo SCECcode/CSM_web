@@ -142,43 +142,6 @@ function setup_viewer()
   var basemap = L.layerGroup();
   currentLayer = esri_topographic;
 
-// ==> legend <==
-  L.Control.Legend = L.Control.extend({
-    onAdd: function(map) {
-           var button = L.DomUtil.create('div');
-           L.DomUtil.addClass(button, 'leaflet-bar leaflet-legend');
-           var anchor = L.DomUtil.create('a');
-           anchor.setAttribute('href', '#');
-           anchor.setAttribute('title', 'Stress Model');
-           anchor.setAttribute('role', 'button');
-           anchor.setAttribute('aria-label', 'Stress Model');
-           button.appendChild(anchor);
-           L.DomEvent.on(button, 'dblclick', function(e) { 
-             L.DomEvent.stopPropagation(e); });
-           L.DomEvent.on(button, 'click', function(e) {
-             L.DomEvent.stopPropagation(e);
-             L.DomEvent.preventDefault(e);
-             if (L.DomUtil.hasClass(mainLegend, 'hide')) {
-               L.DomUtil.removeClass(mainLegend, 'hide');
-               } else {
-                L.DomUtil.addClass(mainLegend, 'hide');
-             }
-           });
-           return button;
-    },
-    onRemove: function(map) {}
-  });
-
-  L.control.legend = function(opts) {
-    return new L.Control.Legend(opts);
-  }
-
-  L.control.legend({ position: 'bottomright' }).addTo(map);
-
-window.console.log("HERE");
-
-  var legend = document.querySelector('div.legend.geometry');
-  var legendContent = legend.querySelector('.content');
 
 // ==> mymap <==
   mymap = L.map('CSM_plot', { drawControl:false, layers: [esri_topographic, basemap], zoomControl:true} );
@@ -209,6 +172,41 @@ window.console.log("HERE");
 // ==> scalebar <==
   L.control.scale({metric: 'false', imperial:'false', position: 'bottomleft'}).addTo(mymap);
 
+// ==> model legend <==
+// when change the background model view, need to update the main legend
+  var mainLegendClass = document.querySelector('.main-legend');
+  L.Control.Legend = L.Control.extend({
+    onAdd: function(map) {
+           var button = L.DomUtil.create('div');
+           L.DomUtil.addClass(button, 'leaflet-bar leaflet-legend');
+           var anchor = L.DomUtil.create('a');
+           anchor.setAttribute('href', '#');
+           anchor.setAttribute('title', 'Stress Model');
+           anchor.setAttribute('role', 'button');
+           anchor.setAttribute('aria-label', 'Stress Model');
+           button.appendChild(anchor);
+           L.DomEvent.on(button, 'dblclick', function(e) {
+             L.DomEvent.stopPropagation(e); });
+           L.DomEvent.on(button, 'click', function(e) {
+             L.DomEvent.stopPropagation(e);
+             L.DomEvent.preventDefault(e);
+             window.console.log("HERE..");
+             if (L.DomUtil.hasClass(mainLegendClass, 'hide')) {
+               L.DomUtil.removeClass(mainLegendClass, 'hide');
+               } else {
+                L.DomUtil.addClass(mainLegendClass, 'hide');
+             }
+           });
+           return button;
+    },
+    onRemove: function(map) {}
+  });
+  L.control.legend = function(opts) { return new L.Control.Legend(opts); }
+  L.control.legend({ position: 'bottomleft' }).addTo(mymap);
+
+  var mainLegend = document.querySelector('div.legend.geometry');
+  var mainLegendContent = mainLegend.querySelector('.content');
+
 //==> seismicity legend <==
   seismicityLegend=L.control( {position:'bottomleft'});
 
@@ -225,7 +223,6 @@ window.console.log("HERE");
      }
      this._div.innerHTML='<img src="./img/'+param+'" style="width:200px; margin-left:-5px;" >';
   }
-
   seismicityLegend.addTo(mymap);
   //seismicityLegend.update({}, "cfm-viewer.png");
   //to remove,
