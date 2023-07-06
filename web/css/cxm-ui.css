@@ -1,4 +1,8 @@
 /* csm */
+div.main-legend .hide {
+        display:none !important;
+}
+
 div.main-legend {
         z-index: 100009;
         position: absolute;
