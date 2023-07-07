@@ -68,7 +68,7 @@ $csm = new CSM();
     <script type='text/javascript' src="js/vendor/plugin/Leaflet.draw/edit/handler/Edit.Circle.js"></script>
 
 <!-- csm js -->
-    <script type="text/javascript" src="js/debug.js?v=1"></script>
+    <script type="text/javascript" src="js/csm_model.js?v=1"></script>
     <script type="text/javascript" src="js/csm_main.js?v=1"></script>
     <script type="text/javascript" src="js/csm.js?v=1"></script>
     <script type="text/javascript" src="js/csm_leaflet.js?v=1"></script>
@@ -298,7 +298,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                   <option id="csmdepth_23" value=23>23 km</option>
                   <option id="csmdepth_25" value=25>25 km</option>
                   <option id="csmdepth_50" value=50>50 km</option>
-                  <option id="csdmepth_75" value=75>75 km</option>
+                  <option id="csmdepth_75" value=75>75 km</option>
                   <option id="csmdepth_100" value=100>100 km</option>
               </select>
 	 </div> 

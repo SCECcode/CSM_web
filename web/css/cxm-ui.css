@@ -8,7 +8,7 @@ div.main-legend {
         position: absolute;
         left: 10px;
         background: #fff;
-        background: rgba(255,255,255,0.5);
+        background: rgba(255,255,255,0.2);
         border-radius: 2px;
         font-size: 1px;
         margin-right: 10px;
@@ -869,7 +869,10 @@ table tr td label {
 }
 
 .input-group {
-    max-width: 269px;
+    max-width: 380px;
+}
+.input-group-text {
+    min-width: 130px;
 }
 
 .info-page-container {

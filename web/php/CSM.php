@@ -53,10 +53,6 @@ class CSM extends SpatialData
     
     $result = pg_query($this->connection, $query);
 
-//        $query = "SELECT gid FROM XXX_tb WHERE ST_Contains(ST_MakeEnvelope( $1, $2, $3, $4, 4326), XXX_tb.geom)";
-//        $data = array($minlon, $minlat, $maxlon, $maxlat);
-//        $result = pg_query_params($this->connection, $query, $data);
-
     $csm_result = array();
 
     while($row = pg_fetch_object($result)) {

@@ -19,6 +19,9 @@ var CSM = new function () {
     //     "metric" : [ "shmas","aphi" ],
     //     "depths" : [ 1, 3, 5 ],
     //     "header" : "..." }
+    // NEED to postprocess
+    //           ##  Aphi ranges from 0 to 3
+    //           ##  SHmax ranges from -90 to 90
     this.csm_models = [];
 
     //  track pixi gid for for each model metric for each depth, 
@@ -103,22 +106,54 @@ v3azi:'V3azi',
 
 // csm_meta_data is from viewer.php, which is the JSON 
 // result from calling php getAllMetaData script
+// hee hee.. use the reordering from CSM_tb 
+//
     this.processModelMeta = function () {
-        for (const index in csm_meta_data) {
-          if (csm_meta_data.hasOwnProperty(index)) {
-          let tmp = csm_meta_data[index];
-                let jblob = JSON.parse(tmp.jblob);
 
-                let term = {
-                    idx: index,
+        let base_models=CSM_tb['models'];
+        let bsz=base_models.length;
+        let blist=[];
+        for(let i=0; i<bsz; i++) {
+          let term=base_models[i];
+          blist.push(term['name']);
+        }
+window.console.log("HERE");
+
+        let tmplist=[];
+        for (const idx in csm_meta_data) {
+          if (csm_meta_data.hasOwnProperty(idx)) {
+
+            let tmp= csm_meta_data[idx];
+            let tnm=tmp.model_name;
+            let nidx=blist.indexOf(tnm);
+            let bterm=base_models[nidx];
+            let blabel=bterm.label;
+            let jblob = JSON.parse(tmp.jblob);
+            let term = {
+                    idx:nidx,
                     gid: tmp.gid,
                     model_name: tmp.model_name,
                     table_name: tmp.table_name,
+                    model_label: bterm.label,
                     jblob: jblob,
-                };
-                this.csm_models.push(term);
-            }
+            };
+           tmplist.push(term);
+          }
         }
+// might need to resort the list 
+        let tsz=tmplist.length;
+        let target=0;
+        while(target < tsz) {
+          for(let i=0; i<tsz; i++) {
+            let term=tmplist[i];
+            if(target == term.idx) {
+              this.csm_models.push(term);
+              target=target+1;
+              break;
+            }
+          }
+        }
+        let slist=this.csm_models;
     };
 
 /********** search/layer  functions *********************/
@@ -782,7 +817,7 @@ window.console.log("generateMetadataTable..");
             var elt=document.getElementById('modelType');
                 let option = document.createElement("option");
                 option.text = term.model_name;
-                option.label = term.model_name;
+                option.label = term.model_label;
                 option.value= term.idx;
                 elt.add(option);
             }
@@ -854,8 +889,7 @@ window.console.log("generateMetadataTable..");
         } else {
           CSM.csm_model_pixi_layers[midx][mmidx][didx]=pixiuid;
       }
-    } 
-
+    };
 // option disabled all.
     this.setupModelMetric = function (mlist,model_idx) {
       //preset all option to disable	     
