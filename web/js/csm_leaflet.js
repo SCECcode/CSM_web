@@ -237,6 +237,10 @@ function setup_viewer()
         var loclist=latlngs[0];
         var sw=loclist[0];
         var ne=loclist[2];
+        if(sw['lat'] == ne['lat'] && sw['lng'] == ne['lng']) {
+// don't add it, it is a point
+          return;
+        }
         add_bounding_rectangle_layer(layer,sw['lat'],sw['lng'],ne['lat'],ne['lng']);
         mymap.addLayer(layer);
 // TODO: CHECK, the rectangle created on the mapview does not seem to 'confirm'

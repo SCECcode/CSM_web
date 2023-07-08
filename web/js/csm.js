@@ -365,7 +365,6 @@ window.console.log("in freshSearch --latlon");
          html=html+ "<input type=\"checkbox\" class='legend-label mr-1' title=\"toggle the region\" id=\"pixiLegend_"+idx+"\" onclick=CSM.togglePixiLegend(\""+pixiuid+"\","+idx+",\"pixiLegend_"+idx+"\") style=\"accent-color:"+color+"\" >";
      }
      html=html+"<label for=\"pixiLegend_"+idx+"\"><span>"+label+"</span></label></li>";
-//     html=html+"<label for=\"pixiLegend_"+idx+"\" onclick=CSM.tickleLegend(\"pixiLegend_"+idx+"\")><span>"+label+"</span></label></li>";
       return html;
     }
 

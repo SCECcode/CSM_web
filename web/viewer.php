@@ -317,7 +317,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                     <div class="col-5">
                           <p>Draw a rectangle on the map or enter latitudes and longitudes.</p>
                     </div>
-                    <div class="col-2 pl-0 pr-0">
+                    <div class="col-3 pl-0 pr-0">
                       <input type="text"
                           placeholder="Latitude"
                           id="csm-firstLatTxt"
@@ -331,7 +331,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                           onfocus="this.value=''" 
                           class="csm-latlon-item form-control mt-1">
                     </div>
-                    <div class="col-2 pl-1 pr-0">
+                    <div class="col-3 pl-3 pr-0">
                       <input type="text"
                           id="csm-secondLatTxt"
                           title="optional second lat"
