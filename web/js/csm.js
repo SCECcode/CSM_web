@@ -7,6 +7,7 @@
 
 var CSM = new function () {
 
+    this.model_debug = 0;
     this.model_initialized = false;
     // 
     // complete set of csm models info from the backend-service,
@@ -61,42 +62,42 @@ var CSM = new function () {
 
 
 var csm_csv_keys= {
-lon:'LON',
-lat:'LAT',
-dep:'DEP',
-see:'See',
-sen:'Sen',
-seu:'Seu',
-snn:'Snn',
-snu:'Snu',
-suu:'Suu',
-shmax:'SHmax',
-shmax_unc:'SHmax_unc',
-phi:'phi',
-r:'R',
-aphi:'Aphi',
-iso:'iso',
-dif:'dif',
-mss:'mss',
-s1:'S1',
-s2:'S2',
-s3:'S3',
-v1x:'V1x',
-v1y:'V1y',
-v1z:'V1z',
-v2x:'V2x',
-v2y:'V2y',
-v2z:'V2z',
-v3x:'V3x',
-v3y:'V3y',
-v3z:'V3z',
-v1pl:'V1pl',
-v2pl:'V2pl',
-v3pl:'V3pl',
-v1azi:'V1azi',
-v2azi:'V2azi',
-v3azi:'V3azi',
-};
+    lon:'LON',
+    lat:'LAT',
+    dep:'DEP',
+    see:'See',
+    sen:'Sen',
+    seu:'Seu',
+    snn:'Snn',
+    snu:'Snu',
+    suu:'Suu',
+    shmax:'SHmax',
+    shmax_unc:'SHmax_unc',
+    phi:'phi',
+    r:'R',
+    aphi:'Aphi',
+    iso:'iso',
+    dif:'dif',
+    mss:'mss',
+    s1:'S1',
+    s2:'S2',
+    s3:'S3',
+    v1x:'V1x',
+    v1y:'V1y',
+    v1z:'V1z',
+    v2x:'V2x',
+    v2y:'V2y',
+    v2z:'V2z',
+    v3x:'V3x',
+    v3y:'V3y',
+    v3z:'V3z',
+    v1pl:'V1pl',
+    v2pl:'V2pl',
+    v3pl:'V3pl',
+    v1azi:'V1azi',
+    v2azi:'V2azi',
+    v3azi:'V3azi',
+    };
 
     var tablePlaceholderRow = `<tr id="placeholder-row">
                         <td colspan="9">Metadata for selected region will appear here.</td>
@@ -117,8 +118,6 @@ v3azi:'V3azi',
           let term=base_models[i];
           blist.push(term['name']);
         }
-window.console.log("HERE");
-
         let tmplist=[];
         for (const idx in csm_meta_data) {
           if (csm_meta_data.hasOwnProperty(idx)) {
@@ -135,6 +134,7 @@ window.console.log("HERE");
                     model_name: tmp.model_name,
                     table_name: tmp.table_name,
                     model_label: bterm.label,
+		    model_stress_type: bterm.stress_type,
                     jblob: jblob,
             };
            tmplist.push(term);
@@ -214,12 +214,25 @@ window.console.log("calling reset");
         return("bad model");
    };             
 
+   // given a dataset's db_tb name, return whether it is a stress rate or stress model
+   this.lookupModelStressType = function(tb_nm) {
+        let sz=this.csm_models.length;
+        for( let i=0; i<sz; i++) {
+          let term=this.csm_models[i];
+          if(term.table_name == tb_nm) { 
+            return term.model_stress_type;
+          }
+        }
+        return("bad model");
+   };
+
+	
 // reset just the search only
     this.resetSearch = function (){
 window.console.log("calling --->> resetSearch.");
 
         pixiClearAllPixiOverlay();
-        this.setupPixiSegment(0,{});
+        this.setupPixiSegmentDebug(0,{});
 	this.unselectAllRegion();
 
         this.resetLatlon();
@@ -298,7 +311,7 @@ window.console.log("calling, new freshSearch...");
       if(this.searchingType == this.searchType.model) {
 window.console.log("in freshSearch --model");
         pixiClearAllPixiOverlay();
-        CSM.setupPixiSegment(0,{});
+        CSM.setupPixiSegmentDebug(0,{});
 
         var pixiuid= CSM.lookupModelLayers(
                        spec_idx[0], spec_idx[1], spec_idx[2]);
@@ -306,7 +319,8 @@ window.console.log("in freshSearch --model");
         if(pixiuid != null) { // reuse and add to viewer map 
           pixiTogglePixiOverlay(pixiuid);
           let seginfo=pixiFindSegmentProperties(pixiuid);
-          CSM.setupPixiSegment(pixiuid,seginfo);
+          CSM.setupPixiSegmentDebug(pixiuid,seginfo);
+          CSM.setupPixiLegend(pixiuid,spec,seginfo);
           } else {
             pixiuid = this.search(this.searchType.model, spec, spec_idx);
         }
@@ -319,7 +333,7 @@ window.console.log("in freshSearch --latlon");
 
 // in freshSearch/latlon, might need to clear the map");
         pixiClearAllPixiOverlay();
-        CSM.setupPixiSegment(0,{});
+        CSM.setupPixiSegmentDebug(0,{});
 
         var pixiuid= CSM.lookupModelLayers(
                        spec_idx[0], spec_idx[1], spec_idx[2]);
@@ -327,7 +341,8 @@ window.console.log("in freshSearch --latlon");
         if(pixiuid != null) { // reuse and add to viewer map 
           pixiTogglePixiOverlay(pixiuid);
           let seginfo=pixiFindSegmentProperties(pixiuid);
-          CSM.setupPixiSegment(pixiuid,seginfo);
+          CSM.setupPixiSegmentDebug(pixiuid,seginfo);
+          CSM.setupPixiLegend(pixiuid,spec,seginfo);
           } else {
             pixiuid = this.search(this.searchType.model, spec, spec_idx);
         }
@@ -339,6 +354,79 @@ window.console.log("in freshSearch --latlon");
       }
     };
 
+// a layer is always generated with the full set of legend bins
+// so pop up the pixi bin selector on dashboard
+// max n would be 20
+   function _legendoption(label,pixiuid,idx,color,check) {
+     var html="<li>";
+     if(check) {
+       html=html+ "<input type=\"checkbox\" class='legend-label mr-1' title=\"toggle the region\" id=\"pixiLegend_"+idx+"\" onclick=CSM.togglePixiLegend(\""+pixiuid+"\","+idx+",\"pixiLegend_"+idx+"\") style=\"accent-color:"+color+"\" checked >";
+       } else {
+         html=html+ "<input type=\"checkbox\" class='legend-label mr-1' title=\"toggle the region\" id=\"pixiLegend_"+idx+"\" onclick=CSM.togglePixiLegend(\""+pixiuid+"\","+idx+",\"pixiLegend_"+idx+"\") style=\"accent-color:"+color+"\" >";
+     }
+     html=html+"<label for=\"pixiLegend_"+idx+"\"><span>"+label+"</span></label></li>";
+//     html=html+"<label for=\"pixiLegend_"+idx+"\" onclick=CSM.tickleLegend(\"pixiLegend_"+idx+"\")><span>"+label+"</span></label></li>";
+      return html;
+    }
+
+
+    this.setupPixiLegend = function(pixiuid, spec,legendinfo) {
+window.console.log("setupPixiLegend...",pixiuid);
+      if(jQuery.isEmptyObject(legendinfo)) {
+        $("#pixi-legend").html("");
+        return;
+      }
+
+      let namelist=legendinfo['names'];
+      let lengthlist=legendinfo['counts'];
+      let labellist=legendinfo['labels'];
+      let colorlist=legendinfo['colors'];
+      let checklist=legendinfo['checks'];
+      let n=namelist.length;
+      let html = "<ul>";
+      for(let i=0; i<n; i++) {
+         let name=namelist[i];
+         let color=colorlist[i];
+         let label=labellist[i]; // segment's label 
+         let length=lengthlist[i];
+         let check=checklist[i];
+         if(length == 0) {
+	    check=0;
+         }
+	 html=html+_legendoption(label,pixiuid,i,color,check);
+      }
+      html=html+"</ul>";
+      $("#pixi-legend").html(html);
+
+
+      // update the title to pixi legend,
+      let metric=spec[2];
+      if(metric == "SHmax") {
+        $("#pixi-legend-title").html("Degree");
+        } else if (metric == "Aphi") {
+          $("#pixi-legend-title").html("Aphi");
+        } else {
+           let tbname=spec[0];
+           let stype=this.lookupModelStressType(tbname);
+           if(stype == 0) { // stress
+             $("#pixi-legend-title").html("MPa");
+             } else { // stress rate
+               $("#pixi-legend-title").html("Mpa/yr");
+           }
+      }
+    };
+
+    this.togglePixiLegend = function(pixiuid, n, label) {
+window.console.log("calling togglePixiLegend.. with ",n,"on pixiuid ",pixiuid);
+      let vis=pixiToggleMarkerContainer(pixiuid,n);
+    };
+
+    this.tickleLegend = function(label) {
+window.console.log("HERE..");
+      let elt=document.getElementById(label);
+      elt.click();
+    }
+
 // a layer is always generated with the full set of segments 
 // so pop up the pixi segment selector on dashboard
 // max n would be 20
@@ -349,12 +437,16 @@ window.console.log("in freshSearch --latlon");
        } else {
          html=html+ "<input type=\"checkbox\" class='checkboxk-group mr-1' id=\"pixiSegment_"+idx+"\" onclick=CSM.togglePixiSegment(\""+pixiuid+"\","+idx+") style=\"accent-color:"+color+"\" >";
      }
-     html=html+"<label class='checkbox-group-label mr-2 mini-option' for=\"pixiSegment_\"+idx+\"><span>"+label+"</span></label>";
+     html=html+"<label class='checkbox-group-label mr-2' for=\"pixiSegment_"+idx+"\"><span>"+label+"</span></label>";
       return html;
     }
 
     //seginfo is { names: nlist, counts:clist, labels:llist };
-    this.setupPixiSegment = function(pixiuid,seginfo) {
+    this.setupPixiSegmentDebug = function(pixiuid,seginfo) {
+
+      if(!this.model_debug) return;
+
+window.console.log("setupPixiSegmentDebug...",pixiuid);
       if(jQuery.isEmptyObject(seginfo)) {
         $("#pixi-segment").html("");
         return;
@@ -385,7 +477,7 @@ window.console.log("in freshSearch --latlon");
 
     this.togglePixiSegment = function(pixiuid, n) {
 window.console.log("calling togglePixiSegment.. with ",n,"on pixiuid ",pixiuid);
-      pixiToggleMarkerContainer(pixiuid,n);
+      let vis=pixiToggleMarkerContainer(pixiuid,n);
     }
 
     this.startWaitSpin = function() {
@@ -431,7 +523,7 @@ window.console.log("Did not find any PHP result");
                     vallist=tmp['val'];
 
                     pixiClearAllPixiOverlay();
-                    CSM.setupPixiSegment(0,{});
+                    CSM.setupPixiSegmentDebug(0,{});
 
 /*  pixi_spec:
        seg_cnt  sets  DATA_SEGMENT_COUNT
@@ -473,7 +565,8 @@ window.console.log("SEARCHING for ",spec[2]);
 
                     // need to get segment information from csm_pixi.js
                     let seginfo=pixiFindSegmentProperties(pixiuid);
-                    CSM.setupPixiSegment(pixiuid,seginfo);
+                    CSM.setupPixiSegmentDebug(pixiuid,seginfo);
+                    CSM.setupPixiLegend(pixiuid,spec,seginfo);
                     return pixiuid;
                 }
                 if(type==CSM.searchType.latlon) { 
@@ -506,6 +599,8 @@ window.console.log("SEARCHING for ",spec[2]);
 
     // make sure the displayed background is correct,
     this._redrawModel = function() {
+window.console.log("calling redrawModel..");
+
         if( this.model_initialized == false ) return;     
 
 	let spec = [];
@@ -519,6 +614,9 @@ window.console.log("SEARCHING for ",spec[2]);
         if(pixiuid != null) { // reuse and add to viewer map
           pixiClearAllPixiOverlay();
           pixiTogglePixiOverlay(pixiuid);
+          let seginfo=pixiFindSegmentProperties(pixiuid);
+          CSM.setupPixiSegmentDebug(pixiuid,seginfo);
+          CSM.setupPixiLegend(pixiuid,spec, seginfo);
           } else {
             pixiuid = this.search(this.searchType.model, spec, spec_idx);
         }
@@ -690,7 +788,7 @@ window.console.log("unhighlight box ",gid);
     // clear the model layer from the map
     this.unselectAllModel = function() {
        pixiClearAllPixiOverlay();
-       this.setupPixiSegment(0,{});
+       this.setupPixiSegmentDebug(0,{});
     }
 
     var generateMetadataTable = function (results) {
@@ -760,7 +858,7 @@ window.console.log("generateMetadataTable..");
         this.clearModel = function () {
           if( this.searchingType != this.searchType.model) return;
           pixiClearAllPixiOverlay();
-          this.setupPixiSegment(0,{});
+          this.setupPixiSegmentDebug(0,{});
         }
 
         this.resetModel = function () {

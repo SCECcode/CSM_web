@@ -260,7 +260,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
          </div>
 
 <!-- model select -->
-         <div class="input-group input-group-sm custom-control-inline mt-3">
+         <div class="input-group input-group-sm custom-control-inline mt-4">
             <div class="input-group-prepend">
                   <label class="input-group-text" for="modelType">Select CSM Model</label>
             </div>
@@ -304,7 +304,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
 	 </div> 
 
 <!-- search-option -->
-         <div id="search-option" class="col-10 mt-4"style="border:solid 1px green" >
+         <div id="search-option" class="col-10 mt-4"style="border:solid 0px green" >
             <ul id="option" class="navigation mt-2" style="padding: 0 0 0 0;">
               <li id='csm-model' class='navigationLi' style="display:none;border:solid 0px red">
                 <div class="col-10">
@@ -368,35 +368,14 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
              </div>
 
 <!-- legend --> 
-  <div class="legend geometry top center hide">
+  <div class="main-legend geometry top center" style="bottom:10%">
     <div class="wrapper">
-      <div class="content"></div>
+      <div id="pixi-legend" class="legend"></div> 
+      <div id="pixi-legend-title" align="center" class="legend content mt-1" style="border-top:2px solid grey">Degrees</div>
     </div>
   </div>
-  <div class="main-legend hide" style="bottom: 90px">
-    <ul>
-<input type="checkbox" class='checkboxk-group mr-1' id="pixiSegment_0" onclick="CSM.togglePixiSegment(pixiuid,0)" style="accent-color:#e9d575" checked >color0</li>
-      <li><span class="color" style="background-color: #b61d1d;"></span>color1</li>
-      <li><span class="color" style="background-color: #f7704a;"></span>color2</li>
-      <li><span class="color" style="background-color: #dc2a1b;"></span>color3</li>
-      <li><span class="color" style="background-color: #f19ec7;"></span>color4</li>
-      <li><span class="color" style="background-color: #fed002;"></span>color5</li>
-      <li><span class="color" style="background-color: #cfe9f7;"></span>color6</li>
-      <li><span class="color" style="background-color: #78bce0;"></span>color7</li>
-      <li><span class="color" style="background-color: #0089c4;"></span>color8</li>
-      <li><span class="color" style="background-color: #0089c4;"></span>color9</li>
-      <li><span class="color" style="background-color: #ffffff;"></span>color10</li>
-      <li><span class="color" style="background-color: #b61d1d;"></span>color11</li>
-      <li><span class="color" style="background-color: #f7704a;"></span>color12</li>
-      <li><span class="color" style="background-color: #dc2a1b;"></span>color13</li>
-      <li><span class="color" style="background-color: #f19ec7;"></span>color14</li>
-      <li><span class="color" style="background-color: #fed002;"></span>color15</li>
-      <li><span class="color" style="background-color: #cfe9f7;"></span>color16</li>
-      <li><span class="color" style="background-color: #78bce0;"></span>color17</li>
-      <li><span class="color" style="background-color: #0089c4;"></span>color18</li>
-      <li><span class="color" style="background-color: #0089c4;"></span>color19</li>
-    </ul>
-  </div> <!-- legend -->
+<!-- legend -->
+
           </div>
        </div>
 

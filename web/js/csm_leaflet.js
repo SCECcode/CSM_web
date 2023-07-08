@@ -173,39 +173,8 @@ function setup_viewer()
   L.control.scale({metric: 'false', imperial:'false', position: 'bottomleft'}).addTo(mymap);
 
 // ==> model legend <==
-// when change the background model view, need to update the main legend
-  var mainLegendClass = document.querySelector('.main-legend');
-  L.Control.Legend = L.Control.extend({
-    onAdd: function(map) {
-           var button = L.DomUtil.create('div');
-           L.DomUtil.addClass(button, 'leaflet-bar leaflet-legend');
-           var anchor = L.DomUtil.create('a');
-           anchor.setAttribute('href', '#');
-           anchor.setAttribute('title', 'Stress Model');
-           anchor.setAttribute('role', 'button');
-           anchor.setAttribute('aria-label', 'Stress Model');
-           button.appendChild(anchor);
-           L.DomEvent.on(button, 'dblclick', function(e) {
-             L.DomEvent.stopPropagation(e); });
-           L.DomEvent.on(button, 'click', function(e) {
-             L.DomEvent.stopPropagation(e);
-             L.DomEvent.preventDefault(e);
-             window.console.log("HERE..");
-             if (L.DomUtil.hasClass(mainLegendClass, 'hide')) {
-               L.DomUtil.removeClass(mainLegendClass, 'hide');
-               } else {
-                L.DomUtil.addClass(mainLegendClass, 'hide');
-             }
-           });
-           return button;
-    },
-    onRemove: function(map) {}
-  });
-  L.control.legend = function(opts) { return new L.Control.Legend(opts); }
-  L.control.legend({ position: 'bottomleft' }).addTo(mymap);
-
-  var mainLegend = document.querySelector('div.legend.geometry');
-  var mainLegendContent = mainLegend.querySelector('.content');
+//  var mainLegend = document.querySelector('div.legend');
+//  var mainLegendContent = mainLegend.querySelector('.content');
 
 //==> seismicity legend <==
   seismicityLegend=L.control( {position:'bottomleft'});

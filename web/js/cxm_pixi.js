@@ -15,6 +15,17 @@ var DATA_MAX_V=undefined;
 var DATA_MIN_V=undefined;
 var DATA_count=0;
 
+var pixi_cmap_tb={
+  cmaps: [
+    { count:20, colors: [ "#e9d575", "#c6dc64", "#a1e35f", "#a1e35f",
+	                  "#7ce767", "#5de578", "#47df91", "#3cd2ac", 
+	                  "#3cd2ac", "#rbc0c5", "#45aad7", "#5492df",
+                          "#677bdc", "#677bdc", "#7966cf", "#8755b9", 
+	                  "#8f489d", "#8f407f", "#8f407f", "#873B57" ]},
+    { count:5, colors: [ "#b61d1d", "#f7704a", "#dc2a1b", "#f19ec7", "#fed002" ]},
+  ]
+};
+
 /********************************************/
 /* a place to park all the pixiOverlay from the session */
 /* [ {"uid":uid, "vis":true, "segment":20, "layer": overlay,         */
@@ -120,26 +131,18 @@ function getSegmentRangeList(N, vs_max, vs_min) {
 
 function getSegmentMarkerColorList() {
   var mlist= [];
-  mlist.push("#e9d575");
-  mlist.push("#c6dc64");
-  mlist.push("#a1e35f");
-  mlist.push("#a1e35f");
-  mlist.push("#7ce767");
-  mlist.push("#5de578");
-  mlist.push("#47df91");
-  mlist.push("#3cd2ac");
-  mlist.push("#3cd2ac");
-  mlist.push("#rbc0c5");
-  mlist.push("#45aad7");
-  mlist.push("#5492df");
-  mlist.push("#677bdc");
-  mlist.push("#677bdc");
-  mlist.push("#7966cf");
-  mlist.push("#8755b9");
-  mlist.push("#8f489d");
-  mlist.push("#8f407f");
-  mlist.push("#8f407f");
-  mlist.push("#873B57");
+  let cmaps=pixi_cmap_tb.cmaps;
+  let sz=cmaps.length;
+  for(let i=0; i<sz; i++) {
+     let cmap=cmaps[i];
+     if (cmap.count == DATA_SEGMENT_COUNT) {
+       clist=cmap.colors;
+       for (const idx in clist) {
+         mlist.push(clist[idx]);
+       }
+       break;
+     }
+  }
   return mlist;
 }
 
@@ -263,6 +266,7 @@ function pixiToggleMarkerContainer(uid,target_segment_idx) {
 
   let citem=clist[target_segment_idx]; // target particalContainer
   let term;
+  let vis;
   for(let i=0; i<sz; i++) {
     let citem=clist[i];
     let term=citem.csm_properties;
@@ -271,13 +275,15 @@ function pixiToggleMarkerContainer(uid,target_segment_idx) {
       if(citem.visible) { // toggle off
         top.removeChild(citem);
         citem.visible=false;
+        vis=false;
         } else { // toggle on
           citem.visible=true;
           top.addChild(citem);
+          vis=true;
       }
       // need to refresh the layer
       layer.redraw(citem);
-      return;
+      return vis;
     }
   }
 }
