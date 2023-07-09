@@ -7,7 +7,7 @@
 
 var CSM = new function () {
 
-    this.model_debug = 0;
+    this.model_debug = 1;
     this.model_initialized = false;
     // 
     // complete set of csm models info from the backend-service,
@@ -355,9 +355,7 @@ window.console.log("in freshSearch --latlon");
     };
 
 // a layer is always generated with the full set of legend bins
-// so pop up the pixi bin selector on dashboard
-// max n would be 20
-   function _legendoption(label,pixiuid,idx,color,check) {
+   function _legendoptionChecked(label,pixiuid,idx,color,check) {
      var html="<li>";
      if(check) {
        html=html+ "<input type=\"checkbox\" class='legend-label mr-1' title=\"toggle the region\" id=\"pixiLegend_"+idx+"\" onclick=CSM.togglePixiLegend(\""+pixiuid+"\","+idx+",\"pixiLegend_"+idx+"\") style=\"accent-color:"+color+"\" checked >";
@@ -368,6 +366,11 @@ window.console.log("in freshSearch --latlon");
       return html;
     }
 
+// a layer is always generated with the full set of legend bins
+   function _legendoption(label,pixiuid,idx,color,check) {
+     var html="<li><span class=\"color\" style=\"background-color: "+color+"\"></span> <label class=\"legend-label\" style=\"border:solid 0px green;\"><span>"+label+"</span></label></li>";
+      return html;
+    }
 
     this.setupPixiLegend = function(pixiuid, spec,legendinfo) {
 window.console.log("setupPixiLegend...",pixiuid);
@@ -382,7 +385,7 @@ window.console.log("setupPixiLegend...",pixiuid);
       let colorlist=legendinfo['colors'];
       let checklist=legendinfo['checks'];
       let n=namelist.length;
-      let html = "<ul>";
+      let html = "";
       for(let i=0; i<n; i++) {
          let name=namelist[i];
          let color=colorlist[i];
@@ -392,16 +395,17 @@ window.console.log("setupPixiLegend...",pixiuid);
          if(length == 0) {
 	    check=0;
          }
-	 html=html+_legendoption(label,pixiuid,i,color,check);
+	 html=_legendoption(label,pixiuid,i,color,check)+html;
       }
-      html=html+"</ul>";
+
+      html="<ul>"+html+"</ul>";
       $("#pixi-legend").html(html);
 
 
       // update the title to pixi legend,
       let metric=spec[2];
       if(metric == "SHmax") {
-        $("#pixi-legend-title").html("Degree");
+        $("#pixi-legend-title").html("Degrees");
         } else if (metric == "Aphi") {
           $("#pixi-legend-title").html("Aphi");
         } else {
@@ -469,7 +473,7 @@ window.console.log("setupPixiSegmentDebug...",pixiuid);
          }
          let v=i+1;
          let foo=label+"&nbsp;&nbsp;&nbsp;(n="+length+")";
-	 html=html+_segmentoption(foo,pixiuid,i,color,check)+"<br>";
+	 html=_segmentoption(foo,pixiuid,i,color,check)+"<br>"+html;
       }
       $("#pixi-segment").html(html);
     }
@@ -533,15 +537,15 @@ window.console.log("SEARCH :",criteria);
 window.console.log("SEARCH :",spec);
 
 
-                    let pixi_spec = { 'seg_cnt' : 20};
+                    let pixi_spec = { 'seg_cnt' : 18};
                     
 window.console.log("SEARCHING for ",spec[2]);
                     // if metric is "aphi"
-                    if(spec[2]=="aphi") {	
+                    if(spec[2]=="Aphi") {	
                        pixi_spec.data_max=3.0;
                        pixi_spec.data_min=0.0;
                     }
-                    if(spec[2]=="shmax") {
+                    if(spec[2]=="SHmax") {
                        pixi_spec.data_max=90.0;
                        pixi_spec.data_min=-90.0;
                     }

@@ -1,4 +1,22 @@
 /* csm */
+div.legend .color {
+        position: relative;
+        margin-right: 1.5em;
+        height: 1em;
+        width: 0em;
+        float: left;
+}
+
+div.legend .color::before {
+          content: '';
+    height: 1.2em;
+    width: 1.2em;
+    position: absolute;
+    left: 0;
+    border-bottom:solid 1px black;
+    background-color: inherit;
+}
+
 div.hide {
         display:none !important;
 }

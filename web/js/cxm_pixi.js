@@ -19,9 +19,23 @@ var pixi_cmap_tb={
   cmaps: [
     { count:20, colors: [ "#e9d575", "#c6dc64", "#a1e35f", "#a1e35f",
 	                  "#7ce767", "#5de578", "#47df91", "#3cd2ac", 
-	                  "#3cd2ac", "#rbc0c5", "#45aad7", "#5492df",
+	                  "#3cd2ac", "#3bc0c5", "#45aad7", "#5492df",
                           "#677bdc", "#677bdc", "#7966cf", "#8755b9", 
 	                  "#8f489d", "#8f407f", "#8f407f", "#873B57" ]},
+    { count:18, colors: [ "#e9d575", "#c6dc64", "#a1e35f", "#7ce767", 
+	                  "#5de578", "#47df91", "#3cd2ac", "#3bc0c5", 
+	                  "#45aad7", "#5492df", "#677bdc", "#7966cf", 
+	                  "#8755b9", "#8f489d", "#8f407f", "#8f407f", 
+	                  "#873B57", "#873B57" ],
+                 rgbs: [ "rgba(233,213,117,ALPHA)", "rgba(198,220,100,ALPHA)",
+			 "rgba(161,227,95,ALPHA)", "rgba(124,231,103,ALPHA)",
+			 "rgba(93,229,120,ALPHA)", "rgba(85,221,238,ALPHA)",
+			 "rgba(71,223,145,ALPHA)", "rgba(60,210,172,ALPHA)",
+			 "rgba(59,192,197,ALPHA)", "rgba(69,170,215,ALPHA)",
+			 "rgba(84,146,223,ALPHA)", "rgba(103,123,220,ALPHA)",
+			 "rgba(96,89,194,ALPHA)", "rgba(61,79,168,ALPHA)",
+			 "rgba(121,102,207,ALPHA)", "rgba(135,85,185,ALPHA)",
+			 "rgba(143,72,157,ALPHA)", "rgba(135,59,87,ALPHA)"]},
     { count:5, colors: [ "#b61d1d", "#f7704a", "#dc2a1b", "#f19ec7", "#fed002" ]},
   ]
 };
@@ -37,7 +51,8 @@ var pixi_project=null;
 
 /* textures in a marker container                         */
 /* [ markerTexture0, markerTexture1,... markerTexture19 ] */
-var markerTextures=[];
+var markerTexturesPtr;
+var markerTextures18=[];
 
 var loadOnce=1;
 
@@ -121,21 +136,39 @@ function pixiFindSegmentProperties(uid) {
 // create a list of N values
 function getSegmentRangeList(N, vs_max, vs_min) {
   var step = (vs_max - vs_min)/N;
+  var mult=10;
+  let abs_step=Math.abs(step);
+  let abs_vs_min=Math.abs(vs_min);
+  if (abs_step < 0.00001 || (abs_vs_min < 0.00009 && abs_vs_min!=0)) {
+    mult=1000000; 
+  } else if (abs_step < 0.0001 || (abs_vs_min < 0.0009 && abs_vs_min!=0))  {
+    mult=100000;
+  } else if (abs_step < 0.001 || (abs_vs_min < 0.009 && abs_vs_min!=0))  { 
+    mult=10000;
+  } else if (abs_step < 0.01 || (abs_vs_min < 0.09 && abs_vs_min!=0))  { 
+    mult=1000;
+  } else if (abs_step < 0.1 || (abs_vs_min < 0.9 && abs_vs_min!=0))  { 
+    mult=100;
+  }
+//window.console.log( "  ---> STEP is ", abs_step);
+//window.console.log( "  ---> vs_min is ", abs_vs_min);
+//window.console.log( "  ---> USING MULTI is ", mult);
+
   var slist= [];
   for(let i=0; i<N; i++) {
-    let v= Math.floor((vs_min + (step * i ))*100)/100;
+    let v= Math.floor((vs_min + (step * i ))*mult)/mult;
     slist.push(v);
   }
   return slist;
 }
 
-function getSegmentMarkerColorList() {
+function getSegmentMarkerColorList(SZ) {
   var mlist= [];
   let cmaps=pixi_cmap_tb.cmaps;
   let sz=cmaps.length;
   for(let i=0; i<sz; i++) {
      let cmap=cmaps[i];
-     if (cmap.count == DATA_SEGMENT_COUNT) {
+     if (cmap.count == SZ) {
        clist=cmap.colors;
        for (const idx in clist) {
          mlist.push(clist[idx]);
@@ -146,6 +179,36 @@ function getSegmentMarkerColorList() {
   return mlist;
 }
 
+function getSegmentMarkerRGBList(SZ,alpha) {
+  var mlist= [];
+  let cmaps=pixi_cmap_tb.cmaps;
+  let sz=cmaps.length;
+  for(let i=0; i<sz; i++) {
+     let cmap=cmaps[i];
+     if (cmap.count == SZ) {
+       rgbs=cmap.rgbs;
+       for (const idx in rgbs) {
+         let rgb=rgbs[idx];
+         mlist.push(rgb.replace("ALPHA", alpha));
+       }
+       break;
+     }
+  }
+  return mlist;
+}
+
+
+// https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fillRect
+function _createTexture(color) {
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = color;
+  ctx.fillRect(0, 0, 14, 14);
+
+  let texture=PIXI.Texture.from(canvas);
+  return texture;
+}
+
 // from pixi,
 //  >> Adds a BaseTexture to the global BaseTextureCache. This cache is shared across the whole PIXI object.
 // PIXI.BaseTexture.addToCache (baseTexture, id)
@@ -154,68 +217,16 @@ function getSegmentMarkerColorList() {
 function init_pixi(loader) {
   pixiOverlayList=[];
 
-  let marker1Texture = PIXI.Texture.from('img/marker1_icon.png');
-  let marker2Texture = PIXI.Texture.from('img/marker2_icon.png');
-  let marker3Texture = PIXI.Texture.from('img/marker3_icon.png');
-  let marker4Texture = PIXI.Texture.from('img/marker4_icon.png');
-  let marker5Texture = PIXI.Texture.from('img/marker5_icon.png');
-  let marker6Texture = PIXI.Texture.from('img/marker6_icon.png');
-  let marker7Texture = PIXI.Texture.from('img/marker7_icon.png');
-  let marker8Texture = PIXI.Texture.from('img/marker8_icon.png');
-  let marker9Texture = PIXI.Texture.from('img/marker9_icon.png');
-  let marker10Texture = PIXI.Texture.from('img/marker10_icon.png');
-  let marker11Texture = PIXI.Texture.from('img/marker11_icon.png');
-  let marker12Texture = PIXI.Texture.from('img/marker12_icon.png');
-  let marker13Texture = PIXI.Texture.from('img/marker13_icon.png');
-  let marker14Texture = PIXI.Texture.from('img/marker14_icon.png');
-  let marker15Texture = PIXI.Texture.from('img/marker15_icon.png');
-  let marker16Texture = PIXI.Texture.from('img/marker16_icon.png');
-  let marker17Texture = PIXI.Texture.from('img/marker17_icon.png');
-  let marker18Texture = PIXI.Texture.from('img/marker18_icon.png');
-  let marker19Texture = PIXI.Texture.from('img/marker19_icon.png');
-  let marker20Texture = PIXI.Texture.from('img/marker20_icon.png');
-
-  PIXI.BaseTexture.addToCache(marker1Texture,"marker1");
-  PIXI.BaseTexture.addToCache(marker1Texture,"marker2");
-  PIXI.BaseTexture.addToCache(marker1Texture,"marker3");
-  PIXI.BaseTexture.addToCache(marker1Texture,"marker4");
-  PIXI.BaseTexture.addToCache(marker1Texture,"marker5");
-  PIXI.BaseTexture.addToCache(marker1Texture,"marker6");
-  PIXI.BaseTexture.addToCache(marker1Texture,"marker7");
-  PIXI.BaseTexture.addToCache(marker1Texture,"marker8");
-  PIXI.BaseTexture.addToCache(marker1Texture,"marker9");
-  PIXI.BaseTexture.addToCache(marker1Texture,"marker10");
-  PIXI.BaseTexture.addToCache(marker1Texture,"marker11");
-  PIXI.BaseTexture.addToCache(marker1Texture,"marker12");
-  PIXI.BaseTexture.addToCache(marker1Texture,"marker13");
-  PIXI.BaseTexture.addToCache(marker1Texture,"marker14");
-  PIXI.BaseTexture.addToCache(marker1Texture,"marker15");
-  PIXI.BaseTexture.addToCache(marker1Texture,"marker16");
-  PIXI.BaseTexture.addToCache(marker1Texture,"marker17");
-  PIXI.BaseTexture.addToCache(marker1Texture,"marker18");
-  PIXI.BaseTexture.addToCache(marker1Texture,"marker19");
-  PIXI.BaseTexture.addToCache(marker1Texture,"marker20");
-
-  markerTextures.push(marker1Texture);
-  markerTextures.push(marker2Texture);
-  markerTextures.push(marker3Texture);
-  markerTextures.push(marker4Texture);
-  markerTextures.push(marker5Texture);
-  markerTextures.push(marker6Texture);
-  markerTextures.push(marker7Texture);
-  markerTextures.push(marker8Texture);
-  markerTextures.push(marker9Texture);
-  markerTextures.push(marker10Texture);
-  markerTextures.push(marker11Texture);
-  markerTextures.push(marker12Texture);
-  markerTextures.push(marker13Texture);
-  markerTextures.push(marker14Texture);
-  markerTextures.push(marker15Texture);
-  markerTextures.push(marker16Texture);
-  markerTextures.push(marker17Texture);
-  markerTextures.push(marker18Texture);
-  markerTextures.push(marker19Texture);
-  markerTextures.push(marker20Texture);
+// setup set 18 
+  let alpha="0.7";
+  let rgblist=getSegmentMarkerRGBList(18,alpha);
+  for(let i =0; i< 18; i++) {
+    let name="markerSet18_"+i;
+    let rgb=rgblist[i];
+    let texture=_createTexture(rgb);
+    PIXI.BaseTexture.addToCache(texture,name);
+    markerTextures18.push(texture);
+  }
 }
 
 
@@ -363,17 +374,17 @@ window.console.log("PIXI: HUMHUM..",DATA_count);
 function makePixiOverlayLayerWithList(uid,latlist,lonlist,vallist,spec) {
     var pixiLatlngList;
 
-    if(spec.seg_cnt) { 
+    if(spec.seg_cnt!=0) { 
       DATA_SEGMENT_COUNT = spec.seg_cnt;
       } else {
         DATA_SEGMENT_COUNT = DEFAULT_DATA_SEGMENT_COUNT;
     }
-    if(spec.data_max) { 
+    if(spec.data_max != undefined) { 
       DATA_MAX_V = spec.data_max;
       } else {
         DATA_MAX_V = undefined;
     }
-    if(spec.data_min) { 
+    if(spec.data_min != undefined) { 
       DATA_MIN_V = spec.data_min;
       } else {
         DATA_MIN_V = undefined;
@@ -489,15 +500,23 @@ function makePixiOverlayLayer(uid,pixiLatlngList,spec) {
     let pContainers=[]; //particle container
     let segments=[];
 
+// set the markerTexturesPtr to the right set
+// fix this XXX
+    if(DATA_SEGMENT_COUNT == 18) {
+      markerTexturesPtr=markerTextures18;
+    }
+
     let segment_label_list=getSegmentRangeList(DATA_SEGMENT_COUNT, DATA_MAX_V, DATA_MIN_V);
-    let segment_color_list=getSegmentMarkerColorList();
+    let alpha="1.0";
+    let segment_color_list=getSegmentMarkerRGBList(DATA_SEGMENT_COUNT,alpha);
+
 
     for(var i=0; i<DATA_SEGMENT_COUNT; i++) {
       var length=getMarkerCount(pixiLatlngList,i);
       var a = new PIXI.ParticleContainer(length, {vertices: true, tint: true});
       // add properties for our patched particleRenderer:
-      a.texture = markerTextures[i];
-      a.baseTexture = markerTextures[i].baseTexture;
+      a.texture = markerTexturesPtr[i];
+      a.baseTexture = markerTexturesPtr[i].baseTexture;
       a.anchor = {x: 0.5, y: 0.5};
       a.visible = 1;
 
@@ -545,10 +564,10 @@ window.console.log("PIXI: add event");
 
         let scaleFactor=16; // default came from seismicity
         if(spec.scale_hint == 2 ) { // when grid points are about 2km len is 70k
-          scaleFactor=7.1;
+          scaleFactor=7.0;
         }
         if(spec.scale_hint == 5) {  // when grid points are about 5km
-          scaleFactor=3; 
+          scaleFactor=2.8; 
         }
 
 // :-) very hacky, just in case it got zoomed in before search
@@ -587,7 +606,7 @@ window.console.log("PIXI:in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>
               var aParticle=a.addChild({ x: coords.x - origin.x, y: coords.y - origin.y });
 **/
 
-              var marker = new PIXI.Sprite(markerTextures[i]);
+              var marker = new PIXI.Sprite(markerTexturesPtr[i]);
               marker.x = coords.x - origin.x;
               marker.y= coords.y - origin.y;
               marker.scale.set(invScale/scaleFactor);
