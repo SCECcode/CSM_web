@@ -414,7 +414,7 @@ window.console.log("setupPixiLegend...",pixiuid);
            if(stype == 0) { // stress
              $("#pixi-legend-title").html("MPa");
              } else { // stress rate
-               $("#pixi-legend-title").html("Mpa/yr");
+               $("#pixi-legend-title").html("MPa/yr");
            }
       }
     };
@@ -537,7 +537,7 @@ window.console.log("SEARCH :",criteria);
 window.console.log("SEARCH :",spec);
 
 
-                    let pixi_spec = { 'seg_cnt' : 18};
+                    let pixi_spec = { 'seg_cnt' : 12};
                     
 window.console.log("SEARCHING for ",spec[2]);
                     // if metric is "aphi"

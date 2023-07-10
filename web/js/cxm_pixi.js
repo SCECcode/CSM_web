@@ -17,26 +17,31 @@ var DATA_count=0;
 
 var pixi_cmap_tb={
   cmaps: [
-    { count:20, colors: [ "#e9d575", "#c6dc64", "#a1e35f", "#a1e35f",
-	                  "#7ce767", "#5de578", "#47df91", "#3cd2ac", 
-	                  "#3cd2ac", "#3bc0c5", "#45aad7", "#5492df",
-                          "#677bdc", "#677bdc", "#7966cf", "#8755b9", 
-	                  "#8f489d", "#8f407f", "#8f407f", "#873B57" ]},
-    { count:18, colors: [ "#e9d575", "#c6dc64", "#a1e35f", "#7ce767", 
-	                  "#5de578", "#47df91", "#3cd2ac", "#3bc0c5", 
-	                  "#45aad7", "#5492df", "#677bdc", "#7966cf", 
-	                  "#8755b9", "#8f489d", "#8f407f", "#8f407f", 
-	                  "#873B57", "#873B57" ],
-                 rgbs: [ "rgba(233,213,117,ALPHA)", "rgba(198,220,100,ALPHA)",
-			 "rgba(161,227,95,ALPHA)", "rgba(124,231,103,ALPHA)",
-			 "rgba(93,229,120,ALPHA)", "rgba(85,221,238,ALPHA)",
-			 "rgba(71,223,145,ALPHA)", "rgba(60,210,172,ALPHA)",
-			 "rgba(59,192,197,ALPHA)", "rgba(69,170,215,ALPHA)",
-			 "rgba(84,146,223,ALPHA)", "rgba(103,123,220,ALPHA)",
-			 "rgba(96,89,194,ALPHA)", "rgba(61,79,168,ALPHA)",
-			 "rgba(121,102,207,ALPHA)", "rgba(135,85,185,ALPHA)",
-			 "rgba(143,72,157,ALPHA)", "rgba(135,59,87,ALPHA)"]},
-    { count:5, colors: [ "#b61d1d", "#f7704a", "#dc2a1b", "#f19ec7", "#fed002" ]},
+    { count:12,  colors: [ "img/marker0_icon.png",
+                           "img/marker1_icon.png",
+                           "img/marker2_icon.png",
+                           "img/marker3_icon.png",
+                           "img/marker4_icon.png",
+                           "img/marker5_icon.png",
+                           "img/marker6_icon.png",
+                           "img/marker7_icon.png",
+                           "img/marker8_icon.png",
+                           "img/marker9_icon.png",
+                           "img/marker10_icon.png",
+                           "img/marker11_icon.png"],
+                 rgbs: [ "rgba(48,18,59,ALPHA)",
+                         "rgba(68,84,196,ALPHA)",
+			 "rgba(67,144,254,ALPHA)",
+                         "rgba(32,200,222,ALPHA)",
+			 "rgba(138,240,247,ALPHA)",
+                         "rgba(245,229,38,ALPHA)",
+			 "rgba(253,205,49,ALPHA)",
+                         "rgba(247,186,61,ALPHA)",
+			 "rgba(254,145,41,ALPHA)", 
+                         "rgba(234,79,13,ALPHA)",
+			 "rgba(191,34,2,ALPHA)",
+                         "rgba(122,4,3,ALPHA)",
+			 "rgba(143,72,157,ALPHA)"]}
   ]
 };
 
@@ -52,7 +57,7 @@ var pixi_project=null;
 /* textures in a marker container                         */
 /* [ markerTexture0, markerTexture1,... markerTexture19 ] */
 var markerTexturesPtr;
-var markerTextures18=[];
+var markerTextures12=[];
 
 var loadOnce=1;
 
@@ -217,16 +222,22 @@ function _createTexture(color) {
 function init_pixi(loader) {
   pixiOverlayList=[];
 
-// setup set 18 
-  let alpha="0.7";
-  let rgblist=getSegmentMarkerRGBList(18,alpha);
-  for(let i =0; i< 18; i++) {
-    let name="markerSet18_"+i;
+// setup set  12 
+  let alpha="1";
+  let rgblist=getSegmentMarkerRGBList(12,alpha);
+  for(let i =0; i< 12; i++) {
+    let name="markerSet12_"+i;
     let rgb=rgblist[i];
     let texture=_createTexture(rgb);
     PIXI.BaseTexture.addToCache(texture,name);
-    markerTextures18.push(texture);
+    markerTextures12.push(texture);
   }
+
+/*
+  let marker11Texture = PIXI.Texture.from('img/marker11_icon.png');
+  PIXI.BaseTexture.addToCache(marker11Texture,"markerSet12_11");
+  markerTextures12.push(marker11Texture);
+*/
 }
 
 
@@ -502,8 +513,8 @@ function makePixiOverlayLayer(uid,pixiLatlngList,spec) {
 
 // set the markerTexturesPtr to the right set
 // fix this XXX
-    if(DATA_SEGMENT_COUNT == 18) {
-      markerTexturesPtr=markerTextures18;
+    if(DATA_SEGMENT_COUNT == 12) {
+      markerTexturesPtr=markerTextures12;
     }
 
     let segment_label_list=getSegmentRangeList(DATA_SEGMENT_COUNT, DATA_MAX_V, DATA_MIN_V);
@@ -564,10 +575,10 @@ window.console.log("PIXI: add event");
 
         let scaleFactor=16; // default came from seismicity
         if(spec.scale_hint == 2 ) { // when grid points are about 2km len is 70k
-          scaleFactor=7.0;
+          scaleFactor=6.6;
         }
         if(spec.scale_hint == 5) {  // when grid points are about 5km
-          scaleFactor=2.8; 
+          scaleFactor=2.7; 
         }
 
 // :-) very hacky, just in case it got zoomed in before search
@@ -606,9 +617,24 @@ window.console.log("PIXI:in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>
               var aParticle=a.addChild({ x: coords.x - origin.x, y: coords.y - origin.y });
 **/
 
-              var marker = new PIXI.Sprite(markerTexturesPtr[i]);
+              var marker = new PIXI.TilingSprite(markerTexturesPtr[i]);
+              marker.clampMargin = -0.5;
+              //TilingSprite: marker.clampMargin = -0.5;
+/*
+const mask = new PIXI.Graphics();
+mask.beginFill(0xFF3300);
+//graphics.drawRect(50, 250, 100, 100);
+mask.drawEllipse(75, 30, 60, 40)
+//graphics.endFill();
+marker.mask = mask;
+*/
+		   
+              marker.alpha=0.7; // add, multiply,screen
+              marker.blendMode=2; // add, multiply,screen
+
               marker.x = coords.x - origin.x;
               marker.y= coords.y - origin.y;
+
               marker.scale.set(invScale/scaleFactor);
 
 		   /*
