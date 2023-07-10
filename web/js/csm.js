@@ -538,16 +538,19 @@ window.console.log("SEARCH :",spec);
 
 
                     let pixi_spec = { 'seg_cnt' : 12};
+                    pixi_spec.rgb_set=2;
                     
 window.console.log("SEARCHING for ",spec[2]);
                     // if metric is "aphi"
                     if(spec[2]=="Aphi") {	
                        pixi_spec.data_max=3.0;
                        pixi_spec.data_min=0.0;
+                       pixi_spec.rgb_set=1;
                     }
                     if(spec[2]=="SHmax") {
                        pixi_spec.data_max=90.0;
                        pixi_spec.data_min=-90.0;
+                       pixi_spec.rgb_set=0;
                     }
 
                     // 2km grid or 5km grid  

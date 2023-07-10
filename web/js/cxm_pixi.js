@@ -16,32 +16,50 @@ var DATA_MIN_V=undefined;
 var DATA_count=0;
 
 var pixi_cmap_tb={
-  cmaps: [
-    { count:12,  colors: [ "img/marker0_icon.png",
-                           "img/marker1_icon.png",
-                           "img/marker2_icon.png",
-                           "img/marker3_icon.png",
-                           "img/marker4_icon.png",
-                           "img/marker5_icon.png",
-                           "img/marker6_icon.png",
-                           "img/marker7_icon.png",
-                           "img/marker8_icon.png",
-                           "img/marker9_icon.png",
-                           "img/marker10_icon.png",
-                           "img/marker11_icon.png"],
-                 rgbs: [ "rgba(48,18,59,ALPHA)",
-                         "rgba(68,84,196,ALPHA)",
-			 "rgba(67,144,254,ALPHA)",
-                         "rgba(32,200,222,ALPHA)",
-			 "rgba(138,240,247,ALPHA)",
-                         "rgba(245,229,38,ALPHA)",
-			 "rgba(253,205,49,ALPHA)",
-                         "rgba(247,186,61,ALPHA)",
-			 "rgba(254,145,41,ALPHA)", 
-                         "rgba(234,79,13,ALPHA)",
-			 "rgba(191,34,2,ALPHA)",
-                         "rgba(122,4,3,ALPHA)",
-			 "rgba(143,72,157,ALPHA)"]}
+  csm_cmaps: [
+    { type:0,
+      note:"for SHmax",
+             rgbs: [ "rgba(0,0,77,ALPHA)",
+                     "rgba(0,0,166,ALPHA)",
+                     "rgba(0,0,255,ALPHA)",
+                     "rgba(102,102,255,ALPHA)",
+                     "rgba(166,166,255,ALPHA)",
+                     "rgba(230,230,255,ALPHA)",
+                     "rgba(255,230,230,ALPHA)",
+                     "rgba(255,166,166,ALPHA)",
+                     "rgba(255,102,102,ALPHA)", 
+                     "rgba(255,0,0,ALPHA)",
+                     "rgba(166,0,0,ALPHA)",
+                     "rgba(77,0,0,ALPHA)"]},
+    { type:1,
+      note:"for Aphi",
+      rgbs: [ "rgba(48,18,59,ALPHA)",
+                     "rgba(68,84,196,ALPHA)",
+                     "rgba(67,144,254,ALPHA)",
+                     "rgba(32,200,222,ALPHA)",
+                     "rgba(138,240,247,ALPHA)",
+                     "rgba(245,229,38,ALPHA)",
+                     "rgba(253,205,49,ALPHA)",
+                     "rgba(247,186,61,ALPHA)",
+                     "rgba(254,145,41,ALPHA)", 
+                     "rgba(234,79,13,ALPHA)",
+                     "rgba(191,34,2,ALPHA)",
+                     "rgba(122,4,3,ALPHA)" ]},
+
+    { type:2,
+      note:"for Dif, Iso",
+             rgbs: [ "rgba(140,62.125,115.75,ALPHA)",
+                     "rgba(143,71,153.25,ALPHA)",
+                     "rgba(133.25,87.125,187.75,ALPHA)",
+                     "rgba(114.25,109.87,211.87,ALPHA)",
+                     "rgba(91.125,137.38,211.88,ALPHA)",
+                     "rgba(70.875,167,216,ALPHA)",
+                     "rgba(59.125,194.25,193.88,ALPHA)",
+                     "rgba(64.125,214.88,161.88,ALPHA)",
+                     "rgba(84.75,226.75,129.38,ALPHA)", 
+                     "rgba(120.12,230.75,105.13,ALPHA)",
+                     "rgba(165.62,226.12,95.625,ALPHA)",
+                     "rgba(211.12,217.38,106.37,ALPHA)"]}
   ]
 };
 
@@ -57,7 +75,9 @@ var pixi_project=null;
 /* textures in a marker container                         */
 /* [ markerTexture0, markerTexture1,... markerTexture19 ] */
 var markerTexturesPtr;
-var markerTextures12=[];
+var markerTexturesSet0=[];
+var markerTexturesSet1=[];
+var markerTexturesSet2=[];
 
 var loadOnce=1;
 
@@ -129,8 +149,8 @@ function pixiFindSegmentProperties(uid) {
     }
     
     rlist={ names: namelist, 
-	    counts:lengthlist,
-	    labels:labellist,
+         counts:lengthlist,
+         labels:labellist,
             colors:colorlist,
             checks:checklist};
   }
@@ -167,36 +187,16 @@ function getSegmentRangeList(N, vs_max, vs_min) {
   return slist;
 }
 
-function getSegmentMarkerColorList(SZ) {
+function getSegmentMarkerRGBList(idx,alpha) {
   var mlist= [];
   let cmaps=pixi_cmap_tb.cmaps;
   let sz=cmaps.length;
-  for(let i=0; i<sz; i++) {
-     let cmap=cmaps[i];
-     if (cmap.count == SZ) {
-       clist=cmap.colors;
-       for (const idx in clist) {
-         mlist.push(clist[idx]);
-       }
-       break;
-     }
-  }
-  return mlist;
-}
-
-function getSegmentMarkerRGBList(SZ,alpha) {
-  var mlist= [];
-  let cmaps=pixi_cmap_tb.cmaps;
-  let sz=cmaps.length;
-  for(let i=0; i<sz; i++) {
-     let cmap=cmaps[i];
-     if (cmap.count == SZ) {
-       rgbs=cmap.rgbs;
-       for (const idx in rgbs) {
-         let rgb=rgbs[idx];
-         mlist.push(rgb.replace("ALPHA", alpha));
-       }
-       break;
+  if(idx < sz) {
+     let cmap=cmaps[idx];
+     rgbs=cmap.rgbs;
+     for (const idx in rgbs) {
+       let rgb=rgbs[idx];
+       mlist.push(rgb.replace("ALPHA", alpha));
      }
   }
   return mlist;
@@ -222,15 +222,30 @@ function _createTexture(color) {
 function init_pixi(loader) {
   pixiOverlayList=[];
 
-// setup set  12 
-  let alpha="1";
-  let rgblist=getSegmentMarkerRGBList(12,alpha);
+// setup list for SHmax, Aphi, Iso, Dif
+  let rgblist=getSegmentMarkerRGBList(0,alpha);
   for(let i =0; i< 12; i++) {
-    let name="markerSet12_"+i;
+    let name="markerSet0_"+i;
     let rgb=rgblist[i];
     let texture=_createTexture(rgb);
     PIXI.BaseTexture.addToCache(texture,name);
-    markerTextures12.push(texture);
+    markerTexturesSet0.push(texture);
+  }
+  rgblist=getSegmentMarkerRGBList(1,alpha);
+  for(let i =0; i< 12; i++) {
+    let name="markerSet1_"+i;
+    let rgb=rgblist[i];
+    let texture=_createTexture(rgb);
+    PIXI.BaseTexture.addToCache(texture,name);
+    markerTexturesSet1.push(texture);
+  }
+  rgblist=getSegmentMarkerRGBList(2,alpha);
+  for(let i =0; i< 12; i++) {
+    let name="markerSet2_"+i;
+    let rgb=rgblist[i];
+    let texture=_createTexture(rgb);
+    PIXI.BaseTexture.addToCache(texture,name);
+    markerTexturesSet2.push(texture);
   }
 
 /*
@@ -436,7 +451,7 @@ function _loadup_data_url(uid,url) {
       let ll=tmp[i];
       if(ll[0]=='#') { // comment line
         continue;
-      }	      
+      }           
       let token=ll.split(",");
       if(token.length != 7) {
          window.console.log("PIXI: invalid data in this line "+i+" >>"+token.length);
@@ -453,7 +468,7 @@ function _loadup_data_url(uid,url) {
       rawlist.push([vel,lat,lon]);
       if(data_max_v == null) {
           data_max_v = vel;
-	  data_min_v = vel;  
+       data_min_v = vel;  
           } else {
               if(vel > data_max_v)
                 data_max_v=vel;
@@ -512,14 +527,18 @@ function makePixiOverlayLayer(uid,pixiLatlngList,spec) {
     let segments=[];
 
 // set the markerTexturesPtr to the right set
-// fix this XXX
-    if(DATA_SEGMENT_COUNT == 12) {
-      markerTexturesPtr=markerTextures12;
+    let segment_color_list;
+    if(spec.rgb_set == 0) {
+      markerTexturesPtr=markerTexturesSet0;
+      segment_color_list=getSegmentMarkerRGBList(0,alpha);
+    } else if (spec.rgb_set == 1 ) {
+      markerTexturesPtr=markerTexturesSet1;
+      segment_color_list=getSegmentMarkerRGBList(1,alpha);
+    } else {
+      markerTexturesPtr=markerTexturesSet2;
+      segment_color_list=getSegmentMarkerRGBList(2,alpha);
     }
-
     let segment_label_list=getSegmentRangeList(DATA_SEGMENT_COUNT, DATA_MAX_V, DATA_MIN_V);
-    let alpha="1.0";
-    let segment_color_list=getSegmentMarkerRGBList(DATA_SEGMENT_COUNT,alpha);
 
 
     for(var i=0; i<DATA_SEGMENT_COUNT; i++) {
@@ -532,9 +551,9 @@ function makePixiOverlayLayer(uid,pixiLatlngList,spec) {
       a.visible = 1;
 
       a.csm_properties = { segment_name:"segment_"+i,
-	                   segment_cnt:length,
-	                   segment_label: segment_label_list[i],
-                           segment_color: segment_color_list[i]};	     
+                           segment_cnt:length,
+                           segment_label: segment_label_list[i],
+                           segment_color: segment_color_list[i]};          
 
       pixiContainer.addChild(a);
       pContainers.push(a);
@@ -612,7 +631,7 @@ window.console.log("PIXI:in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>
 
 // our patched particleContainer accepts simple {x: ..., y: ...} objects as children:
 //window.console.log("    and xy at "+coords.x+" "+coords.y);
-		  
+            
 /** XXX  orginail way, 
               var aParticle=a.addChild({ x: coords.x - origin.x, y: coords.y - origin.y });
 **/
@@ -628,8 +647,8 @@ mask.drawEllipse(75, 30, 60, 40)
 //graphics.endFill();
 marker.mask = mask;
 */
-		   
-              marker.alpha=0.7; // add, multiply,screen
+             
+              marker.alpha=0.6; // add, multiply,screen
               marker.blendMode=2; // add, multiply,screen
 
               marker.x = coords.x - origin.x;
@@ -637,11 +656,11 @@ marker.mask = mask;
 
               marker.scale.set(invScale/scaleFactor);
 
-		   /*
+             /*
 marker.popup = L.popup({className: 'pixi-popup'})
                  .setLatLng(latlng)
                  .setContent('<b>Hello world!</b><br>I am a popup.'+ latlng['lat']+' '+latlng['lng']).openOn(viewermap);
-		 */
+           */
  
 /*
 let mx = coords.x - origin.x;
@@ -678,7 +697,7 @@ function pixiFindSegCntWithUid(uid) {
    if(seg) return seg.length;
    return 0;
 }
-	
+     
 /// { val1, val2, val3, .. val20 }
 function pixiFindSegmentsWithUid(uid) {
   for(let i=0; i<pixiOverlayList.length; i++) {
