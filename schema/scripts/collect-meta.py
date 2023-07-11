@@ -6,8 +6,6 @@
 ## 
 ##  for DEP, less than 50km, grid points are 2km, 
 ##  for DEP, greater than and equal to 50km, grid points are 5km
-##  Aphi ranges from 0 to 3
-##  SHmax ranges from -90 to 90
 ##
 
 import sys
@@ -36,6 +34,11 @@ for f in file_list:
 
   Overall_Metrics = []
   Overall_Deps = []
+
+  raw_SHmax=[]
+  raw_Aphi=[]
+  raw_Iso = []
+  raw_Dif = []
 
 # [ { 'dep': val, 'aphi_min': val, 'aphi_max': val, 'cnt': val }, ...] # index = 2
   DEP_range = []
@@ -71,21 +74,25 @@ for f in file_list:
 
             if(line[9] != "") : ## set if not empty
               SHmax = float(line[9])
+              raw_SHmax.append(SHmax);
             else:
               SHmax = None
 
             if(line[13] != "") : ## set if not empty
               Aphi = float(line[13])
+              raw_Aphi.append(Aphi);
             else:
               Aphi = None
 
             if(line[14] != "") : ## set if not empty
               Iso = float(line[14])
+              raw_Iso.append(Iso);
             else:
               Iso = None
 
             if(line[15] != "") : ## set if not empty
               Dif = float(line[15])
+              raw_Dif.append(Dif);
             else:
               Dif = None
 
@@ -264,8 +271,12 @@ for f in file_list:
   jblob['meta']['dataByDEP']=DEP_range
   jblob['metric'] = Overall_Metrics
   jblob['depth'] = Overall_Deps
-  jstr=json.dumps(jblob, indent=2)
-#  jstr=json.dumps(jblob)
+#  jstr=json.dumps(jblob, indent=2)
+  jstr=json.dumps(jblob)
   f.write(jstr)
   f.close()
+
+### DONE with one file
+  print("DONE with one")
+  return
 
