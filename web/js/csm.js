@@ -237,7 +237,7 @@ window.console.log("calling --->> resetSearch.");
 
         this.resetLatlon();
 
-        $("#searchType_0").click(); // start with model option
+        $("#searchTypeModel").click(); // start with model option
         this.resetModel();
     };
 
@@ -806,7 +806,7 @@ window.console.log("generateMetadataTable..");
         <th class="text-center button-container" style="width:2rem">
         </th>
         <th class="hoverColor" style="width:12rem" >Id&nbsp<span></span></th>
-        <th class="hoverColor" onClick="sortMetadataTableByRow(2,'a')">Dataset Name&nbsp<span id='sortCol_2' class="fas fa-angle-down"></span></th>
+        <th class="hoverColor" onClick="sortMetadataTableByRow(2,'a')">Model Name&nbsp<span id='sortCol_2' class="fas fa-angle-down"></span></th>
         <th class="hoverColor" onClick="sortMetadataTableByRow(3,'n')">Depth&nbsp<span id='sortCol_3' class="fas fa-angle-down"></span></th>
         <th class="hoverColor">Note&nbsp</th>
         <th style="width:20%;"><div class="col text-center">
@@ -935,7 +935,7 @@ window.console.log("generateMetadataTable..");
             this.model_initialized=true;
 	    this._redrawModel();
 
-            $("#searchType_0").click(); // start with model option
+            $("#searchTypeModel").click(); // start with model option
     };
      
     // need to trigger modelType change to first model

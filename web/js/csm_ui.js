@@ -101,6 +101,8 @@ resize_map();
 
 function toggleBigMap()
 {
+  // need to go to Model view if it is in 'Get Data' mode
+  $('#searchTypeModel').click();
   switch (big_map)  {
     case 0:
       big_map=1;

@@ -1,4 +1,9 @@
 /* csm */
+option:disabled {
+    font-style: italic;
+    color: #e8e8e8e8;
+}
+
 div.legend .color {
         position: relative;
         margin-right: 1.5em;
@@ -9,11 +14,11 @@ div.legend .color {
 
 div.legend .color::before {
           content: '';
-    height: 1.2em;
+    height: 1.5em;
     width: 1.2em;
     position: absolute;
     left: 0;
-    border-bottom:solid 1px black;
+    border:solid 1px black;
     background-color: inherit;
 }
 

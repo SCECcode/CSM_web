@@ -249,8 +249,8 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
          <div class="row" style="border:solid 0px blue">
              <div class="col-8">
                <form id="csm-search-type">
-                 <label><input type="radio" id="searchType_0" name="searchtype" onclick="CSM.showSearch('model')"><span>Model</span></label>
-                 <label><input type="radio" id="searchType_1" name="searchtype" onclick="CSM.showSearch('latlon')"><span>Get Data</span></label>
+                 <label><input type="radio" id="searchTypeModel" name="searchtype" onclick="CSM.showSearch('model')"><span>Model</span></label>
+                 <label><input type="radio" id="searchTypeData" name="searchtype" onclick="CSM.showSearch('latlon')"><span>Get Data</span></label>
                </form>
              </div>
 

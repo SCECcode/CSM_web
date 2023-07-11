@@ -19,47 +19,47 @@ var pixi_cmap_tb={
   csm_cmaps: [
     { type:0,
       note:"for SHmax",
-             rgbs: [ "rgba(0,0,77,ALPHA)",
-                     "rgba(0,0,166,ALPHA)",
-                     "rgba(0,0,255,ALPHA)",
-                     "rgba(102,102,255,ALPHA)",
-                     "rgba(166,166,255,ALPHA)",
-                     "rgba(230,230,255,ALPHA)",
-                     "rgba(255,230,230,ALPHA)",
-                     "rgba(255,166,166,ALPHA)",
-                     "rgba(255,102,102,ALPHA)", 
-                     "rgba(255,0,0,ALPHA)",
-                     "rgba(166,0,0,ALPHA)",
-                     "rgba(77,0,0,ALPHA)"]},
+             rgbs: [ "rgb(0,0,77)",
+                     "rgb(0,0,166)",
+                     "rgb(0,0,255)",
+                     "rgb(102,102,255)",
+                     "rgb(166,166,255)",
+                     "rgb(230,230,255)",
+                     "rgb(255,230,230)",
+                     "rgb(255,166,166)",
+                     "rgb(255,102,102)", 
+                     "rgb(255,0,0)",
+                     "rgb(166,0,0)",
+                     "rgb(77,0,0)"]},
     { type:1,
       note:"for Aphi",
-      rgbs: [ "rgba(48,18,59,ALPHA)",
-                     "rgba(68,84,196,ALPHA)",
-                     "rgba(67,144,254,ALPHA)",
-                     "rgba(32,200,222,ALPHA)",
-                     "rgba(138,240,247,ALPHA)",
-                     "rgba(245,229,38,ALPHA)",
-                     "rgba(253,205,49,ALPHA)",
-                     "rgba(247,186,61,ALPHA)",
-                     "rgba(254,145,41,ALPHA)", 
-                     "rgba(234,79,13,ALPHA)",
-                     "rgba(191,34,2,ALPHA)",
-                     "rgba(122,4,3,ALPHA)" ]},
+      rgbs: [ "rgb(48,18,59)",
+                     "rgb(68,84,196)",
+                     "rgb(67,144,254)",
+                     "rgb(32,200,222)",
+                     "rgb(138,240,247)",
+                     "rgb(245,229,38)",
+                     "rgb(253,205,49)",
+                     "rgb(247,186,61)",
+                     "rgb(254,145,41)", 
+                     "rgb(234,79,13)",
+                     "rgb(191,34,2)",
+                     "rgb(122,4,3)" ]},
 
     { type:2,
       note:"for Dif, Iso",
-             rgbs: [ "rgba(140,62.125,115.75,ALPHA)",
-                     "rgba(143,71,153.25,ALPHA)",
-                     "rgba(133.25,87.125,187.75,ALPHA)",
-                     "rgba(114.25,109.87,211.87,ALPHA)",
-                     "rgba(91.125,137.38,211.88,ALPHA)",
-                     "rgba(70.875,167,216,ALPHA)",
-                     "rgba(59.125,194.25,193.88,ALPHA)",
-                     "rgba(64.125,214.88,161.88,ALPHA)",
-                     "rgba(84.75,226.75,129.38,ALPHA)", 
-                     "rgba(120.12,230.75,105.13,ALPHA)",
-                     "rgba(165.62,226.12,95.625,ALPHA)",
-                     "rgba(211.12,217.38,106.37,ALPHA)"]}
+             rgbs: [ "rgb(140,62.125,115.75)",
+                     "rgb(143,71,153.25)",
+                     "rgb(133.25,87.125,187.75)",
+                     "rgb(114.25,109.87,211.87)",
+                     "rgb(91.125,137.38,211.88)",
+                     "rgb(70.875,167,216)",
+                     "rgb(59.125,194.25,193.88)",
+                     "rgb(64.125,214.88,161.88)",
+                     "rgb(84.75,226.75,129.38)", 
+                     "rgb(120.12,230.75,105.13)",
+                     "rgb(165.62,226.12,95.625)",
+                     "rgb(211.12,217.38,106.37)"]}
   ]
 };
 
@@ -187,16 +187,15 @@ function getSegmentRangeList(N, vs_max, vs_min) {
   return slist;
 }
 
-function getSegmentMarkerRGBList(idx,alpha) {
+function getSegmentMarkerRGBList(idx) {
   var mlist= [];
-  let cmaps=pixi_cmap_tb.cmaps;
+  let cmaps=pixi_cmap_tb.csm_cmaps;
   let sz=cmaps.length;
   if(idx < sz) {
      let cmap=cmaps[idx];
      rgbs=cmap.rgbs;
      for (const idx in rgbs) {
-       let rgb=rgbs[idx];
-       mlist.push(rgb.replace("ALPHA", alpha));
+       mlist.push(rgbs[idx]);
      }
   }
   return mlist;
@@ -223,7 +222,7 @@ function init_pixi(loader) {
   pixiOverlayList=[];
 
 // setup list for SHmax, Aphi, Iso, Dif
-  let rgblist=getSegmentMarkerRGBList(0,alpha);
+  let rgblist=getSegmentMarkerRGBList(0);
   for(let i =0; i< 12; i++) {
     let name="markerSet0_"+i;
     let rgb=rgblist[i];
@@ -231,7 +230,7 @@ function init_pixi(loader) {
     PIXI.BaseTexture.addToCache(texture,name);
     markerTexturesSet0.push(texture);
   }
-  rgblist=getSegmentMarkerRGBList(1,alpha);
+  rgblist=getSegmentMarkerRGBList(1);
   for(let i =0; i< 12; i++) {
     let name="markerSet1_"+i;
     let rgb=rgblist[i];
@@ -239,7 +238,7 @@ function init_pixi(loader) {
     PIXI.BaseTexture.addToCache(texture,name);
     markerTexturesSet1.push(texture);
   }
-  rgblist=getSegmentMarkerRGBList(2,alpha);
+  rgblist=getSegmentMarkerRGBList(2);
   for(let i =0; i< 12; i++) {
     let name="markerSet2_"+i;
     let rgb=rgblist[i];
@@ -530,13 +529,13 @@ function makePixiOverlayLayer(uid,pixiLatlngList,spec) {
     let segment_color_list;
     if(spec.rgb_set == 0) {
       markerTexturesPtr=markerTexturesSet0;
-      segment_color_list=getSegmentMarkerRGBList(0,alpha);
+      segment_color_list=getSegmentMarkerRGBList(0);
     } else if (spec.rgb_set == 1 ) {
       markerTexturesPtr=markerTexturesSet1;
-      segment_color_list=getSegmentMarkerRGBList(1,alpha);
+      segment_color_list=getSegmentMarkerRGBList(1);
     } else {
       markerTexturesPtr=markerTexturesSet2;
-      segment_color_list=getSegmentMarkerRGBList(2,alpha);
+      segment_color_list=getSegmentMarkerRGBList(2);
     }
     let segment_label_list=getSegmentRangeList(DATA_SEGMENT_COUNT, DATA_MAX_V, DATA_MIN_V);
 
@@ -594,7 +593,7 @@ window.console.log("PIXI: add event");
 
         let scaleFactor=16; // default came from seismicity
         if(spec.scale_hint == 2 ) { // when grid points are about 2km len is 70k
-          scaleFactor=6.6;
+          scaleFactor=6.8;
         }
         if(spec.scale_hint == 5) {  // when grid points are about 5km
           scaleFactor=2.7; 
@@ -648,8 +647,8 @@ mask.drawEllipse(75, 30, 60, 40)
 marker.mask = mask;
 */
              
-              marker.alpha=0.6; // add, multiply,screen
-              marker.blendMode=2; // add, multiply,screen
+              marker.alpha=0.7; // add, multiply,screen
+              marker.blendMode=0; // add, multiply,screen
 
               marker.x = coords.x - origin.x;
               marker.y= coords.y - origin.y;
