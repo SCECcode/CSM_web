@@ -15,6 +15,7 @@ import pdb
 import json 
 import math
 from pathlib import Path
+import numpy as np
 
 ## extract meta data info from the csv file
 ##
@@ -277,16 +278,18 @@ for f in file_list:
   f.close()
 
 #https://www.statology.org/percentiles-in-python/
-#import numpy as np
+
 #make this example reproducible
 #np.random.seed(0)
 #create array of 100 random integers distributed between 0 and 500
 #data = np.random.randint(0, 500, 100)
+  data=raw_SHmax
+
 #find the 37th percentile of the array
-#np.percentile(data, 37)
+  np.percentile(data, 37)
 #173.26
 #Find the quartiles (25th, 50th, and 75th percentiles) of the array
-#np.percentile(data, [25, 50, 75])
+  np.percentile(data, [25, 50, 75])
 #array([116.5, 243.5, 371.5])
 
 ### DONE with one file
