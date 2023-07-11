@@ -279,6 +279,7 @@ for f in file_list:
 
 #https://www.statology.org/percentiles-in-python/
 
+#np.max
 #make this example reproducible
 #np.random.seed(0)
 #create array of 100 random integers distributed between 0 and 500
