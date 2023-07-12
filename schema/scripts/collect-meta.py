@@ -291,7 +291,7 @@ for f in file_list:
 
   jblob['metric'] = Overall_Metrics
   jblob['depth'] = Overall_Deps
-  jstr=json.dumps(jblob, indent=2)
-#  jstr=json.dumps(jblob)
+#  jstr=json.dumps(jblob, indent=2)
+  jstr=json.dumps(jblob)
   f.write(jstr)
   f.close()
