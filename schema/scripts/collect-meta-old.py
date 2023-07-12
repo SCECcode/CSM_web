@@ -6,15 +6,17 @@
 ## 
 ##  for DEP, less than 50km, grid points are 2km, 
 ##  for DEP, greater than and equal to 50km, grid points are 5km
+##  Aphi ranges from 0 to 3
+##  SHmax ranges from -90 to 90
 ##
 
 import sys
 from os import walk
 import csv
+import pdb
 import json 
 import math
 from pathlib import Path
-import numpy as np
 
 ## extract meta data info from the csv file
 ##
@@ -89,89 +91,98 @@ for f in file_list:
 
 ## DEP
             if (len(DEP_range) == 0) : # first one
-              found=0
-              nitem={ 'dep': DEP, 'shmax_min': None, 'shmax_max': None, 'aphi_min': None, 'aphi_max': None, 'iso_min': None, 'iso_max': None, 'dif_min': None, 'dif_max': None, 'cnt': 1, 'rawshmax': [], 'rawaphi':[], 'rawiso':[], 'rawdif':[] }
+              found=1
+              nitem={ 'dep': DEP, 'shmax_min': SHmax, 'shmax_max': SHmax, 'aphi_min': Aphi, 'aphi_max': Aphi, 'iso_min': Iso, 'iso_max': Iso, 'dif_min': Dif, 'dif_max': Dif, 'cnt': 1 }
               DEP_range.append(nitem)
-              Overall_Deps.append(DEP)
-            else :
+              Overall_Deps.append(math.floor(DEP))
+            else:  # iterate through and see where to fit them
               found=0
               for item in DEP_range:
                  dep=item['dep']
-                 if(dep == DEP) : # found it
-                   nitem=item;
-                   found = 1 
-                   break;
-              if( found == 0 ) :
-                 nitem={ 'dep': DEP, 'shmax_min': None, 'shmax_max': None, 'aphi_min': None, 'aphi_max': None, 'iso_min': None, 'iso_max': None, 'dif_min': None, 'dif_max': None, 'cnt': 1, 'rawshmax': [], 'rawaphi':[], 'rawiso':[], 'rawdif':[] }
-                 DEP_range.append(nitem)
-                 Overall_Deps.append(DEP)
 
-            ## HERE  
-            if(SHmax != None) :
-              nitem['rawshmax'].append(SHmax)
-            if(Aphi != None) :
-              nitem['rawaphi'].append(Aphi)
-            if(Dif != None) :
-              nitem['rawdif'].append(Dif)
-            if(Iso != None) :
-              nitem['rawiso'].append(Iso)
+                 shmax_min=item['shmax_min']
+                 shmax_max=item['shmax_max']
 
-### fill in max/min and percentile max/min per depth
-    for item in DEP_range:
-      rawshmax = item['rawshmax']
-      shmax_min=shmax_max=shmax_90p=shmax_10p=None
-      if(np.array(rawshmax).size > 0) :
-          item['shmax_min']=shmax_min = np.min(rawshmax)
-          item['shmax_max']=shmax_max = np.max(rawshmax)
-          item['shmax_90p']=shmax_90p = np.percentile(rawshmax, 90)
-          item['shmax_10p']=shmax_10p = np.percentile(rawshmax, 10)
-    
-      rawaphi = item['rawaphi']
-      aphi_min=aphi_max=aphi_90p=aphi_10p=None
-      if(np.array(rawaphi).size > 0) :
-          item['aphi_min']=aphi_min = np.min(rawaphi)
-          item['aphi_max']=aphi_max = np.max(rawaphi)
-          item['aphi_90p']=aphi_90p = np.percentile(rawaphi, 90)
-          item['aphi_10p']=aphi_10p = np.percentile(rawaphi, 10)
+                 aphi_min=item['aphi_min']
+                 aphi_max=item['aphi_max']
 
-      rawiso = item['rawiso']
-      iso_min=iso_max=iso_90p=iso_10p=None
-      if(np.array(rawiso).size > 0) :
-          item['iso_min']=iso_min = np.min(rawiso)
-          item['iso_max']=iso_max = np.max(rawiso)
-          item['iso_90p']=iso_90p = np.percentile(rawiso, 90)
-          item['iso_10p']=iso_10p = np.percentile(rawiso, 10)
-        
-      rawdif = item['rawdif']
-      dif_min=dif_max=dif_90p=dif_10p=None
-      if(np.array(rawdif).size > 0) :
-          item['dif_min']=dif_min = np.min(rawdif)
-          item['dif_max']=dif_max = np.max(rawdif)
-          item['dif_90p']=dif_90p = np.percentile(rawdif, 90)
-          item['dif_10p']=dif_10p = np.percentile(rawdif, 10)
+                 iso_min=item['iso_min']
+                 iso_max=item['iso_max']
+
+                 dif_min=item['dif_min']
+                 dif_max=item['dif_max']
+
+                 cnt = item['cnt']
+                 if(dep == DEP) :
+                    found=1
+                    item['cnt'] = cnt+1;
+                    if(Aphi != None) :
+
+                      if (shmax_min == None or SHmax < shmax_min) :
+                         item['shmax_min'] = SHmax;
+                      if (shmax_max == None or SHmax > shmax_max) :
+                         item['shmax_max'] = SHmax;
+
+                      if (aphi_min == None or Aphi < aphi_min) :
+                         item['aphi_min'] = Aphi;
+                      if (aphi_max == None or Aphi > aphi_max) :
+                         item['aphi_max'] = Aphi;
+
+                      if (iso_min == None or Iso < iso_min) :
+                         item['iso_min'] = Iso;
+                      if (iso_max == None or Iso > iso_max) :
+                         item['iso_max'] = Iso;
+
+                      if (dif_min == None or Dif < dif_min) :
+                         item['dif_min'] = Dif;
+                      if (dif_max == None or Dif > dif_max) :
+                         item['dif_max'] = Dif;
+
+                    break
+            if(found == 0) :
+              nitem={ 'dep': DEP, 'shmax_min': SHmax, 'shmax_max': SHmax, 'aphi_min': Aphi, 'aphi_max': Aphi, 'iso_min': Iso, 'iso_max': Iso, 'dif_min': Dif, 'dif_max': Dif, 'cnt': 1 }
+              DEP_range.append(nitem)
+              Overall_Deps.append(DEP)
 
 ## SHmax
-      if(Overall_SHmax_min == None or shmax_min < Overall_SHmax_min ):
-        Overall_SHmax_min = shmax_min
-      if(Overall_SHmax_max == None or shmax_max > Overall_SHmax_max ):
-        Overall_SHmax_max = shmax_max
+            if(Overall_SHmax_min == None):
+              Overall_SHmax_min = Overall_SHmax_max = SHmax
+            else :
+              if(SHmax != None) :
+                if(Overall_SHmax_min == None or SHmax < Overall_SHmax_min) : 
+                  Overall_SHmax_min = SHmax
+                if(Overall_SHmax_max == None or SHmax > Overall_SHmax_max) :
+                  Overall_SHmax_max = SHmax
 ## Aphi
-      if(Overall_Aphi_min == None or aphi_min < Overall_Aphi_min ):
-        Overall_Aphi_min = aphi_min
-      if(Overall_Aphi_max == None or aphi_max > Overall_Aphi_max ):
-        Overall_Aphi_max = aphi_max
+            if(Overall_Aphi_min == None):
+              Overall_Aphi_min = Overall_Aphi_max = Aphi
+            else :
+              if(Aphi != None) :
+                if(Overall_Aphi_min == None or Aphi < Overall_Aphi_min) : 
+                  Overall_Aphi_min = Aphi
+                if(Overall_Aphi_max == None or Aphi > Overall_Aphi_max) :
+                  Overall_Aphi_max = Aphi
 ## Iso 
-      if(Overall_Iso_min == None or iso_min < Overall_Iso_min ):
-        Overall_Iso_min = iso_min
-      if(Overall_Iso_max == None or iso_max > Overall_Iso_max ):
-        Overall_Iso_max = iso_max
-## Dif 
-      if(Overall_Dif_min == None or dif_min < Overall_Dif_min ):
-        Overall_Dif_min = dif_min
-      if(Overall_Dif_max == None or dif_max > Overall_Dif_max ):
-        Overall_Dif_max = dif_max
+            if(Overall_Iso_min == None):
+              Overall_Iso_min = Overall_Iso_max = Iso
+            else :
+              if(Iso != None) :
+                if(Overall_Iso_min == None or Iso < Overall_Iso_min) : 
+                  Overall_Iso_min = Iso
+                if(Overall_Iso_max == None or Iso > Overall_Iso_max) :
+                  Overall_Iso_max = Iso
 
-      Overall_data_total = line_no - 1
+## Dif 
+            if(Overall_Dif_min == None):
+              Overall_Dif_min = Overall_Dif_max = Dif
+            else :
+              if(Dif != None) :
+                if(Overall_Dif_min == None or Dif < Overall_Dif_min) : 
+                  Overall_Dif_min = Dif
+                if(Overall_Dif_max == None or Dif > Overall_Dif_max) :
+                  Overall_Dif_max = Dif
+
+            Overall_data_total = line_no - 1
 
   Overall_SHmax_range= [Overall_SHmax_min, Overall_SHmax_max]
   if ( Overall_SHmax_min != None ):
@@ -243,26 +254,19 @@ for f in file_list:
 #  print("cnt_list ->", cnt_list)
 #  print("Overall Aphi range:",Overall_Aphi_range)
 
-  f = open('../data/'+f_wo_ext+'_meta.json', 'w')
+  f = open('../data/'+f_wo_ext+'_meta_old.json', 'w')
 
   jblob=json.loads('{ "model":"'+f_wo_ext+'", "meta": { "dataCount": '+str(Overall_data_total)+' } }')
   jblob['meta']['shmaxRange']=Overall_SHmax_range
   jblob['meta']['aphiRange']=Overall_Aphi_range
   jblob['meta']['isoRange']=Overall_Iso_range
   jblob['meta']['difRange']=Overall_Dif_range
-
-  ## remove rawshmax, rawapi, rawiso, rawdif
-  for item in DEP_range :
-     del item['rawshmax'] 
-     del item['rawaphi'] 
-     del item['rawiso'] 
-     del item['rawdif'] 
-
   jblob['meta']['dataByDEP']=DEP_range
-
   jblob['metric'] = Overall_Metrics
   jblob['depth'] = Overall_Deps
-#  jstr=json.dumps(jblob, indent=2)
-  jstr=json.dumps(jblob)
+  jstr=json.dumps(jblob, indent=2)
+#  jstr=json.dumps(jblob)
   f.write(jstr)
   f.close()
+
+
