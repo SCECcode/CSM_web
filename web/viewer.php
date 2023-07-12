@@ -228,6 +228,8 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
               <select id="mapLayer" class="custom-select custom-select-sm"
                                                onchange="switchLayer(this.value);">
                   <option selected value="esri topo">ESRI Topographic</option>
+                  <option value="Jawg Dark">Jawg Dark</option>
+                  <option value="Jawg Light">Jawg Light</option>
                   <option value="esri NG">ESRI National Geographic</option>
                   <option value="esri imagery">ESRI Imagery</option>
                   <option value="otm topo">OTM Topographic</option>

@@ -134,7 +134,7 @@ function setup_viewer()
 	attribution: '<a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 	minZoom: 0,
 	maxZoom: 18,
-	accessToken: '<hv01XLPeyXg9OUGzUzaH4R0yA108K1Y4MWmkxidYRe5ThWqv2ZSJbADyrhCZtE4l' });
+	accessToken: 'hv01XLPeyXg9OUGzUzaH4R0yA108K1Y4MWmkxidYRe5ThWqv2ZSJbADyrhCZtE4l' });
 
 // osm street
   var openURL='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -144,11 +144,13 @@ function setup_viewer()
 
   baseLayers = {
     "esri topo" : esri_topographic,
-    "Jawg dark" : jawg_dark,
+    "Jawg Dark" : jawg_dark,
+    "Jawg Light" : jawg_light,
     "esri NG" : esri_ng,
     "esri imagery" : esri_imagery,
     "otm topo": otm_topographic,
-    "osm street" : osm_street
+    "osm street" : osm_street,
+    "shaded relief": shaded_relief
   };
   //  "shaded relief": shaded_relief
   var overLayer = {};
