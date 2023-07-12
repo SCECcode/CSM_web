@@ -121,18 +121,26 @@ for f in file_list:
               raw_shmax = item['raw_shmax']
               item['shmax_min']=shmax_min = np.min(raw_shmax)
               item['shmax_max']=shmax_max = np.max(raw_shmax)
+              item['shmax_90p']=shmax_90p = np.percentile(raw_shmax, [90])
+              item['shmax_10p']=shmax_10p = np.percentile(raw_shmax, [10])
 
               raw_aphi = item['raw_aphi']
               item['aphi_min']=aphi_min = np.min(raw_aphi)
               item['aphi_max']=aphi_max = np.max(raw_aphi)
+              item['aphi_90p']=aphi_90p = np.percentile(raw_aphi, [90])
+              item['aphi_10p']=aphi_10p = np.percentile(raw_aphi, [10])
 
               raw_iso = item['raw_iso']
               item['iso_min']=iso_min = np.min(raw_iso)
               item['iso_max']=iso_max = np.max(raw_iso)
+              item['iso_90p']=iso_90p = np.percentile(raw_iso, [90])
+              item['iso_10p']=iso_10p = np.percentile(raw_iso, [10])
 
               raw_dif = item['raw_dif']
               item['dif_min']=dif_min = np.min(raw_dif)
               item['dif_max']=dif_max = np.max(raw_dif)
+              item['dif_90p']=dif_90p = np.percentile(raw_dif, [90])
+              item['dif_10p']=dif_10p = np.percentile(raw_dif, [10])
 
 ## SHmax
             if(Overall_SHmax_min == None || shmax_min < Overall_SHmax_min ):
