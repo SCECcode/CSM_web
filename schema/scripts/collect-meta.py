@@ -7,6 +7,12 @@
 ##  for DEP, less than 50km, grid points are 2km, 
 ##  for DEP, greater than and equal to 50km, grid points are 5km
 ##
+## SHmax should be fixed at [-90,90] (currently still drawing from data)
+## Aphi should be fixed at [0,3] (currently still drawing from data)
+## Iso should be [min,max], or better yet [0.001 quantile – 0.999 quantile],
+## though for stressing rate models (LovelessMeade, NeoKinema, SAFPoly3D,
+## UCERF_ABM, Zeng) it would also help for it to be symmetric about zero.
+## Dif should be [min,max], or better yet [0.001 quantile – 0.999 quantile]
 
 import sys
 from os import walk
@@ -15,6 +21,7 @@ import json
 import math
 from pathlib import Path
 import numpy as np
+import pdb
 
 ## extract meta data info from the csv file
 ##
@@ -23,6 +30,8 @@ for (dirpath, dirnames, filenames) in walk("../data"):
     file_list.extend(filenames)
     break
 
+#file_list = ['FlatMaxwell.csv']
+
 for f in file_list:
   ff = Path(f)
   f_wo_ext = str(ff.with_suffix(''))
@@ -30,7 +39,7 @@ for f in file_list:
   if(sfx != ".csv") :
     continue
 
-  print("file:",f) 
+  print("collect-meta file:",f) 
 
   Overall_Metrics = []
   Overall_Deps = []
@@ -119,36 +128,56 @@ for f in file_list:
 ### fill in max/min and percentile max/min per depth
     for item in DEP_range:
       rawshmax = item['rawshmax']
-      shmax_min=shmax_max=shmax_90p=shmax_10p=None
+      shmax_min=shmax_max=None
       if(np.array(rawshmax).size > 0) :
           item['shmax_min']=shmax_min = np.min(rawshmax)
           item['shmax_max']=shmax_max = np.max(rawshmax)
-          item['shmax_90p']=shmax_90p = np.percentile(rawshmax, 90)
-          item['shmax_10p']=shmax_10p = np.percentile(rawshmax, 10)
     
       rawaphi = item['rawaphi']
-      aphi_min=aphi_max=aphi_90p=aphi_10p=None
+      aphi_min=aphi_max=None
       if(np.array(rawaphi).size > 0) :
           item['aphi_min']=aphi_min = np.min(rawaphi)
           item['aphi_max']=aphi_max = np.max(rawaphi)
-          item['aphi_90p']=aphi_90p = np.percentile(rawaphi, 90)
-          item['aphi_10p']=aphi_10p = np.percentile(rawaphi, 10)
 
       rawiso = item['rawiso']
-      iso_min=iso_max=iso_90p=iso_10p=None
+      iso_min=iso_max=iso_90p=iso_10p=iso_999q=iso_001q=iso_999qs=iso_001qs=None
       if(np.array(rawiso).size > 0) :
           item['iso_min']=iso_min = np.min(rawiso)
           item['iso_max']=iso_max = np.max(rawiso)
           item['iso_90p']=iso_90p = np.percentile(rawiso, 90)
           item['iso_10p']=iso_10p = np.percentile(rawiso, 10)
+          item['iso_999q']=iso_999q = np.quantile(rawiso, .999)
+          item['isoi_001q']=iso_001q = np.quantile(rawiso, .001)
+## only if iso_001q is smaller than 0
+          if(iso_001q < 0 and iso_999q > 0) :
+            d999=abs(iso_999q - 0)
+            d001=abs(iso_001q - 0)
+            if(d999 > d001) :
+              delta=d999
+              iso_999qs=iso_999q
+              if(iso_001q < 0) :
+                iso_001qs= 0-delta
+              else:
+                print(" BAD iso 1???")
+            else: 
+              delta=d001
+              iso_001qs=iso_001q
+              if(iso_999q > 0) :
+                iso_999qs=delta;
+              else:
+                print(" BAD iso 1???")
+            item['iso_999qs']=iso_999qs
+            item['isoi_001qs']=iso_001qs
         
       rawdif = item['rawdif']
-      dif_min=dif_max=dif_90p=dif_10p=None
+      dif_min=dif_max=dif_90p=dif_10p=dif_999q=dif_001q=None
       if(np.array(rawdif).size > 0) :
           item['dif_min']=dif_min = np.min(rawdif)
           item['dif_max']=dif_max = np.max(rawdif)
           item['dif_90p']=dif_90p = np.percentile(rawdif, 90)
           item['dif_10p']=dif_10p = np.percentile(rawdif, 10)
+          item['dif_999q']=dif_999q = np.quantile(rawdif, .999)
+          item['dif_001q']=dif_001q = np.quantile(rawdif, .001)
 
 ## SHmax
       if(Overall_SHmax_min == None or shmax_min < Overall_SHmax_min ):
@@ -251,7 +280,7 @@ for f in file_list:
   jblob['meta']['isoRange']=Overall_Iso_range
   jblob['meta']['difRange']=Overall_Dif_range
 
-  ## remove rawshmax, rawapi, rawiso, rawdif
+  ## remove rawshmax, rawaphi, rawiso, rawdif
   for item in DEP_range :
      del item['rawshmax'] 
      del item['rawaphi'] 
@@ -262,7 +291,7 @@ for f in file_list:
 
   jblob['metric'] = Overall_Metrics
   jblob['depth'] = Overall_Deps
-#  jstr=json.dumps(jblob, indent=2)
-  jstr=json.dumps(jblob)
+  jstr=json.dumps(jblob, indent=2)
+#  jstr=json.dumps(jblob)
   f.write(jstr)
   f.close()
