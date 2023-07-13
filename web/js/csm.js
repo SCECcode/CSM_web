@@ -17,7 +17,7 @@ var CSM = new function () {
     //   { "model": mn,
     //     "meta": { "dataCount": cnt, "dataByDEP": [ { "dep":d, "cnt":lcnt,  "aphi_max":max, "aphi_min":min}..] },
     //     "aphiRange": [mmax, mmin],
-    //     "metric" : [ "shmas","aphi" ],
+    //     "metric" : [ "shmax","aphi" ],
     //     "depths" : [ 1, 3, 5 ],
     //     "header" : "..." }
     // NEED to postprocess
@@ -250,6 +250,10 @@ window.console.log("calling --->> clearSearch.");
     };
 
 // HOW TO DEFINE spec
+// spec = [ tmodel, ddepth, mmetric ];
+// spec_idx = [ tidx,midx,didx ];
+// spec_data = [ data_min, data_max ]; a range specific to model and metric
+
     this.getSpec = function() {
       let tidx=parseInt($("#modelType").val());
       let model=this.csm_models[tidx];
@@ -283,14 +287,48 @@ window.console.log("SPEC:modelDepth_idx is "+didx+"("+ddepth+"km)");
       }
       let mmetric=m[midx];
 window.console.log("SPEC:modelMetric_idx is "+midx+"("+mmetric+")");
+window.console.log("HERE...");
+
+      let datamin=null;
+      let datamax=null;
+      // if metric is "aphi"
+      if(mmetric=="Aphi") {	
+        datamax=3.0;
+        datamin=0.0;
+      } else if(mmetric=="SHmax") {
+        datamax=90.0;
+        datamin=-90.0;
+      } else if(mmetric=="Iso") {
+/*
+        let keys=Object.keys(meta);
+
+        if( 'iso_001qs' in ddd ) {
+	  datamin=ddd['iso_001qs'];
+	  datamax=ddd['iso_999qs'];
+          } else {
+	    datamin=ddd['iso_001q'];
+	    datamax=ddd['iso_999q'];
+        }
+      } else if(mmetric=="Dif") {
+        if( 'dif_001qs' in ddd ) {
+	  datamin=ddd['dif_001qs'];
+	  datamax=ddd['dif_999qs'];
+          } else {
+	    datamin=ddd['dif_001q'];
+	    datamax=ddd['dif_999q'];
+        }
+*/
+      }
 
       let spec = [ tmodel, ddepth, mmetric ];
       let spec_idx = [ tidx,midx,didx ];
+      let spec_data = [datamin, datamax];
 
 window.console.log("spec is: ",spec);
 window.console.log("spec_idx is: ",spec_idx);
+window.console.log("spec_idx is: ",spec_data);
 
-      return [spec, spec_idx];
+      return [spec, spec_idx, spec_data];
     }
 
     this.freshSearch = function (){
@@ -303,7 +341,8 @@ window.console.log("calling, new freshSearch...");
          
       let spec = [];
       let spec_idx = [];
-      [ spec, spec_idx ] = this.getSpec();
+      let spec_data = [];
+      [ spec, spec_idx, spec_data ] = this.getSpec();
 
 // initiate search if it is for whole model or
 // wait for a region 
@@ -322,7 +361,7 @@ window.console.log("in freshSearch --model");
           CSM.setupPixiSegmentDebug(pixiuid,seginfo);
           CSM.setupPixiLegend(pixiuid,spec,seginfo);
           } else {
-            pixiuid = this.search(this.searchType.model, spec, spec_idx);
+            pixiuid = this.search(this.searchType.model, spec, spec_idx, spec_data);
         }
 
         return;
@@ -494,7 +533,7 @@ window.console.log("calling togglePixiSegment.. with ",n,"on pixiuid ",pixiuid);
     // expect at most 80k lat/lon/val
     // criteria is lat,lon,lat2,lon2 for searching with LatLon
     //              is tidx,midx,didx for storing the pixi into a list     
-    this.search = function(type, spec, criteria) {
+    this.search = function(type, spec, criteria, spec_data) {
 
         CSM.startWaitSpin();
 
@@ -540,18 +579,23 @@ window.console.log("SEARCH :",spec);
                     let pixi_spec = { 'seg_cnt' : 12};
                     pixi_spec.rgb_set=2;
                     
+                    if(spec_data['datamax'] != null && spec_data['datamin '] != null) {
+                      pixi_spec.data_max=spec_data['datamax'];
+                      pixi_spec.data_min=spec_data['datamin'];
+                    }
+
 window.console.log("SEARCHING for ",spec[2]);
                     // if metric is "aphi"
                     if(spec[2]=="Aphi") {	
-                       pixi_spec.data_max=3.0;
-                       pixi_spec.data_min=0.0;
                        pixi_spec.rgb_set=1;
                     }
                     if(spec[2]=="SHmax") {
-                       pixi_spec.data_max=90.0;
-                       pixi_spec.data_min=-90.0;
                        pixi_spec.rgb_set=0;
                     }
+
+/* special case, look up the jblob data
+                    
+*/
 
                     // 2km grid or 5km grid  
                     pixi_spec.scale_hint=2;
@@ -611,7 +655,8 @@ window.console.log("calling redrawModel..");
 
 	let spec = [];
         let spec_idx = [];
-        [ spec, spec_idx ] = this.getSpec();
+        let spec_data = [];
+        [ spec, spec_idx, spec_data ] = this.getSpec();
 
         // make sure the displayed background is correct,
         var pixiuid= CSM.lookupModelLayers(
@@ -624,7 +669,7 @@ window.console.log("calling redrawModel..");
           CSM.setupPixiSegmentDebug(pixiuid,seginfo);
           CSM.setupPixiLegend(pixiuid,spec, seginfo);
           } else {
-            pixiuid = this.search(this.searchType.model, spec, spec_idx);
+            pixiuid = this.search(this.searchType.model, spec, spec_idx, spec_data);
         }
     };
 	     
@@ -637,7 +682,8 @@ window.console.log("calling searchLatlon..");
 
         let spec = [];
         let spec_idx = [];
-        [ spec, spec_idx ] = this.getSpec();
+        let spec_data = [];
+        [ spec, spec_idx, spec_data ] = this.getSpec();
 
         if( fromWhere == 0) {
             let lat1=$("#csm-firstLatTxt").val();
@@ -666,7 +712,7 @@ window.console.log("calling searchLatlon..");
         }
 
         // not expecting anything 
-        let ret= this.search(CSM.searchType.latlon, spec, criteria);
+        let ret= this.search(CSM.searchType.latlon, spec, criteria, spec_data);
 
 /****
         let regionLocations = [];
@@ -924,6 +970,21 @@ window.console.log("generateMetadataTable..");
                 option.label = term.model_label;
                 option.value= term.idx;
                 elt.add(option);
+            }
+
+            let mblob=CSM_tb['metrics'];
+            var melt=document.getElementById('modelMetric');
+	    let msz=mblob.length;
+	    for(let i=0; i<msz; i++) {
+               let mterm=mblob[i]; 
+               let mlabel=mterm['label'];
+               let mname=mterm['name'];
+               let mid="csmmetric_"+mname;
+               let option = document.createElement("option");
+               option.id=mid;
+               option.value=mname;
+               option.label = mlabel;
+               melt.add(option);
             }
 
 /* create the default model depth list to 1st one for model */

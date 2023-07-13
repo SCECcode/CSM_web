@@ -147,7 +147,7 @@ for f in file_list:
           item['iso_90p']=iso_90p = np.percentile(rawiso, 90)
           item['iso_10p']=iso_10p = np.percentile(rawiso, 10)
           item['iso_999q']=iso_999q = np.quantile(rawiso, .999)
-          item['isoi_001q']=iso_001q = np.quantile(rawiso, .001)
+          item['iso_001q']=iso_001q = np.quantile(rawiso, .001)
 ## only if iso_001q is smaller than 0
           if(iso_001q < 0 and iso_999q > 0) :
             d999=abs(iso_999q - 0)

@@ -273,12 +273,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
             <div class="input-group-prepend">
                   <label class="input-group-text" for="modelType">Select Model Metric</label>
             </div>
-	    <select id="modelMetric" class="custom-select custom-select-sm">
-                  <option id="csmmetric_SHmax" value="SHmax"><span>SHmax - horizontal compression azimuth (orientation)</span></option>
-                  <option id="csmmetric_Aphi" value="Aphi">Aphi - Anderson modified shape parameter (orientation)</option>
-                  <option id="csmmetric_Iso" value="Iso">Isotropic pressure - (S1+S2+S3)/3 (magnitude)</option>
-                  <option id="csmmetric_Dif" value="Dif">Differential stress - (S1-S3) (magnitude)</option>
-            </select>
+	    <select id="modelMetric" class="custom-select custom-select-sm"></select>
 	 </div> 
 
          <div class="input-group input-group-sm custom-control-inline mt-2">
