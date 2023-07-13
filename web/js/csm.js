@@ -287,7 +287,6 @@ window.console.log("SPEC:modelDepth_idx is "+didx+"("+ddepth+"km)");
       }
       let mmetric=m[midx];
 window.console.log("SPEC:modelMetric_idx is "+midx+"("+mmetric+")");
-window.console.log("HERE...");
 
       let datamin=null;
       let datamax=null;
@@ -299,10 +298,9 @@ window.console.log("HERE...");
         datamax=90.0;
         datamin=-90.0;
       } else if(mmetric=="Iso") {
-/*
-        let keys=Object.keys(meta);
+        let keys=Object.keys(ddd);
 
-        if( 'iso_001qs' in ddd ) {
+        if( keys.indexOf('iso_001qs') >= 0 ) {
 	  datamin=ddd['iso_001qs'];
 	  datamax=ddd['iso_999qs'];
           } else {
@@ -310,14 +308,14 @@ window.console.log("HERE...");
 	    datamax=ddd['iso_999q'];
         }
       } else if(mmetric=="Dif") {
-        if( 'dif_001qs' in ddd ) {
+        let keys=Object.keys(ddd);
+        if( keys.indexOf('dif_001qs') >= 0 ) {
 	  datamin=ddd['dif_001qs'];
 	  datamax=ddd['dif_999qs'];
           } else {
 	    datamin=ddd['dif_001q'];
 	    datamax=ddd['dif_999q'];
         }
-*/
       }
 
       let spec = [ tmodel, ddepth, mmetric ];
@@ -326,7 +324,7 @@ window.console.log("HERE...");
 
 window.console.log("spec is: ",spec);
 window.console.log("spec_idx is: ",spec_idx);
-window.console.log("spec_idx is: ",spec_data);
+window.console.log("         XXX HERE spec_data is: ",spec_data[0], spec_data[1]);
 
       return [spec, spec_idx, spec_data];
     }
@@ -579,9 +577,9 @@ window.console.log("SEARCH :",spec);
                     let pixi_spec = { 'seg_cnt' : 12};
                     pixi_spec.rgb_set=2;
                     
-                    if(spec_data['datamax'] != null && spec_data['datamin '] != null) {
-                      pixi_spec.data_max=spec_data['datamax'];
-                      pixi_spec.data_min=spec_data['datamin'];
+                    if(spec_data[0] != null && spec_data[1] != null) {
+                      pixi_spec.data_min=spec_data[0];
+                      pixi_spec.data_max=spec_data[1];
                     }
 
 window.console.log("SEARCHING for ",spec[2]);

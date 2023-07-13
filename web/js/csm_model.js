@@ -35,7 +35,7 @@ metrics: [
     {name: 'Aphi', range: [0, 3], 
      short: 'Aphi (orientation)', label: 'Aphi - Anderson modified shape parameter (orientation)'}, 
     {name: 'Iso', range: [], 
-     short: 'Isotropic pressure (magnitude)', label: 'sotropic pressure - (S1+S2+S3)/3 (magnitude)'},
+     short: 'Isotropic pressure (magnitude)', label: 'Isotropic pressure - (S1+S2+S3)/3 (magnitude)'},
     {name: 'Dif', range: [], 
      short: 'Differential stress (magnitude)', label: 'Differential stress - (S1-S3) (magnitude)'}],   
 meta_descript: [
