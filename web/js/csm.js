@@ -404,8 +404,13 @@ window.console.log("in freshSearch --latlon");
     }
 
 // a layer is always generated with the full set of legend bins
-   function _legendoption(label,pixiuid,idx,color,check) {
-     var html="<li><span class=\"color\" style=\"background-color: "+color+"\"></span> <label class=\"legend-label\" style=\"border:solid 0px green;\"><span>"+label+"</span></label></li>";
+   function _legendoptioncolor(color) {
+     var html="<li><span class=\"color\" style=\"background-color: "+color+"\"></span></li>";
+      return html;
+    }
+// a layer is always generated with the full set of legend bins
+   function _legendoptionlabel(label) {
+     var html="<li><label class=\"legend-label\"><span>"+label+"</span></label></li>";
       return html;
     }
 
@@ -418,11 +423,13 @@ window.console.log("setupPixiLegend...",pixiuid);
 
       let namelist=legendinfo['names'];
       let lengthlist=legendinfo['counts'];
-      let labellist=legendinfo['labels'];
+      let labellist=legendinfo['labels']; // label includes the last extra one
       let colorlist=legendinfo['colors'];
       let checklist=legendinfo['checks'];
       let n=namelist.length;
-      let html = "";
+      let chtml = "";
+      let lhtml = "";
+      // include the top 'invisible' one
       for(let i=0; i<n; i++) {
          let name=namelist[i];
          let color=colorlist[i];
@@ -432,11 +439,16 @@ window.console.log("setupPixiLegend...",pixiuid);
          if(length == 0) {
 	    check=0;
          }
-	 html=_legendoption(label,pixiuid,i,color,check)+html;
+	 chtml=_legendoptioncolor(color)+chtml;
+         lhtml=_legendoptionlabel(label)+lhtml;
       }
+      // include the top 'invisible' one
+      lhtml=_legendoptionlabel(labellist[n])+lhtml;
 
-      html="<ul>"+html+"</ul>";
-      $("#pixi-legend").html(html);
+      chtml="<span>"+chtml+"</ul>";
+      $("#pixi-legend-color").html(chtml);
+      lhtml="<ul>"+lhtml+"</ul>";
+      $("#pixi-legend-label").html(lhtml);
 
 
       // update the title to pixi legend,

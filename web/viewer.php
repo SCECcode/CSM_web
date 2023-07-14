@@ -162,6 +162,20 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
             <div id='model-options' class="form-check-inline">
               <div class="form-check form-check-inline">
                 <label class='form-check-label ml-1 mini-option'
+                               for="cxm-model-csm-borehole">
+                <input class='form-check-inline mr-1'
+                               type="checkbox"
+                      id="cxm-model-cfm-borehole" value="1" />Borehole
+                </label>
+                <!-- borehole download button -->
+                <button id="boreholeDownloadBtn" class="btn cxm-small-btn"
+                      title="Download borehole files"
+                      onClick="downloadBorehole()"
+		      style="display:;" >
+                      <span class="glyphicon glyphicon-share"></span></button>
+              </div>
+              <div class="form-check form-check-inline">
+                <label class='form-check-label ml-1 mini-option'
                                for="cxm-model-cfm">
                 <input class='form-check-inline mr-1'
                                type="checkbox"
@@ -249,34 +263,34 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
        <div id="metricData" class="col-5 button-container flex-column pr-0" style="overflow:hidden;border:solid 0px red;">
 <!-- search method -->
          <div class="row" style="border:solid 0px blue">
-             <div class="col-8">
+             <div class="col-9">
                <form id="csm-search-type">
                  <label><input type="radio" id="searchTypeModel" name="searchtype" onclick="CSM.showSearch('model')"><span>Model</span></label>
                  <label><input type="radio" id="searchTypeData" name="searchtype" onclick="CSM.showSearch('latlon')"><span>Get Data</span></label>
                </form>
              </div>
 
-             <div id="csm-reset-btn" class="row" style="margin-left:30px;">
+             <div id="csm-reset-btn" class="row col-1">
                <button id="toReset" type="button" class="btn btn-dark" >Reset</button>
              </div>
          </div>
 
 <!-- model select -->
-         <div class="input-group input-group-sm custom-control-inline mt-4">
+         <div class="input-group input-group-sm custom-control-inline mt-3" style="max-width:450px">
             <div class="input-group-prepend">
                   <label class="input-group-text" for="modelType">Select CSM Model</label>
             </div>
             <select id="modelType" class="custom-select custom-select-sm"></select>
          </div> <!-- model select -->
 
-         <div class="input-group input-group-sm custom-control-inline mt-2">
+         <div class="input-group input-group-sm custom-control-inline mt-2" style="max-width:450px">
             <div class="input-group-prepend">
                   <label class="input-group-text" for="modelType">Select Model Metric</label>
             </div>
 	    <select id="modelMetric" class="custom-select custom-select-sm"></select>
 	 </div> 
 
-         <div class="input-group input-group-sm custom-control-inline mt-2">
+         <div class="input-group input-group-sm custom-control-inline mt-2" style="max-width:450px">
             <div class="input-group-prepend">
                   <label class="input-group-text" for="modelType">Select Model Depth</label>
             </div>
@@ -366,10 +380,11 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
 
 <!-- legend --> 
   <div class="main-legend geometry top center" style="bottom:10%">
-    <div class="wrapper">
-      <div id="pixi-legend" class="legend"></div> 
-      <div id="pixi-legend-title" align="center" class="legend content mt-1" style="border-top:2px solid grey">Degrees</div>
+    <div class="row">
+        <div class="legend mt-2" id="pixi-legend-color"></div> 
+        <div class="legend" id="pixi-legend-label"></div> 
     </div>
+    <div id="pixi-legend-title" align="center" class="legend content mt-1" style="border-top:2px solid grey">Degrees</div>
   </div>
 <!-- legend -->
 

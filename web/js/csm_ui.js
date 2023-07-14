@@ -248,7 +248,7 @@ function saveAsBlobFile(data)
     saveAs(blob, fname);
 }
 
-function saveAsURLFile(gid,url) {
+function saveAsURLFile(url) {
   var dname=url.substring(url.lastIndexOf('/')+1);
   var dload = document.createElement('a');
   dload.href = url;
@@ -261,4 +261,6 @@ function saveAsURLFile(gid,url) {
   delete dload;
 }
 
-
+function downloadBorehold() {
+  saveAsURLFile('../csm_data/LuttrellHardebeckJGR2021_Table1.csv');
+}

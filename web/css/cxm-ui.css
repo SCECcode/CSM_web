@@ -4,20 +4,26 @@ option:disabled {
     color: #e8e8e8e8;
 }
 
+div.legend .legend-label {
+    margin-left: 30px;
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+}
+
 div.legend .color {
         position: relative;
-        margin-right: 1.5em;
-        height: 1em;
+        height: 0em;
         width: 0em;
         float: left;
 }
 
 div.legend .color::before {
-          content: '';
-    height: 1.5em;
-    width: 1.2em;
-    position: absolute;
-    left: 0;
+    content: '';
+    height: 20px;
+    width: 20px;
+    margin-left: 15px;
+    position: absolute; 
     border:solid 1px black;
     background-color: inherit;
 }
@@ -30,8 +36,7 @@ div.main-legend {
         z-index: 100009;
         position: absolute;
         left: 10px;
-        background: #fff;
-        background: rgba(255,255,255,0.4);
+/*        background: rgba(255,255,255,0.4); */
         border-radius: 2px;
         font-size: 12px;
         margin-right: 10px;
@@ -194,7 +199,8 @@ div.main-legend label:hover {
 }
 
 select, input {
-    max-width: 260px;
+/*    max-width: 260px; */
+    max-width: 360px;
 }
 
 #refresh-all-button {
@@ -879,7 +885,7 @@ table tr td label {
 }
 
 .input-group {
-    max-width: 380px;
+    max-width: 269px;
 }
 .input-group-text {
     min-width: 130px;

@@ -33,18 +33,20 @@ var pixi_cmap_tb={
                      "rgb(77,0,0)"]},
     { type:1,
       note:"for Aphi",
-      rgbs: [ "rgb(48,18,59)",
-                     "rgb(68,84,196)",
-                     "rgb(67,144,254)",
-                     "rgb(32,200,222)",
-                     "rgb(138,240,247)",
-                     "rgb(245,229,38)",
-                     "rgb(253,205,49)",
-                     "rgb(247,186,61)",
-                     "rgb(254,145,41)", 
-                     "rgb(234,79,13)",
-                     "rgb(191,34,2)",
-                     "rgb(122,4,3)" ]},
+             rgbs: [
+"rgb(52,16,60)",
+"rgb(59,91,169)",
+"rgb(78,132,196)",
+"rgb(130,210,225)",
+"rgb(253,245,166)",
+"rgb(247,237,65)",
+"rgb(232,216,25)",
+"rgb(220,183,38)",
+"rgb(242,101,34)",
+"rgb(239,60,35)",
+"rgb(217,34,38)",
+"rgb(131,21,23)"
+	     ]},
 
     { type:2,
       note:"for Dif, Iso",
@@ -133,7 +135,6 @@ function pixiFindSegmentProperties(uid) {
     let clist=pixi.inner;
     let sz=clist.length;
 
-    let term;
     for(let i=0; i<sz; i++) {
       let citem=clist[i];
       let term=citem.csm_properties;
@@ -147,12 +148,15 @@ function pixiFindSegmentProperties(uid) {
           checklist.push(0);
       }
     }
+    // put in the end label of the last term
+    let term=clist[sz-1].csm_properties;
+    labellist.push(term.segment_label_end);
     
     rlist={ names: namelist, 
          counts:lengthlist,
          labels:labellist,
-            colors:colorlist,
-            checks:checklist};
+         colors:colorlist,
+         checks:checklist};
   }
   return rlist;
 }
@@ -184,6 +188,8 @@ function getSegmentRangeList(N, vs_max, vs_min) {
     let v= Math.floor((vs_min + (step * i ))*mult)/mult;
     slist.push(v);
   }
+// including the last o ne
+  slist.push(Math.floor(vs_max*mult)/mult);
   return slist;
 }
 
@@ -552,6 +558,7 @@ function makePixiOverlayLayer(uid,pixiLatlngList,spec) {
       a.csm_properties = { segment_name:"segment_"+i,
                            segment_cnt:length,
                            segment_label: segment_label_list[i],
+                           segment_label_end: segment_label_list[i+1],
                            segment_color: segment_color_list[i]};          
 
       pixiContainer.addChild(a);
