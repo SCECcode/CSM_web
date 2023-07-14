@@ -5,27 +5,19 @@ option:disabled {
 }
 
 div.legend .legend-label {
-    margin-left: 30px;
+    margin-left: 8px;
     position: relative;
     display: inline-block;
     vertical-align: top;
 }
 
 div.legend .color {
-        position: relative;
-        height: 0em;
-        width: 0em;
-        float: left;
-}
-
-div.legend .color::before {
-    content: '';
-    height: 20px;
-    width: 20px;
+    position: relative;
+    height: 18px;
+    width: 18px;
+    float: left;
     margin-left: 15px;
-    position: absolute; 
     border:solid 1px black;
-    background-color: inherit;
 }
 
 div.hide {
@@ -36,8 +28,6 @@ div.main-legend {
         z-index: 100009;
         position: absolute;
         left: 10px;
-/*        background: rgba(255,255,255,0.4); */
-        border-radius: 2px;
         font-size: 12px;
         margin-right: 10px;
 }

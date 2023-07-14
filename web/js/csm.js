@@ -445,8 +445,9 @@ window.console.log("setupPixiLegend...",pixiuid);
       // include the top 'invisible' one
       lhtml=_legendoptionlabel(labellist[n])+lhtml;
 
-      chtml="<span>"+chtml+"</ul>";
+      chtml="<ul>"+chtml+"</ul>";
       $("#pixi-legend-color").html(chtml);
+
       lhtml="<ul>"+lhtml+"</ul>";
       $("#pixi-legend-label").html(lhtml);
 

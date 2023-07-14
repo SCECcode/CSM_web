@@ -261,6 +261,6 @@ function saveAsURLFile(url) {
   delete dload;
 }
 
-function downloadBorehold() {
-  saveAsURLFile('../csm_data/LuttrellHardebeckJGR2021_Table1.csv');
+function downloadBorehole() {
+  saveAsURLFile('./csm_data/LuttrellHardebeckJGR2021_Table1.csv');
 }

@@ -165,11 +165,11 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                                for="cxm-model-csm-borehole">
                 <input class='form-check-inline mr-1'
                                type="checkbox"
-                      id="cxm-model-cfm-borehole" value="1" />Borehole
+                      id="cxm-model-cfm-borehole" value="1" />Boreholes
                 </label>
                 <!-- borehole download button -->
                 <button id="boreholeDownloadBtn" class="btn cxm-small-btn"
-                      title="Download borehole files"
+                      title="Download borehole file"
                       onClick="downloadBorehole()"
 		      style="display:;" >
                       <span class="glyphicon glyphicon-share"></span></button>
@@ -317,11 +317,33 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
 <!-- search-option -->
          <div id="search-option" class="col-10 mt-4"style="border:solid 0px green" >
             <ul id="option" class="navigation mt-2" style="padding: 0 0 0 0;">
-              <li id='csm-model' class='navigationLi' style="display:none;border:solid 0px red">
-                <div class="col-10">
+
+              <li id='csm-model' class='navigationLi' style="display:none;border:solid 0px red; background-color:rgb(245,245,245)">
+                <div class="col-12">
+<br>
+ <div class="col-12 mt-2" style="font-size:14px" >
+ <h5><span class="glyphicon glyphicon-chevron-down"></span> Pick a CSM model</h5>
+ <div class="col-10">
+<ul> <li style="list-style-type:disc">blah blah</li> </ul>
+ </div>
+<br>
+ <h5><span class="glyphicon glyphicon-chevron-down"></span> Select a Metric</h5>
+ <div class="col-10">
+<ul> <li style="list-style-type:disc">blah blah</li> </ul>
+ </div>
+<br>
+ <h5><span class="glyphicon glyphicon-chevron-down"></span> Select a Depth</h5>
+<br>
+<h5> For more model details and metrics, <br> see [LINK TO ZENODO ARCHIVE] </h5>
+<br>
+ </div>
+                </div>
+                
+                <div class="col-10" id="pixi-segment-debug" style="display:none;">
                   <div id="pixi-segment"></div>
                 </div>
               </li>
+
               <li id='csm-latlon' class='navigationLi' style="display:none; border:solid 0px red">
                 <div id='latlonMenu' class='menu'>
                   <div class="row">
@@ -380,9 +402,9 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
 
 <!-- legend --> 
   <div class="main-legend geometry top center" style="bottom:10%">
-    <div class="row">
-        <div class="legend mt-2" id="pixi-legend-color"></div> 
-        <div class="legend" id="pixi-legend-label"></div> 
+    <div class="row" style="border:0px solid green">
+        <div class="legend mt-2" id="pixi-legend-color" style="border:0px solid blue"></div> 
+        <div class="legend" id="pixi-legend-label" style="border:0px solid red"></div> 
     </div>
     <div id="pixi-legend-title" align="center" class="legend content mt-1" style="border-top:2px solid grey">Degrees</div>
   </div>
