@@ -323,14 +323,11 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
 <br>
  <div class="col-12 mt-2" style="font-size:14px" >
  <h5><span class="glyphicon glyphicon-chevron-down"></span> Pick a CSM model</h5>
- <div class="col-10">
-<ul> <li style="list-style-type:disc">blah blah</li> </ul>
+ <div class="col-10" id="csm-model-description">
  </div>
 <br>
  <h5><span class="glyphicon glyphicon-chevron-down"></span> Select a Metric</h5>
- <div class="col-10">
-<ul> <li style="list-style-type:disc">blah blah</li> </ul>
- </div>
+ <div class="col-10" id="csm-metric-description"> </div>
 <br>
  <h5><span class="glyphicon glyphicon-chevron-down"></span> Select a Depth</h5>
 <br>

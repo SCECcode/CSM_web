@@ -227,3 +227,52 @@ window.console.log("need switching..");
 }
 
 
+/************************************************************************************/
+function saveAsJSONBlobFile(fstub, data, timestamp)
+{
+//http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
+//   var rnd= Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    var fname=fstub+timestamp+".json";
+    var blob = new Blob([data], {
+        type: "text/plain;charset=utf-8"
+    });
+    //FileSaver.js
+    saveAs(blob, fname);
+}
+
+function saveAsCSVBlobFile(fstub, data, timestamp)
+{
+//http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
+//   var rnd= Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    var fname=fstub+timestamp+".csv";
+    var blob = new Blob([data], {
+        type: "text/plain;charset=utf-8"
+    });
+    //FileSaver.js
+    saveAs(blob, fname);
+window.console.log("saving csv file", fname);
+}
+
+function saveAsBlobFile(fstub,data)
+{
+    let timestamp = $.now();
+    let fname=fstub+timestamp+".txt";
+    let blob = new Blob([data], {
+        type: "text/plain;charset=utf-8"
+    });
+    //FileSaver.js
+    saveAs(blob, fname);
+}
+
+function saveAsURLFile(url) {
+  var dname=url.substring(url.lastIndexOf('/')+1);
+  var dload = document.createElement('a');
+  dload.href = url;
+  dload.download = dname;
+  dload.type="application/octet-stream";
+  dload.style.display='none';
+  document.body.appendChild(dload);
+  dload.click();
+  document.body.removeChild(dload);
+  delete dload;
+}

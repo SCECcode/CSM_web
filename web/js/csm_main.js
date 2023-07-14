@@ -29,6 +29,7 @@ jQuery(document).ready(function() {
 
   $('#modelType').on("change", function() {
       let model_type=$(this).val();
+      CSM.refreshModelDescription(model_type);
       CSM.setupModelMetric(CSM.csm_models,model_type);
       CSM.setupModelDepth(CSM.csm_models,model_type);
       CSM.freshSearch();

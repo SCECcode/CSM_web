@@ -322,9 +322,8 @@ window.console.log("SPEC:modelMetric_idx is "+midx+"("+mmetric+")");
       let spec_idx = [ tidx,midx,didx ];
       let spec_data = [datamin, datamax];
 
-window.console.log("spec is: ",spec);
-window.console.log("spec_idx is: ",spec_idx);
-window.console.log("         XXX HERE spec_data is: ",spec_data[0], spec_data[1]);
+//window.console.log("spec is: ",spec);
+//window.console.log("spec_idx is: ",spec_idx);
 
       return [spec, spec_idx, spec_data];
     }
@@ -400,18 +399,18 @@ window.console.log("in freshSearch --latlon");
          html=html+ "<input type=\"checkbox\" class='legend-label mr-1' title=\"toggle the region\" id=\"pixiLegend_"+idx+"\" onclick=CSM.togglePixiLegend(\""+pixiuid+"\","+idx+",\"pixiLegend_"+idx+"\") style=\"accent-color:"+color+"\" >";
      }
      html=html+"<label for=\"pixiLegend_"+idx+"\"><span>"+label+"</span></label></li>";
-      return html;
+     return html;
     }
 
 // a layer is always generated with the full set of legend bins
    function _legendoptioncolor(color) {
      var html="<li><span class=\"color\" style=\"background-color: "+color+"\"></span></li>";
-      return html;
+     return html;
     }
 // a layer is always generated with the full set of legend bins
    function _legendoptionlabel(label) {
      var html="<li><label class=\"legend-label\"><span>"+label+"</span></label></li>";
-      return html;
+     return html;
     }
 
     this.setupPixiLegend = function(pixiuid, spec,legendinfo) {
@@ -439,7 +438,11 @@ window.console.log("setupPixiLegend...",pixiuid);
          if(length == 0) {
 	    check=0;
          }
-	 chtml=_legendoptioncolor(color)+chtml;
+         if(i== Math.floor(n/2)) {
+	   chtml=_legendoptioncolor(color, 1)+chtml;
+           } else {
+	     chtml=_legendoptioncolor(color, 0)+chtml;
+         }
          lhtml=_legendoptionlabel(label)+lhtml;
       }
       // include the top 'invisible' one
@@ -1017,6 +1020,11 @@ window.console.log("generateMetadataTable..");
        $("#modelType").change();
     }
 
+    this.refreshModelDescription = function (target) {
+	    window.console.log("          HERE..x", target);
+       $("#csm-model-description").html("<p> blah blah "+target+"</p>");
+    }
+
     // mlist,
     // { "gid":gid, "model_name":mn, "table_name":tn, "jblob":jblob }
     // and,
@@ -1066,6 +1074,7 @@ window.console.log("generateMetadataTable..");
           CSM.csm_model_pixi_layers[midx][mmidx][didx]=pixiuid;
       }
     };
+
 // option disabled all.
     this.setupModelMetric = function (mlist,model_idx) {
       //preset all option to disable	     
@@ -1082,6 +1091,8 @@ window.console.log("generateMetadataTable..");
       let val=elt.value;
       let select=document.querySelector("#modelMetric");
       select.value=val;
+      // to first one
+      this.refreshMetricDescription(0);
     };
 
     // set to first metric
@@ -1092,7 +1103,14 @@ window.console.log("generateMetadataTable..");
       let val=elt.value;
       let select=document.querySelector("#modelMetric");
       select.value=val;
+      // to first one
+      this.refreshMetricDescription(0);
     };
+
+    this.refreshMetricDescription = function (target) {
+	    window.console.log("HERE..");
+       $("#csm-metric-description").html("<p> blah blah metric</p>");
+    }
 
 // option disabled all.
     this.setupModelDepth = function (mlist,model_idx) {
@@ -1151,10 +1169,22 @@ window.console.log("change ModelMetric with ..",v);
               } else {
                 data=getCSVFromMeta(1,mlist);
             }
-            saveAsCSVBlobFile(hdata+data, gid);
+            _saveAsCSVBlobFile(hdata+data, gid);
           }
         }
     };
+
+    function _saveAsJSONBlobFile(data, timestamp) {
+        saveAsJSONBlobFile("CSM_data_", data, timestamp);
+    }
+
+    function _saveAsCSVBlobFile(data, timestamp) {
+        saveAsCSVBlobFile("CSM_data_", data, timestamp);
+    }
+
+    function _saveAsBlobFile(data) {
+        saveAsBlobFile("CSM_link_",data);
+    }
 
     function getModelHeader(dataset) {
         let url="./csm_data/"+dataset+".csv_header";
