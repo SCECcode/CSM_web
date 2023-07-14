@@ -51,7 +51,7 @@ models: [
     {name: 'Zeng', stress_type:1,
      label: 'Zeng - stressing rate',
      author: 'Y. Zeng and Z. Shen',
-     description: '<b>UCERF3_ABM</b> model contributed by K. Johnson. This is a stressing-rate model based on forward physics-based modeling of tectonic loading. Model values vary with depth.'}],
+     description: '<b>Zeng</b> model contributed by Y. Zeng and Z. Shen. This is a stressing-rate model based on forward physics-based modeling of tectonic loading.'}],
 metrics: [
     {name: 'SHmax', range: [90, -90], 
      short: 'SHmax (orientation)', label: 'SHmax - horizontal compression azimuth (orientation)',

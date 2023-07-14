@@ -32,6 +32,7 @@ $csm = new CSM();
     <script type='text/javascript' src='js/vendor/FileSaver.js'></script>
     <script type='text/javascript' src='js/vendor/jszip.js'></script>
     <script type='text/javascript' src='js/vendor/jquery.floatThead.min.js'></script>
+    <script type='text/javascript' src='js/vendor/jquery.csv.js'></script>
 
     <script type='text/javascript' src='js/vendor/togeojson.js'></script>
     <script type='text/javascript' src='js/vendor/leaflet-kmz-src.js'></script>
@@ -266,7 +267,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
              <div class="col-9">
                <form id="csm-search-type">
                  <label><input type="radio" id="searchTypeModel" name="searchtype" onclick="CSM.showSearch('model')"><span>Model</span></label>
-                 <label><input type="radio" id="searchTypeData" name="searchtype" onclick="CSM.showSearch('latlon')"><span>Get Data</span></label>
+                 <label><input type="radio" id="searchTypeData" name="searchtype" onclick="CSM.showSearch('latlon')"><span>Get Data Subset</span></label>
                </form>
              </div>
 
@@ -315,25 +316,19 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
 	 </div> 
 
 <!-- search-option -->
-         <div id="search-option" class="col-10 mt-4"style="border:solid 0px green" >
-            <ul id="option" class="navigation mt-2" style="padding: 0 0 0 0;">
+         <div id="search-option" class="col-12 mt-4"style="border:solid 0px green" >
+            <ul id="option" class="navigation col-11 mt-2" style="padding: 0 0 0 0;">
 
-              <li id='csm-model' class='navigationLi' style="display:none;border:solid 0px red; background-color:rgb(245,245,245)">
-                <div class="col-12">
+              <li id='csm-model' class='row navigationLi' style="display:none;border:solid 0px red; background-color:rgb(245,245,245)">
+                <div class="col-12" style="font-size:14px" >
 <br>
- <div class="col-12 mt-2" style="font-size:14px" >
- <h5><span class="glyphicon glyphicon-chevron-down"></span> Pick a CSM model</h5>
- <div class="col-10" id="csm-model-description">
- </div>
+ <h5><b>Selected CSM Model:</b></h5>
+ <div class="col-12" id="csm-model-description"></div>
+ <h5><b>Selected CSM Metric:</b></h5>
+ <div class="col-12" id="csm-metric-description"> </div>
+
+<h6><b>For more model details and metrics, see [LINK TO ZENODO ARCHIVE]</b></h6>
 <br>
- <h5><span class="glyphicon glyphicon-chevron-down"></span> Select a Metric</h5>
- <div class="col-10" id="csm-metric-description"> </div>
-<br>
- <h5><span class="glyphicon glyphicon-chevron-down"></span> Select a Depth</h5>
-<br>
-<h5> For more model details and metrics, <br> see [LINK TO ZENODO ARCHIVE] </h5>
-<br>
- </div>
                 </div>
                 
                 <div class="col-10" id="pixi-segment-debug" style="display:none;">

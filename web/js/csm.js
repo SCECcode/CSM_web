@@ -7,7 +7,7 @@
 
 var CSM = new function () {
 
-    this.model_debug = 1;
+    this.model_debug = 0;
     this.model_initialized = false;
     // 
     // complete set of csm models info from the backend-service,
@@ -380,7 +380,7 @@ window.console.log("in freshSearch --latlon");
           CSM.setupPixiSegmentDebug(pixiuid,seginfo);
           CSM.setupPixiLegend(pixiuid,spec,seginfo);
           } else {
-            pixiuid = this.search(this.searchType.model, spec, spec_idx);
+            pixiuid = this.search(this.searchType.model, spec, spec_idx, spec_data);
         }
         // go to original zoom/map
         viewermap.setView(this.defaultMapView.coordinates, this.defaultMapView.zoom);
@@ -414,7 +414,6 @@ window.console.log("in freshSearch --latlon");
     }
 
     this.setupPixiLegend = function(pixiuid, spec,legendinfo) {
-window.console.log("setupPixiLegend...",pixiuid);
       if(jQuery.isEmptyObject(legendinfo)) {
         $("#pixi-legend").html("");
         return;
@@ -477,12 +476,6 @@ window.console.log("calling togglePixiLegend.. with ",n,"on pixiuid ",pixiuid);
       let vis=pixiToggleMarkerContainer(pixiuid,n);
     };
 
-    this.tickleLegend = function(label) {
-window.console.log("HERE..");
-      let elt=document.getElementById(label);
-      elt.click();
-    }
-
 // a layer is always generated with the full set of segments 
 // so pop up the pixi segment selector on dashboard
 // max n would be 20
@@ -502,7 +495,7 @@ window.console.log("HERE..");
 
       if(!this.model_debug) return;
 
-window.console.log("setupPixiSegmentDebug...",pixiuid);
+//window.console.log("setupPixiSegmentDebug...",pixiuid);
       if(jQuery.isEmptyObject(seginfo)) {
         $("#pixi-segment").html("");
         return;
@@ -1011,6 +1004,8 @@ window.console.log("generateMetadataTable..");
 	    this._redrawModel();
 
             $("#searchTypeModel").click(); // start with model option
+            this.resetModel(); // set to the first one
+	       retreiveBoreholes();
     };
      
     // need to trigger modelType change to first model
@@ -1020,9 +1015,18 @@ window.console.log("generateMetadataTable..");
        $("#modelType").change();
     }
 
-    this.refreshModelDescription = function (target) {
-	    window.console.log("          HERE..x", target);
-       $("#csm-model-description").html("<p> blah blah "+target+"</p>");
+    this.refreshModelDescription = function (target){
+       let target_name=CSM.csm_models[target].model_name;
+       let mlist=CSM_tb['models'];
+       let sz=mlist.length;
+       for(let i=0; i<sz; i++) {
+         let term=mlist[i];
+         if(term['name'] == target_name) {
+           let descript=term['description'];
+           $("#csm-model-description").html("<p style=\"border: solid 0px green;\" >"+descript+"</p>");
+           break;
+         }
+       }
     }
 
     // mlist,
@@ -1091,8 +1095,8 @@ window.console.log("generateMetadataTable..");
       let val=elt.value;
       let select=document.querySelector("#modelMetric");
       select.value=val;
-      // to first one
-      this.refreshMetricDescription(0);
+      // preset to first one
+      this.refreshMetricDescription(val);
     };
 
     // set to first metric
@@ -1108,8 +1112,16 @@ window.console.log("generateMetadataTable..");
     };
 
     this.refreshMetricDescription = function (target) {
-	    window.console.log("HERE..");
-       $("#csm-metric-description").html("<p> blah blah metric</p>");
+       let mlist=CSM_tb['metrics'];
+       let sz=mlist.length;
+       for(let i=0; i<sz; i++) {
+         let term=mlist[i];
+         if(term['name'] == target) {
+           let descript=term['description'];
+           $("#csm-metric-description").html("<p style=\"border: solid 0px green;\" >"+descript+"</p>");
+           break;
+         }
+       }
     }
 
 // option disabled all.
@@ -1147,6 +1159,7 @@ window.console.log("change ModelDepth with ..",v);
    };
    this.changeModelMetric = function(v) {
 window.console.log("change ModelMetric with ..",v);
+        this.refreshMetricDescription(v);
         this._redrawModel();
    };
 

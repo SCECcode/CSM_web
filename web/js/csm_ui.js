@@ -141,3 +141,10 @@ function enable_last_record_btn() {
 function downloadBorehole() {
   saveAsURLFile('./csm_data/LuttrellHardebeckJGR2021_Table1.csv');
 }
+
+/**  process Borehole data **/
+function retreiveBoreholes() {
+  let blob=ckExist(./csm_data/LuttrellHardebeckJGR2021_Table1.csv');
+  let csvblob = $.csv.toArrays(blob);
+window.console.log("HERE...");
+}
