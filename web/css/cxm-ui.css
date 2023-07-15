@@ -670,7 +670,7 @@ select {
 }
 
 input[type=text] {
-  min-width: 100px;
+  min-width: 110px;
   padding: 0.375rem 0.60rem
 }
 

@@ -277,7 +277,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
          </div>
 
 <!-- model select -->
-         <div class="input-group input-group-sm custom-control-inline mt-3" style="max-width:450px">
+         <div class="input-group input-group-sm custom-control-inline mt-2" style="max-width:450px">
             <div class="input-group-prepend">
                   <label class="input-group-text" for="modelType">Select CSM Model</label>
             </div>
@@ -316,21 +316,10 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
 	 </div> 
 
 <!-- search-option -->
-         <div id="search-option" class="col-12 mt-4"style="border:solid 0px green" >
-            <ul id="option" class="navigation col-11 mt-2" style="padding: 0 0 0 0;">
+         <div id="search-option" class="col-12 mt-3"style="border:solid 0px green" >
+            <ul id="option" class="navigation col-11" style="padding: 0 0 0 0;margin-bottom: 0">
 
-              <li id='csm-model' class='row navigationLi' style="display:none;border:solid 0px red; background-color:rgb(245,245,245)">
-                <div class="col-12" style="font-size:14px" >
-<br>
- <h5><b>Selected CSM Model:</b></h5>
- <div class="col-12" id="csm-model-description"></div>
- <h5><b>Selected CSM Metric:</b></h5>
- <div class="col-12" id="csm-metric-description"> </div>
-
-<h6><b>For more model details and metrics, see [LINK TO ZENODO ARCHIVE]</b></h6>
-<br>
-                </div>
-                
+              <li id='csm-model' class='row navigationLi' style="display:none;border:solid 0px red;">
                 <div class="col-10" id="pixi-segment-debug" style="display:none;">
                   <div id="pixi-segment"></div>
                 </div>
@@ -342,7 +331,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                     <div class="col-5">
                           <p>Draw a rectangle on the map or enter latitudes and longitudes.</p>
                     </div>
-                    <div class="col-3 pl-0 pr-0">
+                    <div class="col-3 pl-1 pr-1">
                       <input type="text"
                           placeholder="Latitude"
                           id="csm-firstLatTxt"
@@ -374,6 +363,17 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                 </div>
               </li>
             </ul> <!-- option -->
+         </div>
+
+<!-- description page -->
+         <div id="csm-description" class="col-11 mt-1" style="font-size:14px; background-color:rgb(245,245,245)" >
+           <br>
+           <h5><b>Selected CSM Model:</b></h5>
+           <div class="col-12" id="csm-model-description"></div>
+           <h5><b>Selected CSM Metric:</b></h5>
+           <div class="col-12" id="csm-metric-description"> </div>
+           <h6><b>For more model details and metrics, see [LINK TO ZENODO ARCHIVE]</b></h6>
+           <br>
          </div>
 
 <!-- result parking location -->
