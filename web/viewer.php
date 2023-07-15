@@ -316,7 +316,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
 	 </div> 
 
 <!-- search-option -->
-         <div id="search-option" class="col-12 mt-3"style="border:solid 0px green" >
+         <div id="search-option" class="col-12 mt-2"style="border:solid 0px green" >
             <ul id="option" class="navigation col-11" style="padding: 0 0 0 0;margin-bottom: 0">
 
               <li id='csm-model' class='row navigationLi' style="display:none;border:solid 0px red;">
@@ -328,10 +328,10 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
               <li id='csm-latlon' class='navigationLi' style="display:none; border:solid 0px red">
                 <div id='latlonMenu' class='menu'>
                   <div class="row">
-                    <div class="col-5">
+                    <div class="col-6">
                           <p>Draw a rectangle on the map or enter latitudes and longitudes.</p>
                     </div>
-                    <div class="col-3 pl-1 pr-1">
+                    <div class="col-3 pl-0 pr-0">
                       <input type="text"
                           placeholder="Latitude"
                           id="csm-firstLatTxt"
@@ -366,7 +366,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
          </div>
 
 <!-- description page -->
-         <div id="csm-description" class="col-11 mt-1" style="font-size:14px; background-color:rgb(245,245,245)" >
+         <div id="csm-description" class="col-12 mt-2 pr-0" style="font-size:14px; background-color:rgb(245,245,245); max-width:440px" >
            <br>
            <h5><b>Selected CSM Model:</b></h5>
            <div class="col-12" id="csm-model-description"></div>
