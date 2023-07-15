@@ -138,13 +138,45 @@ function enable_last_record_btn() {
 }
 
 /************************************************************************************/
+
+var csm_boreholes_list=[];
+
 function downloadBorehole() {
   saveAsURLFile('./csm_data/LuttrellHardebeckJGR2021_Table1.csv');
 }
 
 /**  process Borehole data **/
 function retreiveBoreholes() {
-  let blob=ckExist(./csm_data/LuttrellHardebeckJGR2021_Table1.csv');
+  let blob=ckExist('./csm_data/LuttrellHardebeckJGR2021_Table1.csv');
   let csvblob = $.csv.toArrays(blob);
-window.console.log("HERE...");
+
+  let sz=csvblob.length;
+  let latlngs=[];
+  for(let i=1; i<sz; i++) {
+    let term=csvblob[i];
+    let lat=term[2];
+    let lon=term[3];
+    let ss=term[6];
+window.console.log( ">>", lat, lon, ss);
+    latlngs.push({"lat":lat,"lon":lon});
+  }
+
+  let group=addMarkerLayerGroup(latlngs,"boreholes",5);
+  csm_boreholes_list.push(group);
+}
+
+function showCSMBoreholes(viewermap) {
+  if(csm_boreholes_list.length == 0) {
+    return;
+  }
+  let layer=csm_boreholes_list[0];
+  viewermap.addLayer(layer);
+}
+
+function hideCSMBoreholes() {
+  if(csm_boreholes_list.length == 0) {
+    return;
+  }
+  let layer=csm_boreholes_list[0];
+  viewermap.removeLayer(layer);
 }

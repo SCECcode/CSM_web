@@ -52,6 +52,14 @@ window.console.log("Calling toReset..");
         CSM.resetAll();
   });
 
+  $("#cxm-model-csm-boreholes").change(function() {
+      if ($("#cxm-model-csm-boreholes").prop('checked')) {
+          showCSMBoreholes(viewermap);
+          } else {
+              hideCSMBoreholes(viewermap);
+      }
+  });
+
   $("#cxm-model-cfm").change(function() {
       if ($("#cxm-model-cfm").prop('checked')) {
           CXM.showCFMFaults(viewermap);

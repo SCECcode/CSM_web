@@ -69,11 +69,11 @@ $csm = new CSM();
     <script type='text/javascript' src="js/vendor/plugin/Leaflet.draw/edit/handler/Edit.Circle.js"></script>
 
 <!-- csm js -->
+    <script type="text/javascript" src="js/csm_ui.js?v=1"></script>
     <script type="text/javascript" src="js/csm_model.js?v=1"></script>
     <script type="text/javascript" src="js/csm_main.js?v=1"></script>
     <script type="text/javascript" src="js/csm.js?v=1"></script>
     <script type="text/javascript" src="js/csm_leaflet.js?v=1"></script>
-    <script type="text/javascript" src="js/csm_ui.js?v=1"></script>
 
 <!-- pixi pixiOverlay -->
     <script type="text/javascript" src="js/vendor/pixi.js"></script>
@@ -163,17 +163,17 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
             <div id='model-options' class="form-check-inline">
               <div class="form-check form-check-inline">
                 <label class='form-check-label ml-1 mini-option'
-                               for="cxm-model-csm-borehole">
+                               for="cxm-model-csm-boreholes">
                 <input class='form-check-inline mr-1'
                                type="checkbox"
-                      id="cxm-model-cfm-borehole" value="1" />Boreholes
+                      id="cxm-model-csm-boreholes" value="1" />Boreholes
                 </label>
-                <!-- borehole download button -->
+                <!-- boreholes download button -->
                 <button id="boreholeDownloadBtn" class="btn cxm-small-btn"
                       title="Download borehole file"
                       onClick="downloadBorehole()"
 		      style="display:;" >
-                      <span class="glyphicon glyphicon-share"></span></button>
+                      <span class="glyphicon glyphicon-download" style="font-size:14px"></span></button>
               </div>
               <div class="form-check form-check-inline">
                 <label class='form-check-label ml-1 mini-option'

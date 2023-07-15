@@ -372,7 +372,6 @@ function addMarkerLayerGroup(latlng,description,sz) {
      markers.push(marker);
   }
   var group = new L.FeatureGroup(markers);
-  mymap.addLayer(group);
   return group;
 }
 

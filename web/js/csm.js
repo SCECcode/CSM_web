@@ -186,16 +186,22 @@ var csm_csv_keys= {
 window.console.log("calling reset");
         this.resetSearch();
 
+        if ($("#csm-model-csm-boreholes").prop('checked')) {
+          showCSMBoreholes(viewermap);
+          } else {
+            hideCSMBoreholes(viewermap);
+        }
+
         if ($("#csm-model-cfm").prop('checked')) {
           CXM.showCFMFaults(viewermap);
           } else {
-          CXM.hideCFMFaults(viewermap);
+            CXM.hideCFMFaults(viewermap);
         }
 
         if ($("#csm-model-gfm").prop('checked')) {
           CXM.showGFMRegions(viewermap);
           } else {
-          CXM.hideGFMRegions(viewermap);
+            CXM.hideGFMRegions(viewermap);
         }
 
         // go back to default view,
@@ -1005,7 +1011,7 @@ window.console.log("generateMetadataTable..");
 
             $("#searchTypeModel").click(); // start with model option
             this.resetModel(); // set to the first one
-	       retreiveBoreholes();
+	    retreiveBoreholes();
     };
      
     // need to trigger modelType change to first model
