@@ -271,8 +271,10 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                </form>
              </div>
 
-             <div id="csm-reset-btn" class="row col-1">
+             <div id="csm-reset-btn" class="col-2 pr-0">
+               <div class="row justify-content-end">
                <button id="toReset" type="button" class="btn btn-dark" >Reset</button>
+               </div>
              </div>
          </div>
 
@@ -316,7 +318,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
 	 </div> 
 
 <!-- search-option -->
-         <div id="search-option" class="col-12 mt-2"style="border:solid 0px green" >
+         <div id="search-option" class="col-12 mt-3"style="border:solid 0px green" >
             <ul id="option" class="navigation col-11" style="padding: 0 0 0 0;margin-bottom: 0">
 
               <li id='csm-model' class='row navigationLi' style="display:none;border:solid 0px red;">
@@ -331,7 +333,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                     <div class="col-6">
                           <p>Draw a rectangle on the map or enter latitudes and longitudes.</p>
                     </div>
-                    <div class="col-3 pl-0 pr-0">
+                    <div class="col-3 pl-0 pr-2">
                       <input type="text"
                           placeholder="Latitude"
                           id="csm-firstLatTxt"
@@ -345,7 +347,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                           onfocus="this.value=''" 
                           class="csm-latlon-item form-control mt-1">
                     </div>
-                    <div class="col-3 pl-3 pr-0">
+                    <div class="col-3 pl-2 pr-0">
                       <input type="text"
                           id="csm-secondLatTxt"
                           title="optional second lat"
@@ -366,7 +368,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
          </div>
 
 <!-- description page -->
-         <div id="csm-description" class="col-12 mt-2 pr-0" style="font-size:14px; background-color:rgb(245,245,245); max-width:440px" >
+         <div id="csm-description" class="col-12 mt-3 pr-0" style="font-size:14px; background-color:rgb(245,245,245); max-width:450px" >
            <br>
            <h5><b>Selected CSM Model:</b></h5>
            <div class="col-12" id="csm-model-description"></div>
