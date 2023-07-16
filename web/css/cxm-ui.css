@@ -1,4 +1,9 @@
 /* csm */
+#csm-description {
+   position:absolute;
+   bottom: 8px;
+}
+
 option:disabled {
     font-style: italic;
     color: #e8e8e8e8;

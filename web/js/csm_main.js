@@ -32,6 +32,7 @@ jQuery(document).ready(function() {
       CSM.refreshModelDescription(model_type);
       CSM.setupModelMetric(CSM.csm_models,model_type);
       CSM.setupModelDepth(CSM.csm_models,model_type);
+      CSM.showSearch('model');
       CSM.freshSearch();
   });
 

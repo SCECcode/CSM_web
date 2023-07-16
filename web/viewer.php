@@ -322,12 +322,12 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
             <ul id="option" class="navigation col-11" style="padding: 0 0 0 0;margin-bottom: 0">
 
               <li id='csm-model' class='row navigationLi' style="display:none;border:solid 0px red;">
-                <div id='modelMenu' class='menu'>
+                <div id='modelMenu' class='col-12 menu'>
                   <div class="row">
                      <div class="col-6">
-                       <p>Change model opacity with the slider at the right.</p>
+                       <p>Change model opacity with the slider.</p>
                      </div>
-                     <div class="col-6 " style="border:1px solid green"></div>
+                     <div class="col-6" style="border:1px solid green"></div>
                   </div>
 
 <!--  segment debug toggle set -->
@@ -386,14 +386,13 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
          </div>
 
 <!-- description page -->
-         <div id="csm-description" class="col-12 mt-3 pr-0" style="font-size:14px; background-color:rgb(245,245,245); max-width:450px" >
+         <div id="csm-description" class="col-12 pr-0" style="font-size:14px; background-color:rgb(245,245,245); max-width:450px" >
            <br>
            <h5><b>Selected CSM Model:</b></h5>
            <div class="col-12" id="csm-model-description"></div>
            <h5><b>Selected CSM Metric:</b></h5>
            <div class="col-12" id="csm-metric-description"> </div>
            <p><b>For more model details and metrics, see [LINK TO ZENODO ARCHIVE]</b></p>
-           <br>
          </div>
 
 <!-- result parking location -->
