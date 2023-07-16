@@ -573,7 +573,19 @@ function makePixiOverlayLayer(uid,pixiLatlngList,spec) {
 
     let zoomChangeTs = null;
 
+/****
+const filter = new PIXI.filters.AlphaFilter(1);
+container.filters = [filter];
+filter.alpha = 0.5; // <-- tween this propert
+
+https://github.com/pixijs/pixijs/discussions/8025
+*****/
+
     let pixiContainer = new PIXI.Container();
+    //let alphaFilter = new PIXI.AlphaFilter(1);
+    //pixiContainer.filters = [alphaFilter];
+    pixiContainer.alpha=0.7;
+
     let pContainers=[]; //particle container
     let segments=[];
 
@@ -594,6 +606,7 @@ function makePixiOverlayLayer(uid,pixiLatlngList,spec) {
 
     for(var i=0; i<DATA_SEGMENT_COUNT; i++) {
       var length=getMarkerCount(pixiLatlngList,i);
+
       var a = new PIXI.ParticleContainer(length, {vertices: true, tint: true});
       // add properties for our patched particleRenderer:
       a.texture = markerTexturesPtr[i];
@@ -700,7 +713,7 @@ mask.drawEllipse(75, 30, 60, 40)
 marker.mask = mask;
 */
              
-              marker.alpha=0.7; // add, multiply,screen
+              marker.alpha=1; // add, multiply,screen
               marker.blendMode=0; // add, multiply,screen
 
               marker.x = coords.x - origin.x;
@@ -826,4 +839,28 @@ function pixiTogglePixiOverlay(uid) {
          viewermap.addLayer(layer);
          pixi.visible=1;
     }
+}
+
+//pixiOverlayList.push({"uid":uid,"visible":1,"segment":segments,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
+function pixiSetPixiOpacity(uid, alpha) {
+    let pixi=pixiFindPixiWithUid(uid);
+    let v=pixi.visible;
+    let layer=pixi.overlay;
+    if(v==1) {
+       let pContainer=pixi.top;
+       pContainer.alpha=alpha;
+    }
+}
+
+//pixiOverlayList.push({"uid":uid,"visible":1,"segment":segments,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
+function pixiGetPixiOpacity(uid) {
+    let opacity=1;
+    let pixi=pixiFindPixiWithUid(uid);
+    let v=pixi.visible;
+    let layer=pixi.overlay;
+    if(v==1) {
+       let pContainer=pixi.top;
+       opacity=pContainer.alpha;
+    }
+    return opacity;
 }

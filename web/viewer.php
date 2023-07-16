@@ -271,7 +271,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                </form>
              </div>
 
-             <div id="csm-reset-btn" class="col-2 pr-0">
+             <div id="csm-reset-btn" class="col-2">
                <div class="row justify-content-end">
                <button id="toReset" type="button" class="btn btn-dark" >Reset</button>
                </div>
@@ -322,16 +322,34 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
             <ul id="option" class="navigation col-11" style="padding: 0 0 0 0;margin-bottom: 0">
 
               <li id='csm-model' class='row navigationLi' style="display:none;border:solid 0px red;">
-                <div class="col-10" id="pixi-segment-debug" style="display:none;">
-                  <div id="pixi-segment"></div>
+                <div id='modelMenu' class='menu'>
+                  <div class="row">
+                     <div class="col-6">
+                       <p>Change model opacity with the slider at the right.</p>
+                     </div>
+                     <div class="col-6 " style="border:1px solid green"></div>
+                  </div>
+
+<!--  segment debug toggle set -->
+                  <div class="row">
+                    <div class="col-10" id="pixi-segment-debug" style="display:none;">
+                      <div id="pixi-segment"></div>
+                    </div>
+                  </div>
                 </div>
+
               </li>
 
               <li id='csm-latlon' class='navigationLi' style="display:none; border:solid 0px red">
                 <div id='latlonMenu' class='menu'>
                   <div class="row">
                     <div class="col-6">
-                          <p>Draw a rectangle on the map or enter latitudes and longitudes.</p>
+		      <p>Draw a rectangle on the map or enter latitudes and longitudes.
+		      <button id="searchAgain" class="btn cxm-small-btn dropdown-toggle" onclick="CSM.searchLatlon(0,[])"></button>
+<!--
+		      <button id="searchAgain" class="btn cxm-small-btn dropdown-toggle" onclick="CSM.searchLatlon(0,[])"><span class="glyphicon glyphicon-record" style="font-size:6px"></span></button>
+-->
+                      </p>
                     </div>
                     <div class="col-3 pl-0 pr-2">
                       <input type="text"
@@ -374,7 +392,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
            <div class="col-12" id="csm-model-description"></div>
            <h5><b>Selected CSM Metric:</b></h5>
            <div class="col-12" id="csm-metric-description"> </div>
-           <h6><b>For more model details and metrics, see [LINK TO ZENODO ARCHIVE]</b></h6>
+           <p><b>For more model details and metrics, see [LINK TO ZENODO ARCHIVE]</b></p>
            <br>
          </div>
 

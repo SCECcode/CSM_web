@@ -641,6 +641,7 @@ window.console.log("SEARCHING for ",spec[2]);
                       let gid = get_bounding_rectangle_layer_gid();
                       scec_properties.gid=gid; 
                       scec_properties.depth=first.dep;
+                      scec_properties.metric= spec[2];
                       scec_properties.lon1=criteria[0];
                       scec_properties.lat1=criteria[1];
                       scec_properties.lon2=criteria[2];
@@ -782,6 +783,7 @@ window.console.log("calling searchLatlon..");
 <button class=\"btn btn-sm cxm-small-btn\" id=\"button_meta_${layer.scec_properties.gid}\" title=\"remove the region\" onclick=CSM.unselectRegion(\"${layer.scec_properties.gid}\") onmouseover=CSM.mouseoverRegion(${layer.scec_properties.gid}) onmouseout=CSM.mouseoutRegion(${layer.scec_properties.gid}) ><span id=\"csm_metadata_${layer.scec_properties.gid}\" class=\"glyphicon glyphicon-trash\"></span></button></td>`;
         html += `<td class="meta-data">${layer.scec_properties.gid}</td>`;
         html += `<td class="meta-data">${layer.scec_properties.dataset}</td>`;
+        html += `<td class="meta-data">${layer.scec_properties.metric}</td>`;
         html += `<td class="meta-data">${layer.scec_properties.depth}</td>`;
         html += `<td class="meta-data">${layer.scec_properties.note} </td>`;
         html += `<td class="text-center"><button id=\"download_${layer.scec_properties.gid}\" class=\"btn btn-xs csm-btn\" onclick=\"CSM.downloadData(${layer.scec_properties.gid})\"><span class=\"glyphicon glyphicon-download\"></span></button></td>`;
@@ -865,9 +867,10 @@ window.console.log("generateMetadataTable..");
         <th class="text-center button-container" style="width:2rem">
         </th>
         <th class="hoverColor" style="width:12rem" >Id&nbsp<span></span></th>
-        <th class="hoverColor" onClick="sortMetadataTableByRow(2,'a')">Model Name&nbsp<span id='sortCol_2' class="fas fa-angle-down"></span></th>
-        <th class="hoverColor" onClick="sortMetadataTableByRow(3,'n')">Depth&nbsp<span id='sortCol_3' class="fas fa-angle-down"></span></th>
-        <th class="hoverColor">Note&nbsp</th>
+        <th class="hoverColor" onClick="sortMetadataTableByRow(2,'a')">Model&nbsp<span id='sortCol_2' class="fas fa-angle-down"></span></th>
+        <th class="hoverColor" onClick="sortMetadataTableByRow(3,'a')">Metric&nbsp<span id='sortCol_3' class="fas fa-angle-down"></span></th>
+        <th class="hoverColor" onClick="sortMetadataTableByRow(4,'n')">Depth&nbsp<span id='sortCol_4' class="fas fa-angle-down"></span></th>
+        <th class="hoverColor">Note&nbsp<span class="fas fa-angle-down"></span></th>
         <th style="width:20%;"><div class="col text-center">
 <!--download all -->
                 <div class="btn-group download-now">
