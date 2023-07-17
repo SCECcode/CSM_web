@@ -110,10 +110,11 @@ function retreiveBoreholes() {
     let term=csvblob[i];
     let lat=term[2];
     let lon=term[3];
-    let ss=term[6];
+    let azimuth=term[6];
+    let tip="azimuth:"+azimuth;
 window.console.log( ">>", lat, lon, ss);
     latlngs.push({"lat":lat,"lon":lon});
-    tips.push(ss);
+    tips.push(tip);
   }
 
   let group=addMarkerLayerGroup(latlngs,tips,5);
