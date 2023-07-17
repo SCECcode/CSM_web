@@ -318,7 +318,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
 	 </div> 
 
 <!-- search-option -->
-         <div id="search-option" class="col-12 mt-3"style="border:solid 0px green" >
+         <div id="search-option" class="col-12 mt-4"style="border:solid 0px green" >
             <ul id="option" class="navigation col-11" style="padding: 0 0 0 0;margin-bottom: 0">
 
               <li id='csm-model' class='row navigationLi' style="display:none;border:solid 0px red;">
@@ -327,7 +327,11 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                      <div class="col-6">
                        <p>Change model opacity with the slider.</p>
                      </div>
-                     <div class="col-6" style="border:1px solid green"></div>
+		     <div class="col-6" style="border:0px solid green">
+		       <div class="col-12 mt-3" id="opacitySlider" style="border:1px solid green">
+                          <div id="opacitySlider-handle" class="ui-slider-handle"></div>
+                       </div>
+                    </div>
                   </div>
 
 <!--  segment debug toggle set -->
@@ -438,19 +442,6 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
     </div> <!-- top-select -->
 
 </div> <!-- main -->
-
-<div id="plot-range-key-container" style="display:none;">
-    <div id="plot-range-key" class="row" style="opacity:0.8">
-        <div class="col" style="width:110px;height:24px;">
-           <span class="min" style="width:1rem"></span>
-           <span class="ui-slider-range" style="border:1px solid grey; width:60px;height:15px;"></span>
-           <span class="max"></span>
-        </div>
-    </div>
-    <div id="plot-range-label" class="row" style="display:;opacity:0.8">
-        <label><span id="plot-range-label-string"></span></label>
-    </div>
-</div>
 
 <div id="expand-view-key-container" style="display:none;">
   <div id="expand-view-key" class="row" style="opacity:0.8; height:1.4rem;">

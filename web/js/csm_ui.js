@@ -1,43 +1,15 @@
+
 /***
    csm_ui.js
 
-   specific to csm's viewer.php to expand the leaflet map view
+   specific to csm's viewer.php to 
+      expand the leaflet map view
+      manage the boreholes
+      manage the opacity slider
 ***/
 
-var showing_key = false;
+/************************************************************************************/
 var big_map=0; // 0,1(some control),2(none)
-
-/************************************************************************************/
-
-function showKey(minv,maxv,label) {
-window.console.log("calling showing key");
-    if (showing_key) {
-        removeKey();
-    } else {
-        showing_key = true;
-    }
-    // truncate the values alittle..
-    let min=Math.round(minv * 100) / 100;
-    let max=Math.round(maxv * 100) / 100;
-
-    $("#CSM_plot").prepend($("#plot-range-key-container").html());
-    $("#plot-range-key span.min").html(min);
-    $("#plot-range-key span.max").html(max);
-    let elt = document.getElementById('plot-range-label-string');
-    elt.innerHTML=label;
-
-}
-
-function removeKey() {
-window.console.log("calling removing key");
-    if(showing_key) {
-      $("#CSM_plot #plot-range-key").remove();
-      $("#CSM_plot #plot-range-label").remove();
-      showing_key = false;
-    }
-}
-
-/************************************************************************************/
 
 function _toMedView()
 {
@@ -120,25 +92,6 @@ function toggleBigMap()
 }
 
 /************************************************************************************/
-
-function disable_record_btn() {
-  $('#recordReferenceBtn').attr("disabled", true);
-}
-
-function enable_record_btn() {
-  $('#recordReferenceBtn').attr("disabled", false);
-}
-
-function disable_last_record_btn() {
-  $('#lastRecordedReferenceBtn').attr("disabled", true);
-}
-
-function enable_last_record_btn() {
-  $('#lastRecordedReferenceBtn').attr("disabled", false);
-}
-
-/************************************************************************************/
-
 var csm_boreholes_list=[];
 
 function downloadBorehole() {
@@ -180,3 +133,28 @@ function hideCSMBoreholes() {
   let layer=csm_boreholes_list[0];
   viewermap.removeLayer(layer);
 }
+
+/************************************************************************************/
+function setupOpacitySlider(alpha) {
+    var handle = $( "#opacitySlider-handle" );
+
+    $( "#opacitySlider" ).slider({
+      value:alpha,
+      min: 0,
+      max: 1,
+      step: 0.1, 
+      create: function() {
+        handle.text( $( this ).slider( "value" ) );
+      },
+      change: function ( event, ui ) { 
+        handle.text( ui.value );
+        CSM.changePixiLayerOpacity(ui.value);
+      }
+    });
+}
+
+function setOpacitySliderHandle(alpha) {
+    $( "#opacitySlider" ).slider( "option", "value", alpha);
+}
+
+

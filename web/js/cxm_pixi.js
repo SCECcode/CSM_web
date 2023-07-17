@@ -581,7 +581,7 @@ filter.alpha = 0.5; // <-- tween this propert
 https://github.com/pixijs/pixijs/discussions/8025
 *****/
 
-    let pixiContainer = new PIXI.Container();
+    let pixiContainer = new PIXI.Container({vertices: true, tint: true});
     //let alphaFilter = new PIXI.AlphaFilter(1);
     //pixiContainer.filters = [alphaFilter];
     pixiContainer.alpha=0.7;
@@ -642,7 +642,8 @@ if(event.type == "undefined") {
       var invScale = 1 / getScale();
 
       if (event.type === "redraw") {
-window.console.log("PIXI: redraw event");
+window.console.log(" >>>   PIXI: redraw event");
+        renderer.render(container);
       }
 
       if (event.type === 'add') {
@@ -749,7 +750,7 @@ window.console.log("PIXI: total of len, ",collect_len);
       destroyInteractionManager: true
     }).addTo(viewermap);
 
-    let t=pixiOverlayList.push({"uid":uid,"visible":1,"segment":segments,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
+    pixiOverlayList.push({"uid":uid,"visible":1,"segment":segments,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
 
 window.console.log(">>> PIXI..adding into poxiOverlayList with uid of:",uid);
 
@@ -849,18 +850,15 @@ function pixiSetPixiOpacity(uid, alpha) {
     if(v==1) {
        let pContainer=pixi.top;
        pContainer.alpha=alpha;
+       layer.redraw({type: 'redraw'});
     }
 }
 
 //pixiOverlayList.push({"uid":uid,"visible":1,"segment":segments,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
 function pixiGetPixiOpacity(uid) {
-    let opacity=1;
     let pixi=pixiFindPixiWithUid(uid);
-    let v=pixi.visible;
     let layer=pixi.overlay;
-    if(v==1) {
-       let pContainer=pixi.top;
-       opacity=pContainer.alpha;
-    }
+    let pContainer=pixi.top;
+    opacity=pContainer.alpha;
     return opacity;
 }

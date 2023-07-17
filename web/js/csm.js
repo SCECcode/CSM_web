@@ -334,6 +334,22 @@ window.console.log("SPEC:modelMetric_idx is "+midx+"("+mmetric+")");
       return [spec, spec_idx, spec_data];
     }
 
+
+    this.changePixiLayerOpacity= function (alpha) {
+
+      let spec = [];
+      let spec_idx = [];
+      let spec_data = [];
+      [ spec, spec_idx, spec_data ] = this.getSpec();
+
+      let pixiuid= this.lookupModelLayers(
+                    spec_idx[0], spec_idx[1], spec_idx[2]);
+      let old=pixiGetPixiOpacity(pixiuid);
+      if(alpha != old) {
+        pixiSetPixiOpacity(pixiuid, alpha);
+      }
+    }
+
     this.freshSearch = function (){
 
 window.console.log("calling, new freshSearch...");
@@ -363,6 +379,8 @@ window.console.log("in freshSearch --model");
           let seginfo=pixiFindSegmentProperties(pixiuid);
           CSM.setupPixiSegmentDebug(pixiuid,seginfo);
           CSM.setupPixiLegend(pixiuid,spec,seginfo);
+          let opacity=pixiGetPixiOpacity(pixiuid);
+          setOpacitySliderHandle(opacity);		   
           } else {
             pixiuid = this.search(this.searchType.model, spec, spec_idx, spec_data);
         }
@@ -385,6 +403,8 @@ window.console.log("in freshSearch --latlon");
           let seginfo=pixiFindSegmentProperties(pixiuid);
           CSM.setupPixiSegmentDebug(pixiuid,seginfo);
           CSM.setupPixiLegend(pixiuid,spec,seginfo);
+          let opacity=pixiGetPixiOpacity(pixiuid);
+          setOpacitySliderHandle(opacity);		   
           } else {
             pixiuid = this.search(this.searchType.model, spec, spec_idx, spec_data);
         }
@@ -606,10 +626,6 @@ window.console.log("SEARCHING for ",spec[2]);
                        pixi_spec.rgb_set=0;
                     }
 
-/* special case, look up the jblob data
-                    
-*/
-
                     // 2km grid or 5km grid  
                     pixi_spec.scale_hint=2;
                     if(spec[1] >= 50) {
@@ -630,6 +646,9 @@ window.console.log("SEARCHING for ",spec[2]);
                     let seginfo=pixiFindSegmentProperties(pixiuid);
                     CSM.setupPixiSegmentDebug(pixiuid,seginfo);
                     CSM.setupPixiLegend(pixiuid,spec,seginfo);
+                    let opacity=pixiGetPixiOpacity(pixiuid);
+                    setOpacitySliderHandle(opacity);		   
+
                     return pixiuid;
                 }
                 if(type==CSM.searchType.latlon) { 
@@ -682,6 +701,8 @@ window.console.log("calling redrawModel..");
           let seginfo=pixiFindSegmentProperties(pixiuid);
           CSM.setupPixiSegmentDebug(pixiuid,seginfo);
           CSM.setupPixiLegend(pixiuid,spec, seginfo);
+          let opacity=pixiGetPixiOpacity(pixiuid);
+          setOpacitySliderHandle(opacity);		   
           } else {
             pixiuid = this.search(this.searchType.model, spec, spec_idx, spec_data);
         }
@@ -1010,11 +1031,12 @@ window.console.log("generateMetadataTable..");
             this.setupModelLayers(this.csm_models);
 
             this.model_initialized=true;
-	    this._redrawModel();
 
             $("#searchTypeModel").click(); // start with model option
             this.resetModel(); // set to the first one
 	    retreiveBoreholes();
+            let alpha=0.7;
+	    setupOpacitySlider(alpha);
     };
      
     // need to trigger modelType change to first model
