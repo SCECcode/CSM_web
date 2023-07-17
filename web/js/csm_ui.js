@@ -108,11 +108,12 @@ function retreiveBoreholes() {
   let tips=[];
   for(let i=1; i<sz; i++) {
     let term=csvblob[i];
-    let id=term[1];
+    let id=term[0];
+    let type=term[1];
     let lat=term[2];
     let lon=term[3];
     let azimuth=term[6];
-    let tip="borehole:"+id+"<br>azimuth:"+azimuth;
+    let tip="borehole:"+id+"<br>type:"+type+"<br>lat:"+lat+"<br>lon:"+lon+"<br>azimuth:"+azimuth;
     latlngs.push({"lat":lat,"lon":lon});
     tips.push(tip);
   }
