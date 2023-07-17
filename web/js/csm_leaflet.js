@@ -357,6 +357,20 @@ function makeLeafletMarker(bounds,cname,size) {
   return layer;
 }
 
+// TODO: make this a layer with sticks azimuth calculation
+//       and add mouse in/mouse out and focusing event
+//       and also zoom in and zoom out pixiel calc
+function makeLeafletCircleMarker(bounds,cname,size) {
+  let marker = L.circleMarker(bounds,
+	    { color: "black",
+              fillColor: "red",
+              fillOpacity: 0.5,
+              radius: 3,
+              riseOnHover: true,
+              weight: 1});
+  return marker;
+}
+
 // icon size 8 
 function addMarkerLayerGroup(latlng,description,sz) {
   var cnt=latlng.length;
@@ -367,7 +381,7 @@ function addMarkerLayerGroup(latlng,description,sz) {
      var bounds = latlng[i];
      var desc = description[i];
      var cname="quake-color-historical default-point-icon";
-     var marker=makeLeafletMarker(bounds,cname,sz);
+     var marker=makeLeafletCircleMarker(bounds,cname,sz);
      marker.bindTooltip(desc);
      markers.push(marker);
   }
