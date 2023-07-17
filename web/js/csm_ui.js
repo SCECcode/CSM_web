@@ -105,6 +105,7 @@ function retreiveBoreholes() {
 
   let sz=csvblob.length;
   let latlngs=[];
+  let tips=[];
   for(let i=1; i<sz; i++) {
     let term=csvblob[i];
     let lat=term[2];
@@ -112,9 +113,10 @@ function retreiveBoreholes() {
     let ss=term[6];
 window.console.log( ">>", lat, lon, ss);
     latlngs.push({"lat":lat,"lon":lon});
+    tips.push(ss);
   }
 
-  let group=addMarkerLayerGroup(latlngs,"boreholes",5);
+  let group=addMarkerLayerGroup(latlngs,tips,5);
   csm_boreholes_list.push(group);
 }
 

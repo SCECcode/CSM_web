@@ -167,7 +167,7 @@ for f in file_list:
               else:
                 print(" BAD iso 1???")
             item['iso_999qs']=iso_999qs
-            item['isoi_001qs']=iso_001qs
+            item['iso_001qs']=iso_001qs
         
       rawdif = item['rawdif']
       dif_min=dif_max=dif_90p=dif_10p=dif_999q=dif_001q=None

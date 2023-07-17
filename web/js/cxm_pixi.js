@@ -214,6 +214,7 @@ function getSegmentRangeList(N, vs_max, vs_min) {
   var mult=10;
   let abs_step=Math.abs(step);
   let abs_vs_min=Math.abs(vs_min);
+
   if (abs_step < 0.00001 || (abs_vs_min < 0.00009 && abs_vs_min!=0)) {
     mult=1000000; 
   } else if (abs_step < 0.0001 || (abs_vs_min < 0.0009 && abs_vs_min!=0))  {
