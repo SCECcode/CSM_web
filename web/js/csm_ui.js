@@ -109,21 +109,35 @@ number, but if we're looking at the whole of southern california, "scale=0.3"
 might be a good number.
 ***/
 
-var csm_boreholes_list=[];
+var csm_boreholes_layer={};
+var csm_boreholes_latlngs=[];
+var csm_boreholes_azimuth=[];
+var csm_boreholes_id=[];
+var csm_boreholes_tips=[];
 
 function downloadBorehole() {
   saveAsURLFile('./csm_data/LuttrellHardebeckJGR2021_Table1.csv');
 }
 
-function calc_ends(lat_s,lon_s, shmax_s) {
+function calc_ends(lat_s,lon_s,shmax_s,zoom) {
 
   let lat=parseFloat(lat_s);
   let lon=parseFloat(lon_s);
   let shmax=parseFloat(shmax_s);
   let ends=[];
 
+  if(zoom <= 6) scale=0.10;
+  if(zoom == 7) scale=0.08;
+  if(zoom == 8) scale=0.06;
+  if(zoom == 9) scale=0.04;
+  if(zoom == 10) scale=0.02;
+  if(zoom == 11) scale=0.01;
+  if(zoom == 12) scale=0.008;
+  if(zoom == 13) scale=0.006;
+  if(zoom == 14) scale=0.003;
+  if(zoom >= 15) scale=0.001;
+
   let cosdlat=0.8269;
-  let scale=0.1;
   let shmax_r = shmax * Math.PI / 180;
 
   let x1=  (lon - (scale / cosdlat * Math.sin(shmax_r)))
@@ -149,8 +163,6 @@ function calc_ends(lat_s,lon_s, shmax_s) {
   let dist2=mymap.distance(middle, ends[1]);	
   let dist=mymap.distance(ends[0], ends[1]);	
 
-window.console.log("HERE...",Math.floor(dist));
-
   return ends;
 }
 
@@ -158,11 +170,7 @@ window.console.log("HERE...",Math.floor(dist));
 function retreiveBoreholes() {
   let blob=ckExist('./csm_data/LuttrellHardebeckJGR2021_Table1.csv');
   let csvblob = $.csv.toArrays(blob);
-
   let sz=csvblob.length;
-  let latlngs=[];
-  let ends=[];
-  let tips=[];
   for(let i=1; i<sz; i++) {
     let term=csvblob[i];
     let id=term[0];
@@ -171,37 +179,74 @@ function retreiveBoreholes() {
     let lon=term[3];
     let azimuth=term[6];
 //
-    latlngs.push({"lat":lat,"lon":lon});
+    csm_boreholes_latlngs.push({"lat":lat,"lon":lon});
+    csm_boreholes_azimuth.push(azimuth);
+    csm_boreholes_id.push(id);
 //
     let tip="borehole:"+id+"<br>type:"+type+"<br>lat:"+lat+"<br>lon:"+lon+"<br>azimuth:"+azimuth;
-    tips.push(tip);
-//
-    let end=calc_ends(lat,lon,azimuth); //[{"lat":lat,"lon":lon},{"lat":lat,"lon":lon}];
-    let zoom=mymap.getZoom();
+    csm_boreholes_tips.push(tip);
+  }
+}
+
+function makeBoreholeLayers(mymap) {
+
+  let zoom=mymap.getZoom();
+  if(!isEmptyDictionary(csm_boreholes_layer)
+               && csm_boreholes_layer['zoom'] == zoom) {
+    return;
+  }
+
+  let sz=csm_boreholes_latlngs.length;
+  let ends=[];
+  for(let i=0; i<sz; i++) {
+    let latlngs=csm_boreholes_latlngs[i];
+    let lat=latlngs["lat"];
+    let lon=latlngs["lon"];
+    let id=csm_boreholes_id[i];
+    let azimuth=csm_boreholes_azimuth[i];
+
+    let end=calc_ends(lat,lon,azimuth,zoom); //[{"lat":lat,"lon":lon},{"lat":lat,"lon":lon}];
     ends.push({"id":id,"zoom":zoom,"ends":end});
   }
 
-  let markergroup=addCircleMarkerLayerGroup(latlngs,tips);
+  let markergroup=addCircleMarkerLayerGroup(csm_boreholes_latlngs,csm_boreholes_tips);
   let linegroup=addPolylineLayerGroup(ends);
 
-  csm_boreholes_list.push(markergroup);
-  csm_boreholes_list.push(linegroup);
+  csm_boreholes_layer={ "zoom":zoom, "marker":markergroup, "line":linegroup };
 }
 
-function showCSMBoreholes(viewermap) {
-  let sz=csm_boreholes_list.length;
-  for(let i=0; i<sz; i++) {
-    let layer=csm_boreholes_list[i];
-    viewermap.addLayer(layer);
+function updateCSMBoreholes(mymap) {
+  // only need to refresh
+  if ($("#cxm-model-csm-boreholes").prop('checked')) {
+          showCSMBoreholes(mymap);
   }
 }
 
-function hideCSMBoreholes() {
-  let sz=csm_boreholes_list.length;
-  for(let i=0; i<sz; i++) {
-    let layer=csm_boreholes_list[i];
-    viewermap.removeLayer(layer);
+function showCSMBoreholes(mymap) {
+  let zoom=mymap.getZoom();
+  let t=csm_boreholes_layer;
+  if(isEmptyDictionary(csm_boreholes_layer)) {
+    makeBoreholeLayers(mymap);
+    } else {
+      if ( csm_boreholes_layer['zoom'] != zoom) {
+        mymap.removeLayer(csm_boreholes_layer['marker']);
+        mymap.removeLayer(csm_boreholes_layer['line']);
+        csm_boreholes_layer={};
+        makeBoreholeLayers(mymap);
+      }
   }
+
+  mymap.addLayer(csm_boreholes_layer['marker']);
+  mymap.addLayer(csm_boreholes_layer['line']);
+}
+
+function hideCSMBoreholes(mymap) {
+  if(isEmptyDictionary(csm_boreholes_layer)) {
+    window.console.log("BAD..  should never be here..");
+    return;
+  }
+  mymap.removeLayer(csm_boreholes_layer['marker']);
+  mymap.removeLayer(csm_boreholes_layer['line']);
 }
 
 /************************************************************************************/

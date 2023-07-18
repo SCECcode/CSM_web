@@ -39,6 +39,11 @@ function isObject(objV) {
   return objV && typeof objV === 'object' && objV.constructor === Object;
 }
 
+//  dict={}.  dict={"key1":val1}
+function isEmptyDictionary(dicV) {
+  return Object.keys(dicV).length === 0;
+}
+
 // color from blue to red
 //                     red, green, blue
 // Orig: red to blue (255,0,0) -> (0,0,255)

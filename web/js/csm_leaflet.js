@@ -233,8 +233,10 @@ function setup_viewer()
 
   function onMapZoom(e) { 
     var zoom=mymap.getZoom();
-//window.console.log("map got zoomed..>>",zoom);
-    }
+window.console.log("MAP got zoomed..>>",zoom);
+//  need to update borehole sticks
+    updateCSMBoreholes(mymap);
+  }
 
   mymap.on('mouseover', onMapMouseOver);
   mymap.on('zoomend dragend', onMapZoom);
@@ -379,9 +381,16 @@ function addIconMarkerLayerGroup(latlngs,description,sz) {
 //       and add mouse in/mouse out and focusing event
 //       and also zoom in and zoom out pixiel calc
 function makeLeafletCircleMarker(latlng,cname) {
+
+  let zoom=mymap.getZoom();
+  let sz;
+  if(zoom <= 6) sz=1;
+  if(zoom == 7) sz=2;
+  if(zoom >= 8) sz=3;
+
   let marker = L.circleMarker(latlng,
 	    { color: "black",
-              radius: 3,
+              radius: sz,
               riseOnHover: true,
               weight: 1});
   return marker;

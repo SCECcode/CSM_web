@@ -51,7 +51,7 @@ var CSM = new function () {
 
     this.defaultMapView = {
         coordinates: [34.0, -118.2],
-        zoom: 7 
+        zoom: 6 
     };
 
     this.searchType = {
