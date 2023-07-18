@@ -4,7 +4,7 @@
 This is leaflet specific utilities for CSM
 ***/
 
-var init_map_zoom_level = 7;
+var init_map_zoom_level = 6;
 var init_map_coordinates =  [34.0, -118.2];
 var drawing_rectangle = false;
 
@@ -144,10 +144,10 @@ function setup_viewer()
 
   baseLayers = {
     "esri topo" : esri_topographic,
-    "Jawg Dark" : jawg_dark,
-    "Jawg Light" : jawg_light,
-    "esri NG" : esri_ng,
     "esri imagery" : esri_imagery,
+    "Jawg Light" : jawg_light,
+    "Jawg Dark" : jawg_dark,
+    "esri NG" : esri_ng,
     "otm topo": otm_topographic,
     "osm street" : osm_street,
     "shaded relief": shaded_relief
@@ -345,7 +345,7 @@ function makeRectangleLayer(latA,lonA,latB,lonB) {
   return layer;
 }
 
-function makeLeafletMarker(bounds,cname,size) {
+function makeLeafletIconMarker(bounds,cname,size) {
   var myIcon = L.divIcon({className:cname});
   var myOptions = { icon : myIcon};
 
@@ -357,37 +357,81 @@ function makeLeafletMarker(bounds,cname,size) {
   return layer;
 }
 
-// TODO: make this a layer with sticks azimuth calculation
-//       and add mouse in/mouse out and focusing event
-//       and also zoom in and zoom out pixiel calc
-function makeLeafletCircleMarker(bounds,cname,size) {
-  let marker = L.circleMarker(bounds,
-	    { color: "black",
-              fillColor: "red",
-              fillOpacity: 0.5,
-              radius: 3,
-              riseOnHover: true,
-              weight: 1});
-  return marker;
-}
-
 // icon size 8 
-function addMarkerLayerGroup(latlng,description,sz) {
-  var cnt=latlng.length;
+function addIconMarkerLayerGroup(latlngs,description,sz) {
+  var cnt=latlngs.length;
   if(cnt < 1)
     return null;
   var markers=[];
   for(var i=0;i<cnt;i++) {
-     var bounds = latlng[i];
+     var latlng = latlngs[i];
      var desc = description[i];
      var cname="quake-color-historical default-point-icon";
-     var marker=makeLeafletCircleMarker(bounds,cname,sz);
+     var marker=makeLeafletIconMarker(latlng,cname,sz);
      marker.bindTooltip(desc);
      markers.push(marker);
   }
   var group = new L.FeatureGroup(markers);
   return group;
 }
+
+// TODO: make this a layer with sticks azimuth calculation
+//       and add mouse in/mouse out and focusing event
+//       and also zoom in and zoom out pixiel calc
+function makeLeafletCircleMarker(latlng,cname) {
+  let marker = L.circleMarker(latlng,
+	    { color: "black",
+              radius: 3,
+              riseOnHover: true,
+              weight: 1});
+  return marker;
+}
+
+function makeLeafletPolyline(latlngs) {
+  let line = L.polyline(latlngs, 
+	    { color: "black",
+              weight: 2});		       
+
+//  let point1=mymap.latLngToContainerPoint(latlngs[0]);
+//  let point2=mymap.latLngToContainerPoint(latlngs[1]);
+// let v=mymap.distanceTo(latlngs[0], latlngs[1]);
+// window.console.log("HERE...",v);
+  return line;
+}
+
+function addCircleMarkerLayerGroup(latlngs,description) {
+  var cnt=latlngs.length;
+  if(cnt < 1)
+    return null;
+  var markers=[];
+  for(var i=0;i<cnt;i++) {
+     var latlng = latlngs[i];
+     var desc = description[i];
+     var marker=makeLeafletCircleMarker(latlng);
+     marker.bindTooltip(desc);
+     markers.push(marker);
+  }
+  var group = new L.FeatureGroup(markers);
+  return group;
+}
+
+// ends {"id":v, "ends": latlng }
+//
+function addPolylineLayerGroup(sets) {
+  var cnt=sets.length;
+  if(cnt < 1)
+    return null;
+  var lines=[];
+  for(var i=0;i<cnt;i++) {
+     let term=sets[i];
+     var latlngs = term["ends"];
+     var line=makeLeafletPolyline(latlngs);
+     lines.push(line);
+  }
+  var group = new L.FeatureGroup(lines);
+  return group;
+}
+
 
 function switchLayer(layerString) {
     mymap.removeLayer(currentLayer);

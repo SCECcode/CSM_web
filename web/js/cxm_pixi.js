@@ -662,6 +662,7 @@ window.console.log("PIXI: add event");
         let scaleFactor=16; // default came from seismicity
         if(spec.scale_hint == 2 ) { // when grid points are about 2km len is 70k
           scaleFactor=6.8;
+          //scaleFactor=10;
         }
         if(spec.scale_hint == 5) {  // when grid points are about 5km
           scaleFactor=2.7; 
@@ -704,16 +705,9 @@ window.console.log("PIXI:in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>
 **/
 
               var marker = new PIXI.TilingSprite(markerTexturesPtr[i]);
+        //      var marker = new PIXI.Sprite(markerTexturesPtr[i]);
               marker.clampMargin = -0.5;
               //TilingSprite: marker.clampMargin = -0.5;
-/*
-const mask = new PIXI.Graphics();
-mask.beginFill(0xFF3300);
-//graphics.drawRect(50, 250, 100, 100);
-mask.drawEllipse(75, 30, 60, 40)
-//graphics.endFill();
-marker.mask = mask;
-*/
              
               marker.alpha=1; // add, multiply,screen
               marker.blendMode=0; // add, multiply,screen
