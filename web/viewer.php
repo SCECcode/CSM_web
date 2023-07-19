@@ -325,9 +325,9 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
             <div class="input-group-prepend">
                   <label class="input-group-text">Change Opacity</label>
             </div>
-            <div class="row" style="min-width:320px;margin-left:10px; border:solid 0px green;">
+            <div class="row" style="min-width:300px;margin:5px 0px 0px 20px; border:solid 0px green;">
                 0%
-	          <div class="col-8" id="opacitySlider" style="margin:8px 15px 5px 15px;border:1px solid rgb(206,212,218)">
+	          <div class="col-8" id="opacitySlider" style="margin:5px 15px 5px 15px;border:1px solid rgb(206,212,218)">
                      <div id="opacitySlider-handle" class="ui-slider-handle"></div>
                   </div>
                 100%
