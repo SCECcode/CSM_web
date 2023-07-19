@@ -585,7 +585,7 @@ https://github.com/pixijs/pixijs/discussions/8025
     let pixiContainer = new PIXI.Container({vertices: true, tint: true});
     //let alphaFilter = new PIXI.AlphaFilter(1);
     //pixiContainer.filters = [alphaFilter];
-    pixiContainer.alpha=0.7;
+    pixiContainer.alpha=0.8;
 
     let pContainers=[]; //particle container
     let segments=[];
@@ -661,11 +661,11 @@ window.console.log("PIXI: add event");
 
         let scaleFactor=16; // default came from seismicity
         if(spec.scale_hint == 2 ) { // when grid points are about 2km len is 70k
-          scaleFactor=6.8;
+          scaleFactor=6;
           //scaleFactor=10;
         }
         if(spec.scale_hint == 5) {  // when grid points are about 5km
-          scaleFactor=2.7; 
+          scaleFactor=2.5; 
         }
 
 // :-) very hacky, just in case it got zoomed in before search

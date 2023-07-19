@@ -125,17 +125,18 @@ function calc_ends(lat_s,lon_s,shmax_s,zoom) {
   let lon=parseFloat(lon_s);
   let shmax=parseFloat(shmax_s);
   let ends=[];
+  let scale=0.1;
 
-  if(zoom <= 6) scale=0.10;
-  if(zoom == 7) scale=0.08;
-  if(zoom == 8) scale=0.06;
-  if(zoom == 9) scale=0.04;
-  if(zoom == 10) scale=0.02;
-  if(zoom == 11) scale=0.01;
-  if(zoom == 12) scale=0.008;
-  if(zoom == 13) scale=0.006;
-  if(zoom == 14) scale=0.003;
-  if(zoom >= 15) scale=0.001;
+  if(zoom <= 6) { scale=0.10; } 
+    else if( zoom <= 7) { scale=0.08; }
+    else if(zoom  <= 8) { scale=0.06; } 
+    else if(zoom <= 9) { scale=0.04; }
+    else if(zoom <= 10) { scale=0.02; }
+    else if(zoom <= 11) { scale=0.01; } 
+    else if(zoom <= 12) { scale=0.008; } 
+    else if(zoom <= 13) { scale=0.006; }
+    else if(zoom <= 14) {scale=0.004; } 
+    else { scale=0.002; }
 
   let cosdlat=0.8269;
   let shmax_r = shmax * Math.PI / 180;
@@ -250,6 +251,13 @@ function hideCSMBoreholes(mymap) {
 }
 
 /************************************************************************************/
+function _toPercent(v) {
+// change 0.8 to "80%"
+  let nv=Math.floor(v*100);
+  let str=String(nv);
+  return str;
+}
+
 function setupOpacitySlider(alpha) {
     var handle = $( "#opacitySlider-handle" );
 
@@ -259,10 +267,10 @@ function setupOpacitySlider(alpha) {
       max: 1,
       step: 0.1, 
       create: function() {
-        handle.text( $( this ).slider( "value" ) );
+        handle.text( _toPercent($( this ).slider( "value" )) );
       },
       change: function ( event, ui ) { 
-        handle.text( ui.value );
+        handle.text( _toPercent(ui.value) );
         CSM.changePixiLayerOpacity(ui.value);
       }
     });

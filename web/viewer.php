@@ -163,28 +163,31 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
             <div id='model-options' class="form-check-inline">
               <div class="form-check form-check-inline">
                 <label class='form-check-label ml-1 mini-option'
-                               for="cxm-model-csm-boreholes">
+                       title="Show Luttrell & Hardebeck (2021) borehole SHmax orientations on map"
+                       for="cxm-model-csm-boreholes">
                 <input class='form-check-inline mr-1'
-                               type="checkbox"
-                      id="cxm-model-csm-boreholes" value="1" />Boreholes
+                       type="checkbox"
+                       id="cxm-model-csm-boreholes" value="1" />Borehole SHmax
                 </label>
                 <!-- boreholes download button -->
                 <button id="boreholeDownloadBtn" class="btn cxm-small-btn"
-                      title="Download borehole file"
-                      onClick="downloadBorehole()"
-		      style="display:;" >
-                      <span class="glyphicon glyphicon-download" style="font-size:14px"></span></button>
+                        onClick="downloadBorehole()">
+		       <span class="glyphicon glyphicon-download" 
+                            title="Download Luttrell & Hardebeck (2021) borehole data file"
+                            style="font-size:14px"></span></button>
               </div>
               <div class="form-check form-check-inline">
                 <label class='form-check-label ml-1 mini-option'
-                               for="cxm-model-cfm">
+                       title="Show Community Fault Model v6.0 traces on map"
+                       for="cxm-model-cfm">
                 <input class='form-check-inline mr-1'
-                               type="checkbox"
-                      id="cxm-model-cfm" value="1" />CFM6.0
+                       type="checkbox"
+                       id="cxm-model-cfm" value="1" />CFM6.0
                 </label>
               </div>
               <div class="form-check form-check-inline">
                 <label class='form-check-label ml-1 mini-option'
+                      title="Show the Geologic Framework Model regions on map"
                                for="cxm-model-gfm">
                 <input class='form-check-inline mr-1'
                                type="checkbox"
@@ -266,8 +269,8 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
          <div class="row" style="border:solid 0px blue">
              <div class="col-9">
                <form id="csm-search-type">
-                 <label><input type="radio" id="searchTypeModel" name="searchtype" onclick="CSM.showSearch('model')"><span>Model</span></label>
-                 <label><input type="radio" id="searchTypeData" name="searchtype" onclick="CSM.showSearch('latlon')"><span>Get Data Subset</span></label>
+                 <label><input type="radio" id="searchTypeModel" name="searchtype" onclick="CSM.showSearch('model')"><span>Explore Models</span></label>
+                 <label><input type="radio" id="searchTypeData" name="searchtype" onclick="CSM.showSearch('latlon')"><span>Select Region</span></label>
                </form>
              </div>
 
@@ -288,17 +291,17 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
 
          <div class="input-group input-group-sm custom-control-inline mt-2" style="max-width:450px">
             <div class="input-group-prepend">
-                  <label class="input-group-text" for="modelType">Select Model Metric</label>
+                  <label class="input-group-text" for="modelMetric">Select Model Metric</label>
             </div>
 	    <select id="modelMetric" class="custom-select custom-select-sm"></select>
 	 </div> 
 
          <div class="input-group input-group-sm custom-control-inline mt-2" style="max-width:450px">
             <div class="input-group-prepend">
-                  <label class="input-group-text" for="modelType">Select Model Depth</label>
+                  <label class="input-group-text" for="modelDepth">Select Model Depth</label>
             </div>
-	      <select id="modelDepth" class="custom-select custom-select-sm">
-                  <option id="csmdepth_1" value=1>1 km</option>
+	    <select id="modelDepth" class="custom-select custom-select-sm">
+                 <option id="csmdepth_1" value=1>1 km</option>
                   <option id="csmdepth_3" value=3>3 km</option>
                   <option id="csmdepth_5" value=5>5 km</option>
                   <option id="csmdepth_7" value=7>7 km</option>
@@ -314,33 +317,34 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                   <option id="csmdepth_50" value=50>50 km</option>
                   <option id="csmdepth_75" value=75>75 km</option>
                   <option id="csmdepth_100" value=100>100 km</option>
-              </select>
+            </select>
 	 </div> 
+         
+<!-- opacity slider -->
+         <div class="input-group input-group-sm custom-control-inline mt-2" style="max-width:450px">
+            <div class="input-group-prepend">
+                  <label class="input-group-text">Change Opacity</label>
+            </div>
+            <div class="row" style="min-width:320px;margin-left:10px; border:solid 0px green;">
+                0%
+	          <div class="col-8" id="opacitySlider" style="margin:8px 15px 5px 15px;border:1px solid rgb(206,212,218)">
+                     <div id="opacitySlider-handle" class="ui-slider-handle"></div>
+                  </div>
+                100%
+            </div>
+         </div>
 
 <!-- search-option -->
          <div id="search-option" class="col-12 mt-4"style="border:solid 0px green" >
             <ul id="option" class="navigation col-11" style="padding: 0 0 0 0;margin-bottom: 0">
 
               <li id='csm-model' class='row navigationLi' style="display:none;border:solid 0px red;">
-                <div id='modelMenu' class='col-12 menu'>
-                  <div class="row">
-                     <div class="col-6">
-                       <p>Change CSM model opacity.</p>
-                     </div>
-		     <div class="col-6" style="border:0px solid green">
-		       <div class="col-12 mt-3" id="opacitySlider" style="border:1px solid green">
-                          <div id="opacitySlider-handle" class="ui-slider-handle"></div>
-                       </div>
-                    </div>
-                  </div>
-
 <!--  segment debug toggle set -->
                   <div class="row">
                     <div class="col-10" id="pixi-segment-debug" style="display:none;">
                       <div id="pixi-segment"></div>
                     </div>
                   </div>
-                </div>
 
               </li>
 
@@ -392,11 +396,10 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
 <!-- description page -->
          <div id="csm-description" class="col-12 pr-0" style="font-size:14px; background-color:rgb(245,245,245); max-width:450px" >
            <br>
-           <h5><b>Selected CSM Model:</b></h5>
-           <div class="col-12" id="csm-model-description"></div>
-           <h5><b>Selected CSM Metric:</b></h5>
-           <div class="col-12" id="csm-metric-description"> </div>
-           <p><b>For more model details and metrics, see [LINK TO ZENODO ARCHIVE]</b></p>
+           <p><b>You Selected:</b></p>
+           <p id="csm-model-description"></p>
+           <p id="csm-metric-description"></p>
+           <p>For more model details and metrics, see [LINK TO ZENODO ARCHIVE]</p>
          </div>
 
 <!-- result parking location -->
@@ -416,7 +419,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
              </div>
 
 <!-- legend --> 
-  <div class="main-legend geometry top center" style="bottom:10%">
+  <div class="main-legend geometry top center" style="background-color: rgba(255,255,255,0.5);padding-left:3px;padding-right:3px;bottom:10%">
     <div class="row" style="border:0px solid green">
         <div class="legend mt-2" id="pixi-legend-color" style="border:0px solid blue"></div> 
         <div class="legend" id="pixi-legend-label" style="border:0px solid red"></div> 

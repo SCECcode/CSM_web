@@ -4,7 +4,7 @@
 This is leaflet specific utilities for CSM
 ***/
 
-var init_map_zoom_level = 6;
+var init_map_zoom_level = 6.75;
 var init_map_coordinates =  [34.0, -118.2];
 var drawing_rectangle = false;
 
@@ -159,7 +159,7 @@ function setup_viewer()
 
 
 // ==> mymap <==
-  mymap = L.map('CSM_plot', { drawControl:false, layers: [esri_topographic, basemap], zoomControl:true} );
+  mymap = L.map('CSM_plot', { zoomSnap: 0.25, drawControl:false, layers: [esri_topographic, basemap], zoomControl:true} );
   mymap.setView(init_map_coordinates, init_map_zoom_level);
   mymap.attributionControl.addAttribution(scecAttribution);
 
@@ -381,12 +381,10 @@ function addIconMarkerLayerGroup(latlngs,description,sz) {
 //       and add mouse in/mouse out and focusing event
 //       and also zoom in and zoom out pixiel calc
 function makeLeafletCircleMarker(latlng,cname) {
-
   let zoom=mymap.getZoom();
-  let sz;
-  if(zoom <= 6) sz=1;
-  if(zoom == 7) sz=2;
-  if(zoom >= 8) sz=3;
+  let sz=2;
+  if(zoom <= 7) sz=1;
+  if(zoom >= 9) sz=3;
 
   let marker = L.circleMarker(latlng,
 	    { color: "black",
@@ -397,14 +395,14 @@ function makeLeafletCircleMarker(latlng,cname) {
 }
 
 function makeLeafletPolyline(latlngs) {
+  let zoom=viewermap.getZoom();
+  let weight=1;
+  if(zoom > 7) weight=2;
+
   let line = L.polyline(latlngs, 
 	    { color: "black",
-              weight: 2});		       
+              weight: weight});		       
 
-//  let point1=mymap.latLngToContainerPoint(latlngs[0]);
-//  let point2=mymap.latLngToContainerPoint(latlngs[1]);
-// let v=mymap.distanceTo(latlngs[0], latlngs[1]);
-// window.console.log("HERE...",v);
   return line;
 }
 

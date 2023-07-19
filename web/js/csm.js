@@ -51,7 +51,7 @@ var CSM = new function () {
 
     this.defaultMapView = {
         coordinates: [34.0, -118.2],
-        zoom: 6 
+        zoom: 6.75 
     };
 
     this.searchType = {
@@ -740,10 +740,11 @@ window.console.log("calling searchLatlon..");
                 criteria.push(ne['lat']);
                 criteria.push(ne['lng']);
 
-                $("#csm-firstLatTxt").val(criteria[0]);
-                $("#csm-firstLonTxt").val(criteria[1]);
-                $("#csm-secondLatTxt").val(criteria[2]);
-                $("#csm-secondLonTxt").val(criteria[3]);
+		    //display to 5 decimal 
+                $("#csm-firstLatTxt").val( (criteria[0]).toFixed(5));
+                $("#csm-firstLonTxt").val( (criteria[1]).toFixed(5));
+                $("#csm-secondLatTxt").val( (criteria[2]).toFixed(5));
+                $("#csm-secondLonTxt").val( (criteria[3]).toFixed(5));
         }
 
         // not expecting anything 
@@ -804,7 +805,7 @@ window.console.log("calling searchLatlon..");
 <button class=\"btn btn-sm cxm-small-btn\" id=\"button_meta_${layer.scec_properties.gid}\" title=\"remove the region\" onclick=CSM.unselectRegion(\"${layer.scec_properties.gid}\") onmouseover=CSM.mouseoverRegion(${layer.scec_properties.gid}) onmouseout=CSM.mouseoutRegion(${layer.scec_properties.gid}) ><span id=\"csm_metadata_${layer.scec_properties.gid}\" class=\"glyphicon glyphicon-trash\"></span></button></td>`;
         html += `<td class="meta-data">${layer.scec_properties.gid}</td>`;
         html += `<td class="meta-data">${layer.scec_properties.dataset}</td>`;
-        html += `<td class="meta-data">${layer.scec_properties.metric}</td>`;
+        html += `<td class="meta-data">All</td>`;
         html += `<td class="meta-data">${layer.scec_properties.depth}</td>`;
         html += `<td class="meta-data">${layer.scec_properties.note} </td>`;
         html += `<td class="text-center"><button id=\"download_${layer.scec_properties.gid}\" class=\"btn btn-xs csm-btn\" onclick=\"CSM.downloadData(${layer.scec_properties.gid})\"><span class=\"glyphicon glyphicon-download\"></span></button></td>`;
@@ -889,7 +890,7 @@ window.console.log("generateMetadataTable..");
         </th>
         <th class="hoverColor" style="width:12rem" >Id&nbsp<span></span></th>
         <th class="hoverColor" onClick="sortMetadataTableByRow(2,'a')">Model&nbsp<span id='sortCol_2' class="fas fa-angle-down"></span></th>
-        <th class="hoverColor" onClick="sortMetadataTableByRow(3,'a')">Metric&nbsp<span id='sortCol_3' class="fas fa-angle-down"></span></th>
+        <th class="hoverColor">Metric</span></th>
         <th class="hoverColor" onClick="sortMetadataTableByRow(4,'n')">Depth&nbsp<span id='sortCol_4' class="fas fa-angle-down"></span></th>
         <th class="hoverColor">Note&nbsp<span class="fas fa-angle-down"></span></th>
         <th style="width:20%;"><div class="col text-center">
@@ -1035,7 +1036,7 @@ window.console.log("generateMetadataTable..");
             $("#searchTypeModel").click(); // start with model option
             this.resetModel(); // set to the first one
 	    retreiveBoreholes();
-            let alpha=0.7;
+            let alpha=0.8;
 	    setupOpacitySlider(alpha);
     };
      
@@ -1054,7 +1055,7 @@ window.console.log("generateMetadataTable..");
          let term=mlist[i];
          if(term['name'] == target_name) {
            let descript=term['description'];
-           $("#csm-model-description").html("<p style=\"border: solid 0px green;\" >"+descript+"</p>");
+           $("#csm-model-description").html(descript);
            break;
          }
        }
@@ -1149,7 +1150,7 @@ window.console.log("generateMetadataTable..");
          let term=mlist[i];
          if(term['name'] == target) {
            let descript=term['description'];
-           $("#csm-metric-description").html("<p style=\"border: solid 0px green;\" >"+descript+"</p>");
+           $("#csm-metric-description").html(descript);
            break;
          }
        }
