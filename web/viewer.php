@@ -392,12 +392,14 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
              </div>
 
 <!-- legend --> 
-  <div class="main-legend geometry top center" style="background-color: rgba(255,255,255,0.5);padding-left:3px;padding-right:3px;bottom:10%">
-    <div class="row" style="border:0px solid green">
-        <div class="legend mt-2" id="pixi-legend-color" style="border:0px solid blue"></div> 
-        <div class="legend" id="pixi-legend-label" style="border:0px solid red"></div> 
+  <div class="main-legend geometry top center" style="bottom:10%;background-color: rgba(255,255,255,0.5);">
+<div class="col">
+    <div class="row" style="margin:0px 2px 0px -20px">
+        <div class="legend mt-2" id="pixi-legend-color"></div> 
+        <div class="legend" id="pixi-legend-label"></div> 
     </div>
     <div id="pixi-legend-title" align="center" class="legend content mt-1" style="border-top:2px solid grey">Degrees</div>
+</div>
   </div>
 <!-- legend -->
 

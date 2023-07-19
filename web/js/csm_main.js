@@ -32,7 +32,8 @@ jQuery(document).ready(function() {
       CSM.refreshModelDescription(model_type);
       CSM.setupModelMetric(CSM.csm_models,model_type);
       CSM.setupModelDepth(CSM.csm_models,model_type);
-      CSM.showSearch('model');
+      $("#searchTypeModel").click();
+//      CSM.showSearch('model');
       CSM.freshSearch();
   });
 
@@ -47,10 +48,20 @@ window.console.log("--- changing modelDepth");
 window.console.log("--- changing modelMetric");
   });
 
-
   $("#toReset").on('click', function () {
 window.console.log("Calling toReset..");
         CSM.resetAll();
+  });
+
+  $('.csm-latlon-item').on("focus", function() {
+     $('.csm-latlon-item').on("blur mouseout", function() {
+       $('.csm-latlon-item').off("mouseout");
+       $('.csm-latlon-item').off("blur");
+       if( $(this).val() != '' ) {
+	 $("#searchAgain").click();
+       }
+       $(this).blur();
+     });
   });
 
   $("#cxm-model-csm-boreholes").change(function() {

@@ -1188,6 +1188,10 @@ window.console.log("generateMetadataTable..");
    this.changeModelDepth = function(v) {
 window.console.log("change ModelDepth with ..",v);
         this._redrawModel();
+        //special case, if in 'select region' mode, trigger a selection
+        if(this.searchingType == this.searchType.latlon) {
+          $("#searchAgain").click();
+        }
    };
    this.changeModelMetric = function(v) {
 window.console.log("change ModelMetric with ..",v);
