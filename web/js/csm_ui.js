@@ -127,16 +127,19 @@ function calc_ends(lat_s,lon_s,shmax_s,zoom) {
   let ends=[];
   let scale=0.1;
 
-  if(zoom <= 6) { scale=0.10; } 
-    else if( zoom <= 7) { scale=0.08; }
-    else if(zoom  <= 8) { scale=0.06; } 
-    else if(zoom <= 9) { scale=0.04; }
+  if(zoom <= 6) { scale=0.08; } 
+    else if(zoom <= 7) { scale=0.06; }
+    else if(zoom <= 8) { scale=0.05; } 
+    else if(zoom <= 9) { scale=0.03; }
     else if(zoom <= 10) { scale=0.02; }
     else if(zoom <= 11) { scale=0.01; } 
-    else if(zoom <= 12) { scale=0.008; } 
-    else if(zoom <= 13) { scale=0.006; }
-    else if(zoom <= 14) {scale=0.004; } 
-    else { scale=0.002; }
+    else if(zoom <= 12) { scale=0.007; } 
+    else if(zoom <= 13) { scale=0.004; }
+    else if(zoom <= 14) {scale=0.002; } 
+    else { scale=0.001; }
+
+  let tt=(0.1 - (((zoom - 6) * 4) * 0.03)).toFixed(4);
+window.console.log("---   ZOOM",zoom, "  and scale..  ", scale," and tt", tt);
 
   let cosdlat=0.8269;
   let shmax_r = shmax * Math.PI / 180;

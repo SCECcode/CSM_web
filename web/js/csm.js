@@ -264,7 +264,7 @@ window.console.log("calling --->> clearSearch.");
       let tidx=parseInt($("#modelType").val());
       let model=this.csm_models[tidx];
       let tmodel=model['table_name'];
-window.console.log("SPEC: model name is ", model['table_name']);
+//window.console.log("SPEC: model name is ", model['table_name']);
 
       let d=model['jblob']['meta'];
       let dd=d['dataByDEP'];
@@ -280,7 +280,7 @@ window.console.log("SPEC: model name is ", model['table_name']);
       }
       let ddd=dd[didx];
       let ddepth=ddd["dep"];
-window.console.log("SPEC:modelDepth_idx is "+didx+"("+ddepth+"km)");
+//window.console.log("SPEC:modelDepth_idx is "+didx+"("+ddepth+"km)");
 
       let m=model['jblob']['metric'];
       let tmetric=$("#modelMetric").val();
@@ -292,7 +292,7 @@ window.console.log("SPEC:modelDepth_idx is "+didx+"("+ddepth+"km)");
         }
       }
       let mmetric=m[midx];
-window.console.log("SPEC:modelMetric_idx is "+midx+"("+mmetric+")");
+//window.console.log("SPEC:modelMetric_idx is "+midx+"("+mmetric+")");
 
       let datamin=null;
       let datamax=null;

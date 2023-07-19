@@ -353,17 +353,29 @@ function makeLeafletCircleMarker(latlng,cname) {
   if(zoom >= 9) sz=3;
 
   let marker = L.circleMarker(latlng,
-	    { color: "black",
-              radius: sz,
-              riseOnHover: true,
-              weight: 1});
+        {
+            color: "black",
+            fillColor: "black",
+            fillOpacity: 1,
+            radius: sz,
+            riseOnHover: true,
+            weight: 1,
+        });
+  marker.on({
+    mouseover: function(e) {
+      marker.setRadius(sz*3);
+    },
+    mouseout: function(e) {
+      marker.setRadius(sz);
+    },
+  });
   return marker;
 }
 
 function makeLeafletPolyline(latlngs) {
   let zoom=viewermap.getZoom();
   let weight=1;
-  if(zoom > 7) weight=2;
+  if(zoom > 8) weight=2;
 
   let line = L.polyline(latlngs, 
 	    { color: "black",
