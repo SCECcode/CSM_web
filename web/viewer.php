@@ -211,33 +211,6 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
 </div>
             </div> <!-- end of kml -->
 
-<!-- seismicity -->
-            <div class="col-3" style="border:solid 0px blue; display:none">
-              <div id="loadSeismicity" class="row" style="width:20rem;">
-          <button id="quakesBtn" class="btn" 
-                        onClick="loadSeismicity()" title="This loads the updated Hauksson et al. (2012) and Ross et al. (2019) relocated earthquake catalogs and provides a pull-down menu with options to color by depth, magnitude, or time. Significant historical events (1900-2021 >M6.0) are shown with red dots. These can be turned on/off by clicking on the button on the right which appears here once the catalogs have been loaded" style="color:#395057;background-color:#f2f2f2;border:1px solid #ced4da;border-radius:0.2rem;padding:0.15rem 0.5rem;display:;">Load relocated seismicity</button>
-              </div>
- 
-              <div id="showSeismicity" class="row" style="width:20rem; display:none;">
-                <select id="seismicitySelect" onchange="changePixiOverlay(this.value)"
-                class="custom-select custom-select-sm" style="width:auto;min-width:14rem;">
-             <option value="none">Hide relocated seismicity</option>
-                   <option selected value="haukssondepth">Hauksson et al. by depth</option>
-                   <option value="haukssonmag">Hauksson et al. by magnitude</option>
-                   <option value="haukssontime">Hauksson et al. by time</option>
-                   <option value="rossdepth">Ross et al. by depth</option>
-                   <option value="rossmag">Ross et al. by magnitude</option>
-                   <option value="rosstime">Ross et al. by time</option>
-                <!--
-                   <option value="historicaldepth">Historical by depth</option>
-                   <option value="historicalmag">Historical by magitude</option>
-                   <option value="historicaltime">Historical by time</option>
-                -->
-                </select>
-                <button id="toggleHistoricalBtn" class="btn btn-sm cxm-small-btn" title="Show/Hide significant historic earthquakes (M6+) since 1900" onclick="toggleHistorical()"><span id="eye_historical" class="glyphicon glyphicon-eye-open"></span></button>
-               </div>
-            </div> <!-- end of seismicity -->
-
 <!-- basemap -->
             <div class="input-group input-group-sm custom-control-inline" id="map-controls" style="margin-right:15px">
               <div class="input-group-prepend">

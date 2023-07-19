@@ -46,7 +46,6 @@ var rectangle_options = {
 
 var rectangleDrawer;
 var mymap, baseLayers, layerControl, currentLayer;
-var seismicityLegend;
 var mainLegend;
 
 // track all rectangles, never remove
@@ -187,32 +186,6 @@ function setup_viewer()
 // ==> scalebar <==
   L.control.scale({metric: 'false', imperial:'false', position: 'bottomleft'}).addTo(mymap);
 
-// ==> model legend <==
-//  var mainLegend = document.querySelector('div.legend');
-//  var mainLegendContent = mainLegend.querySelector('.content');
-
-//==> seismicity legend <==
-  seismicityLegend=L.control( {position:'bottomleft'});
-
-  seismicityLegend.onAdd = function (map) {
-    this._div = L.DomUtil.create('div');
-    this.update();
-    return this._div;
-  };
-
-  seismicityLegend.update = function (props, param=null) {
-     if(param == null) {
-       this._div.innerHTML="";
-       return;
-     }
-     this._div.innerHTML='<img src="./img/'+param+'" style="width:200px; margin-left:-5px;" >';
-  }
-  seismicityLegend.addTo(mymap);
-  //seismicityLegend.update({}, "cfm-viewer.png");
-  //to remove,
-  //mymap.removeControl(seismicityLegend);
-
-
 // ==> mouse location popup <==
 //   var popup = L.popup();
 // function onMapClick(e) {
@@ -278,13 +251,6 @@ v.style.height="1.4rem";
 
 // finally,
   return mymap;
-}
-
-function removeSeismicityLegend() {
-  seismicityLegend.update();
-}
-function showSeismicityLegend(param) {
-  seismicityLegend.update({}, param);
 }
 
 function drawRectangle(){
