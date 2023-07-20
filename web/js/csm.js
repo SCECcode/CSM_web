@@ -96,7 +96,7 @@ var csm_csv_keys= {
     v3pl:'V3pl',
     v1azi:'V1azi',
     v2azi:'V2azi',
-    v3azi:'V3azi',
+    v3azi:'V3azi'
     };
 
     var tablePlaceholderRow = `<tr id="placeholder-row">
@@ -1319,7 +1319,6 @@ window.console.log("change ModelMetric with ..",v);
    // skip gid and geom (key==0,45)
 	if(keys[0] == "gid") { 
            jfirst=1;
-           jlen=jlen-1;
         }
         if(keys[jlen] == "geom") {
            jlen=jlen-1;
