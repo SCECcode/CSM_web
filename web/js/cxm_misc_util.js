@@ -10,7 +10,7 @@ function notify(msg) {
   let html=document.getElementById('notify-container');
   html.innerHTML=msg;
   $('#modalnotify').modal('show');
-  setTimeout(function() {$('#modalnotify').modal('hide')}, 3000);
+  setTimeout(function() {$('#modalnotify').modal('hide')}, 2000);
 }
 
 
