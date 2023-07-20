@@ -229,14 +229,28 @@ function getSegmentRangeList(N, vs_max, vs_min) {
 //window.console.log( "  ---> STEP is ", abs_step);
 //window.console.log( "  ---> vs_min is ", abs_vs_min);
 //window.console.log( "  ---> USING MULTI is ", mult);
+  let digits=0;
 
-  var slist= [];
+  let tlist= [];
   for(let i=0; i<N; i++) {
-    let v= Math.floor((vs_min + (step * i ))*mult)/mult;
-    slist.push(v);
+    let v= (Math.floor((vs_min + (step * i ))*mult)/mult);
+    let parts=String(v).split('.');
+    if(parts[1] != undefined) {
+      let t=parts[1].length;
+      if(t>digits) {
+        digits=t;
+      }
+    }
+    tlist.push(v);
   }
-// including the last o ne
-  slist.push(Math.floor(vs_max*mult)/mult);
+
+  var slist=[];
+  for(let j=0; j<N; j++) {
+    slist.push(tlist[j].toFixed(digits));
+  }
+
+// including the last one
+  slist.push( (Math.floor(vs_max*mult)/mult).toFixed(digits));
   return slist;
 }
 
@@ -442,7 +456,6 @@ function _loadup_data_list(uid,latlist,lonlist,vallist) {
       let idx=getSegmentRangeIdx(val, DATA_SEGMENT_COUNT, DATA_MAX_V, DATA_MIN_V);
       updateMarkerLatlng(datalist,idx,lat,lon);
    }
-window.console.log("PIXI: HUMHUM..",DATA_count);
    pixiLatlngList= {"uid":uid,"data":datalist} ; 
 
    return pixiLatlngList;
@@ -470,9 +483,9 @@ function makePixiOverlayLayerWithList(uid,latlist,lonlist,vallist,spec) {
 
     pixiLatlngList=_loadup_data_list(uid,latlist,lonlist,vallist);
 
-window.console.log("PIXI:SEG_COUNT " + DATA_SEGMENT_COUNT);
-window.console.log("PIXI:DATA_MAX " + DATA_MAX_V);
-window.console.log("PIXI:DATA_MIN " + DATA_MIN_V);
+//window.console.log("PIXI:SEG_COUNT " + DATA_SEGMENT_COUNT);
+//window.console.log("PIXI:DATA_MAX " + DATA_MAX_V);
+//window.console.log("PIXI:DATA_MIN " + DATA_MIN_V);
 
     return makePixiOverlayLayer(uid,pixiLatlngList,spec);
 }
@@ -629,7 +642,7 @@ https://github.com/pixijs/pixijs/discussions/8025
 
     var overlay=L.pixiOverlay(function(utils, event) {
 
-window.console.log("PIXI:event type --- ", event.type);
+//window.console.log("PIXI:event type --- ", event.type);
 
 if(event.type == "undefined") {
     window.console.log(" ???? XXX why is event type of undefined ???");
@@ -643,12 +656,12 @@ if(event.type == "undefined") {
       var invScale = 1 / getScale();
 
       if (event.type === "redraw") {
-window.console.log(" >>>   PIXI: redraw event");
+//window.console.log(" >>>   PIXI: redraw event");
         renderer.render(container);
       }
 
       if (event.type === 'add') {
-window.console.log("PIXI: add event");
+//window.console.log("PIXI: add event");
 
         if (_foundOverlay(uid)) { // only add it first time
           return;
@@ -672,7 +685,7 @@ window.console.log("PIXI: add event");
         let t= (8/invScale);
         scaleFactor=scaleFactor / t;
 
-window.console.log("PIXI:in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>"+getScale()+" invScale"+invScale+"localscale is "+(invScale/scaleFactor));
+//window.console.log("PIXI:in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>"+getScale()+" invScale"+invScale+"localscale is "+(invScale/scaleFactor));
 
         // fill in the particles one group at a time
         let collect_len=0;

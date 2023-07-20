@@ -321,16 +321,23 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
 
               </li>
 
-              <li id='csm-latlon' class='navigationLi' style="display:none; border:solid 0px red">
+              <li id='csm-latlon' class='navigationLi' style="display:none">
                 <div id='latlonMenu' class='menu'>
                   <div class="row">
-                    <div class="col-6">
-		      <p>Draw a rectangle on the map or enter latitudes and longitudes.
-		      <button id="searchAgain" class="btn cxm-small-btn dropdown-toggle" onclick="CSM.searchLatlon(0,[])"></button>
-<!--
-		      <button id="searchAgain" class="btn cxm-small-btn dropdown-toggle" onclick="CSM.searchLatlon(0,[])"><span class="glyphicon glyphicon-record" style="font-size:6px"></span></button>
--->
+                    <div class="col-6" style="border:solid 0px green">
+		      <p>Draw a rectangle on the map or enter latitudes and longitudes. Note: Use negative longitudes for California.
                       </p>
+<!--
+<div class="row">
+		      <button id="searchAgain" class="btn cxm-small-btn" onclick="CSM.searchLatlon(0,[])"><span>Search Again</span></button>
+</div>
+		      <button id="searchAgain" class="btn cxm-small-btn dropdown-toggle" onclick="CSM.searchLatlon(0,[])"><span class="glyphicon glyphicon-record" style="font-size:6px"></span></button>
+
+<div class="row">
+<button id="searchAgain" class="btn cxm-small-btn dropdown-toggle" onclick="CSM.searchLatlon(0,[])"><span class="glyphicon glyphicon-record" style="font-size:6px"></span></button>
+<button id="toReset" type="button" class="btn btn-dark" >Reset</button>
+</div>
+-->
                     </div>
                     <div class="col-3 pl-0 pr-2">
                       <input type="text"
@@ -345,20 +352,26 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                           title="first lon"
                           onfocus="this.value=''" 
                           class="csm-latlon-item form-control mt-1">
+<div class="row pl-3 pr-2 mt-2">
+                <button id="toResetRegion" type="button" class="btn btn-dark" style="width:110px" onclick="CSM.clearLatlon()">Reset Region</button>
+</div>
                     </div>
                     <div class="col-3 pl-2 pr-0">
                       <input type="text"
                           id="csm-secondLatTxt"
-                          title="optional second lat"
-                          value='optional'
+                          title="second lat"
+                          placeholder='Latitude '
                           onfocus="this.value=''"
                           class="csm-latlon-item form-control">
                       <input type="text"
                           id="csm-secondLonTxt"
-                          title="optional second lon"
-                          value='optional'
+                          title="second lon"
+                          placeholder='Longitude'
                           onfocus="this.value=''"
                           class="csm-latlon-item form-control mt-1">
+<div class="row pl-3 pr-0 mt-2">
+                <button id="searchAgain" type="button" class="btn btn-dark" style="width:110px" onclick="CSM.searchLatlon(0,[])" >Get Data</button>
+</div>
                     </div>
                   </div>
                 </div>
@@ -448,6 +461,23 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
     </div> <!--Content-->
   </div>
 </div> <!--Modal: modalkmlselect-->
+
+<!--Modal: Model(modalinotify) -->
+<div class="modal" id="modalnotify" tabindex="-1" style="z-index:9999" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-small" id="modalnotifyDialog" role="document">
+    <!--Content-->
+    <div class="modal-content" id="modalnotifyContent">
+      <!--Body-->
+      <div class="modal-body" id="modalnotifyBody">
+        <div class="row col-md-12 ml-auto" style="overflow:hidden;">
+          <div class="col-12" style="font-size:14pt">
+            <p id="notify-container">blah blah</p>
+          </div>
+        </div>
+      </div>
+    </div> <!--Content-->
+  </div>
+</div> <!--Modal: modalnotify-->
 
 <!--call php directly-->
     <script type="text/javascript">

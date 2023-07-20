@@ -8,8 +8,8 @@ var init_map_zoom_level = 6.75;
 var init_map_coordinates =  [34.0, -118.2];
 var drawing_rectangle = false;
 
-var default_color = "red";
-var default_highlight_color = "blue";
+var default_color = "black";
+var default_highlight_color = "rgb(0,0,255)";
 var default_weight = 2;
 var default_highlight_weight = 4;
 
@@ -363,7 +363,7 @@ function makeLeafletCircleMarker(latlng,cname) {
         });
   marker.on({
     mouseover: function(e) {
-      marker.setRadius(sz*3);
+      marker.setRadius(sz*4);
     },
     mouseout: function(e) {
       marker.setRadius(sz);

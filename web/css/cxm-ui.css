@@ -1,4 +1,8 @@
 /* csm */
+.csm-latlon-item {
+  height: calc(2rem);
+}
+
 #opacitySlider {
     background: linear-gradient(to right, rgb(255, 255, 255), rgb(153, 00, 00));
 }
@@ -43,7 +47,7 @@ div.hide {
 }
 
 div.main-legend {
-        z-index: 100009;
+        z-index: 9990;
         position: absolute;
         left: 10px;
         font-size: 12px;
@@ -222,11 +226,6 @@ select, input {
 div.vector-slider-input-boxes input[type='text']{
    width: 100px;
    margin-left: 5px;
-}
-
-div.latlon-input-boxes input[type='text']{
-   width: 100px;
-   margin-left: 3px;
 }
 
 #result-table-container {

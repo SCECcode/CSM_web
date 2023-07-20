@@ -29,12 +29,8 @@ jQuery(document).ready(function() {
 
   $('#modelType').on("change", function() {
       let model_type=$(this).val();
-      CSM.refreshModelDescription(model_type);
-      CSM.setupModelMetric(CSM.csm_models,model_type);
-      CSM.setupModelDepth(CSM.csm_models,model_type);
-      $("#searchTypeModel").click();
-//      CSM.showSearch('model');
-      CSM.freshSearch();
+      CSM.changeModelModel(CSM.csm_models, model_type);
+window.console.log("--- changing modelModel");
   });
 
   $('#modelDepth').on("change", function() {
@@ -53,6 +49,7 @@ window.console.log("Calling toReset..");
         CSM.resetAll();
   });
 
+/***
   $('.csm-latlon-item').on("focus", function() {
      $('.csm-latlon-item').on("blur mouseout", function() {
        $('.csm-latlon-item').off("mouseout");
@@ -63,6 +60,7 @@ window.console.log("Calling toReset..");
        $(this).blur();
      });
   });
+***/
 
   $("#cxm-model-csm-boreholes").change(function() {
       if ($("#cxm-model-csm-boreholes").prop('checked')) {

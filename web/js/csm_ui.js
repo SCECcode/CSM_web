@@ -119,30 +119,17 @@ function downloadBorehole() {
   saveAsURLFile('./csm_data/LuttrellHardebeckJGR2021_Table1.csv');
 }
 
-function calc_ends(lat_s,lon_s,shmax_s,zoom) {
+function calc_ends(i,lat_s,lon_s,shmax_s,zoom) {
 
   let lat=parseFloat(lat_s);
   let lon=parseFloat(lon_s);
   let shmax=parseFloat(shmax_s);
   let ends=[];
-  let scale=0.1;
-
-  if(zoom <= 6) { scale=0.08; } 
-    else if(zoom <= 7) { scale=0.06; }
-    else if(zoom <= 8) { scale=0.05; } 
-    else if(zoom <= 9) { scale=0.03; }
-    else if(zoom <= 10) { scale=0.02; }
-    else if(zoom <= 11) { scale=0.01; } 
-    else if(zoom <= 12) { scale=0.007; } 
-    else if(zoom <= 13) { scale=0.004; }
-    else if(zoom <= 14) {scale=0.002; } 
-    else { scale=0.001; }
-
-  let tt=(0.1 - (((zoom - 6) * 4) * 0.03)).toFixed(4);
-window.console.log("---   ZOOM",zoom, "  and scale..  ", scale," and tt", tt);
 
   let cosdlat=0.8269;
   let shmax_r = shmax * Math.PI / 180;
+
+  let scale= (0.0013*(zoom * zoom)) - (0.0359 * zoom) + 0.2489;
 
   let x1=  (lon - (scale / cosdlat * Math.sin(shmax_r)))
   let x2=  (lon + (scale / cosdlat * Math.sin(shmax_r)))
@@ -157,6 +144,7 @@ window.console.log("---   ZOOM",zoom, "  and scale..  ", scale," and tt", tt);
   ends.push({"lat":y1,"lon":x1});
   ends.push({"lat":y2,"lon":x2});
 
+/*
   let middle={"lat":lat, "lon":lon};
   let point1=mymap.latLngToContainerPoint(ends[0]);
   let point2=mymap.latLngToContainerPoint(ends[1]);
@@ -166,6 +154,18 @@ window.console.log("---   ZOOM",zoom, "  and scale..  ", scale," and tt", tt);
   let dist1=mymap.distance(ends[0], middle);	
   let dist2=mymap.distance(middle, ends[1]);	
   let dist=mymap.distance(ends[0], ends[1]);	
+
+used on excel to fit the scale equation:
+6,0.08
+7,0.06
+8,0.05
+9,0.03
+10,0.02
+11,0.01
+12,0.007
+13,0.004
+14,0.002
+*/
 
   return ends;
 }
@@ -209,7 +209,7 @@ function makeBoreholeLayers(mymap) {
     let id=csm_boreholes_id[i];
     let azimuth=csm_boreholes_azimuth[i];
 
-    let end=calc_ends(lat,lon,azimuth,zoom); //[{"lat":lat,"lon":lon},{"lat":lat,"lon":lon}];
+    let end=calc_ends(i,lat,lon,azimuth,zoom); //[{"lat":lat,"lon":lon},{"lat":lat,"lon":lon}];
     ends.push({"id":id,"zoom":zoom,"ends":end});
   }
 

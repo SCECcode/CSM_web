@@ -255,11 +255,41 @@ window.console.log("calling --->> clearSearch.");
         this.clearLatlon();
     };
 
+// check if the current combo model/metric/depth is valid
+    this.checkSpec = function () {
+        let tidx=parseInt($("#modelType").val());
+        let model=this.csm_models[tidx];
+        let tmodel=model['model_name'];
+        let tmetric=$("#modelMetric").val();
+        let tdepth=parseInt($("#modelDepth").val());
+
+window.console.log(">>>>>   LOOKING at ",tmodel, tmetric, tdepth);
+
+        let dlist=model['jblob']['depth'];
+        let mlist=model['jblob']['metric'];
+
+        // first check if tmetric in the metric list
+        let sz=mlist.length;
+        for(let i=0; i<sz; i++) {
+           if(mlist[i] == tmetric) {
+	     // check if depth is in the depth list
+             let ssz=dlist.length; 
+             for(let j=0; j<ssz; j++) {
+               if(dlist[j] == tdepth) {
+window.console.log("YOOHOO.. found it!!!");
+                 return {"metric":i, "depth":j };
+               }
+             }
+             return null;
+           }
+        }
+        return null;
+    };
+
 // HOW TO DEFINE spec
 // spec = [ tmodel, ddepth, mmetric ];
 // spec_idx = [ tidx,midx,didx ];
 // spec_data = [ data_min, data_max ]; a range specific to model and metric
-
     this.getSpec = function() {
       let tidx=parseInt($("#modelType").val());
       let model=this.csm_models[tidx];
@@ -587,8 +617,8 @@ window.console.log("calling togglePixiSegment.. with ",n,"on pixiuid ",pixiuid);
             let vallist;
             if(search_result === "[]") {
 window.console.log("Did not find any PHP result");
-                alert(" No data in the marked area!! ");
-// no result in the marked area..
+                notify(" No data in the marked area!! ");
+                //alert(" No data in the marked area!! "); 
                 CSM.removeWaitSpin();
             } else {
                 if(type==CSM.searchType.model) { 
@@ -605,8 +635,8 @@ window.console.log("Did not find any PHP result");
        data_max sets  DATA_MAX_V
        data_min sets  DATA_MIN_V
 */
-window.console.log("SEARCH :",criteria);
-window.console.log("SEARCH :",spec);
+//window.console.log("SEARCH :",criteria);
+//window.console.log("SEARCH :",spec);
 
 
                     let pixi_spec = { 'seg_cnt' : 12};
@@ -617,7 +647,7 @@ window.console.log("SEARCH :",spec);
                       pixi_spec.data_max=spec_data[1];
                     }
 
-window.console.log("SEARCHING for ",spec[2]);
+//window.console.log("SEARCHING for ",spec[2]);
                     // if metric is "aphi"
                     if(spec[2]=="Aphi") {	
                        pixi_spec.rgb_set=1;
@@ -1111,8 +1141,8 @@ window.console.log("generateMetadataTable..");
       }
     };
 
-// option disabled all.
-    this.setupModelMetric = function (mlist,model_idx) {
+// option disabled all first and the activate just 1.
+    this.setupModelMetric = function (mlist,model_idx,target=0) {
       //preset all option to disable	     
       $("select[id='modelMetric'] option").attr('disabled', true);
 
@@ -1122,7 +1152,7 @@ window.console.log("generateMetadataTable..");
          let n='csmmetric_'+dlist[i];
          $("select option[id='"+n+"']").attr('disabled', false);
       }
-      let first='csmmetric_'+dlist[0];
+      let first='csmmetric_'+dlist[target];
       let elt=document.getElementById(first);
       let val=elt.value;
       let select=document.querySelector("#modelMetric");
@@ -1157,7 +1187,7 @@ window.console.log("generateMetadataTable..");
     }
 
 // option disabled all.
-    this.setupModelDepth = function (mlist,model_idx) {
+    this.setupModelDepth = function (mlist,model_idx,target=0) {
       //preset all option to disable
       $("select[id='modelDepth'] option").attr('disabled', true);
 
@@ -1167,7 +1197,7 @@ window.console.log("generateMetadataTable..");
          let n='csmdepth_'+dlist[i];
          $("select option[id='"+n+"']").attr('disabled', false);
       }
-      let first='csmdepth_'+dlist[0];
+      let first='csmdepth_'+dlist[target];
       let elt=document.getElementById(first);
       let val=elt.value;
       let select=document.querySelector("#modelDepth");
@@ -1198,6 +1228,40 @@ window.console.log("change ModelMetric with ..",v);
         this.refreshMetricDescription(v);
         this._redrawModel();
    };
+
+    this.changeModelModel = function (mlist,v) {
+	this.refreshModelDescription(v);
+
+        let orig=this.checkSpec();
+
+        if(this.searchingType == this.searchType.model) {
+          if(orig != null) { 
+	    this.setupModelMetric(mlist,v,orig['metric']);
+	    this.setupModelDepth(mlist,v,orig['depth']);
+            } else { //go to default
+	      this.setupModelMetric(mlist,v,0);
+              this.setupModelDepth(mlist,v,0);
+              viewermap.setView(this.defaultMapView.coordinates, this.defaultMapView.zoom);
+              notify("Switching to a different metric/depth for this model.");
+          }
+          this.freshSearch();
+        }
+
+        if(this.searchingType == this.searchType.latlon) {
+          if(orig != null) { /* grab current metric and and depth */
+	    this.setupModelMetric(mlist,v,orig['metric']);
+	    this.setupModelDepth(mlist,v,orig['depth']);
+            this.freshSearch();
+            $("#searchAgain").click();
+            } else { // go to default
+	      this.setupModelMetric(mlist,v,0);
+              this.setupModelDepth(mlist,v,0);
+              this._redrawModel();
+              viewermap.setView(this.defaultMapView.coordinates, this.defaultMapView.zoom);
+              notify("No valid data found in this region and depth for the selected model. Please try another region or model.");
+          }
+        }
+    }
 
 /********************** zip utilities functions *************************/
     this.downloadDataAll = function() {

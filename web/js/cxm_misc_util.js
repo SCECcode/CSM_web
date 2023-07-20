@@ -5,6 +5,15 @@ contains utilities used by cxm based functions
 
 **/
 
+// pop up the notify model with a timeout
+function notify(msg) {
+  let html=document.getElementById('notify-container');
+  html.innerHTML=msg;
+  $('#modalnotify').modal('show');
+  setTimeout(function() {$('#modalnotify').modal('hide')}, 3000);
+}
+
+
 function calculateDistanceMeter(start_latlng, end_latlng) {
     let start_lat = start_latlng.lat;
     let start_lng = start_latlng.lng;
