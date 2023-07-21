@@ -29,7 +29,9 @@ $csm = new CSM();
     <script type='text/javascript' src='js/vendor/bootstrap.min.js'></script>
     <script type='text/javascript' src='js/vendor/jquery-ui.js'></script>
     <script type='text/javascript' src='js/vendor/esri-leaflet.js'></script>
+<!--
     <script type='text/javascript' src='js/vendor/esri-leaflet-vector.js'></script>
+-->
     <script type='text/javascript' src='js/vendor/FileSaver.js'></script>
     <script type='text/javascript' src='js/vendor/jszip.js'></script>
     <script type='text/javascript' src='js/vendor/jquery.floatThead.min.js'></script>
