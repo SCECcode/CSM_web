@@ -919,7 +919,7 @@ window.console.log("generateMetadataTable..");
         <th class="hoverColor" style="width:12rem" >Id&nbsp<span></span></th>
         <th class="hoverColor" onClick="sortMetadataTableByRow(2,'a')">Model&nbsp<span id='sortCol_2' class="fas fa-angle-down"></span></th>
         <th class="hoverColor">Metric</span></th>
-        <th class="hoverColor" onClick="sortMetadataTableByRow(4,'n')">Depth(km)<span id='sortCol_4' class="fas fa-angle-down"></span></th>
+        <th class="hoverColor" onClick="sortMetadataTableByRow(4,'n')">Depth (km)<span id='sortCol_4' class="fas fa-angle-down"></span></th>
         <th class="hoverColor">Num Data Points</th>
         <th style="width:20%;"><div class="col text-center">Downloads<span id="download-counter"></div>
 <!--download all
