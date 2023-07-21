@@ -1,6 +1,9 @@
 /***
-   cxm_screenshot.js
+   cxm_html2canvas.js
 ***/
+
+function toSnap() {
+}
 
 function jpgDownload0(fname) {
    var dname=fname;
