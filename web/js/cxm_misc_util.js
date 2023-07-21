@@ -5,6 +5,20 @@ contains utilities used by cxm based functions
 
 **/
 
+//"latlngs":[{"lat":a,"lon":b},{"lat":c,"lon":d}]
+function sameLatlngs(first, second) {
+   let lat1_f=first[0].lat; let lon1_f=first[0].lon;
+   let lat2_f=first[1].lat; let lon2_f=first[1].lon;
+   let lat1_s=second[0].lat; let lon1_s=second[0].lon;
+   let lat2_s=second[1].lat; let lon2_s=second[1].lon;
+
+   if( (lat1_f == lat1_s) && (lat2_f == lat2_s) && 
+          (lon1_f == lon1_s) && (lon2_f == lon2_s) ) {
+     return 1;
+   }
+   return 0;
+}
+
 // pop up the notify model with a timeout
 function notify(msg) {
   let html=document.getElementById('notify-container');

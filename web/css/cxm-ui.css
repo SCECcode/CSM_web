@@ -1,4 +1,5 @@
 /* csm */
+
 .csm-latlon-item {
   height: calc(2rem);
 }
@@ -439,6 +440,10 @@ table tr th {
     background-color: #333333;
     border: 1px solid #333333;
     font-size: 8pt;
+}
+
+.container button.btn-dark:hover {
+    background-color: #990000;
 }
 
 th {

@@ -344,13 +344,11 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                           placeholder="Latitude"
                           id="csm-firstLatTxt"
                           title="first lat"
-                          onfocus="this.value=''"
                           class="csm-latlon-item form-control">
                       <input type="text" 
                           id="csm-firstLonTxt" 
                           placeholder='Longitude' 
                           title="first lon"
-                          onfocus="this.value=''" 
                           class="csm-latlon-item form-control mt-1">
 <div class="row pl-3 pr-2 mt-2">
                 <button id="toResetRegion" type="button" class="btn btn-dark" style="width:110px" onclick="CSM.clearLatlon()">Reset Region</button>
@@ -361,13 +359,11 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                           id="csm-secondLatTxt"
                           title="second lat"
                           placeholder='Latitude '
-                          onfocus="this.value=''"
                           class="csm-latlon-item form-control">
                       <input type="text"
                           id="csm-secondLonTxt"
                           title="second lon"
                           placeholder='Longitude'
-                          onfocus="this.value=''"
                           class="csm-latlon-item form-control mt-1">
 <div class="row pl-3 pr-0 mt-2">
                 <button id="searchAgain" type="button" class="btn btn-dark" style="width:110px" onclick="CSM.searchLatlon(0,[])" >Get Data</button>

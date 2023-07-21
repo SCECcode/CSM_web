@@ -186,22 +186,16 @@ var csm_csv_keys= {
 window.console.log("calling reset");
         this.resetSearch();
 
-        if ($("#csm-model-csm-boreholes").prop('checked')) {
-          showCSMBoreholes(viewermap);
-          } else {
-            hideCSMBoreholes(viewermap);
+        if ($("#cxm-model-csm-boreholes").prop('checked')) {
+          document.getElementById("cxm-model-csm-boreholes").click();
         }
 
-        if ($("#csm-model-cfm").prop('checked')) {
-          CXM.showCFMFaults(viewermap);
-          } else {
-            CXM.hideCFMFaults(viewermap);
+        if ($("#cxm-model-cfm").prop('checked')) {
+          document.getElementById("csm-model-cfm").click();
         }
 
-        if ($("#csm-model-gfm").prop('checked')) {
-          CXM.showGFMRegions(viewermap);
-          } else {
-            CXM.hideGFMRegions(viewermap);
+        if ($("#cxm-model-gfm").prop('checked')) {
+          document.getElementById("cxm-model-cfm").click();
         }
 
         // go back to default view,
@@ -263,7 +257,7 @@ window.console.log("calling --->> clearSearch.");
         let tmetric=$("#modelMetric").val();
         let tdepth=parseInt($("#modelDepth").val());
 
-window.console.log(">>>>>   LOOKING at ",tmodel, tmetric, tdepth);
+//window.console.log(">>>>>   LOOKING at ",tmodel, tmetric, tdepth);
 
         let dlist=model['jblob']['depth'];
         let mlist=model['jblob']['metric'];
@@ -276,7 +270,7 @@ window.console.log(">>>>>   LOOKING at ",tmodel, tmetric, tdepth);
              let ssz=dlist.length; 
              for(let j=0; j<ssz; j++) {
                if(dlist[j] == tdepth) {
-window.console.log("YOOHOO.. found it!!!");
+//window.console.log("YOOHOO.. found it!!!");
                  return {"metric":i, "depth":j };
                }
              }
@@ -696,7 +690,7 @@ window.console.log("Did not find any PHP result");
                       scec_properties.lon2=criteria[2];
                       scec_properties.lat2=criteria[3];
                       scec_properties.dataset=dataset;
-                      scec_properties.note="n="+sz;
+                      scec_properties.note=sz;
                       let result={"scec_properties":scec_properties, "jblob":jblob}; 
                       CSM.csm_downloads.push(result);
                       CSM.addToMetadataTable(result);
@@ -751,10 +745,12 @@ window.console.log("calling searchLatlon..");
         [ spec, spec_idx, spec_data ] = this.getSpec();
 
         if( fromWhere == 0) {
-            let lat1=$("#csm-firstLatTxt").val();
-            let lon1=$("#csm-firstLonTxt").val();
-            let lat2=$("#csm-secondLatTxt").val();
-            let lon2=$("#csm-secondLonTxt").val();
+
+            let lat1=parseFloat($("#csm-firstLatTxt").val());
+            let lon1=parseFloat($("#csm-firstLonTxt").val());
+            let lat2=parseFloat($("#csm-secondLatTxt").val());
+            let lon2=parseFloat($("#csm-secondLonTxt").val());
+
             if(lat1=='' || lon1=='' || lat2=='' || lon2=='') return;
             add_bounding_rectangle(lat1,lon1,lat2,lon2);
             criteria.push(lat1);
@@ -762,6 +758,7 @@ window.console.log("calling searchLatlon..");
             criteria.push(lat2);
             criteria.push(lon2);
             } else {
+
                 var loclist=rect[0];
                 var sw=loclist[0];
                 var ne=loclist[2];
@@ -771,10 +768,10 @@ window.console.log("calling searchLatlon..");
                 criteria.push(ne['lng']);
 
 		    //display to 5 decimal 
-                $("#csm-firstLatTxt").val( (criteria[0]).toFixed(5));
-                $("#csm-firstLonTxt").val( (criteria[1]).toFixed(5));
-                $("#csm-secondLatTxt").val( (criteria[2]).toFixed(5));
-                $("#csm-secondLonTxt").val( (criteria[3]).toFixed(5));
+                $("#csm-firstLatTxt").val( parseFloat((criteria[0]).toFixed(5)));
+                $("#csm-firstLonTxt").val( parseFloat((criteria[1]).toFixed(5)));
+                $("#csm-secondLatTxt").val( parseFloat((criteria[2]).toFixed(5)));
+                $("#csm-secondLonTxt").val( parseFloat((criteria[3]).toFixed(5)));
         }
 
         // not expecting anything 
@@ -902,6 +899,7 @@ window.console.log("unhighlight box ",gid);
         remove_bounding_rectangle_layer(tmp.gid);
       }
       this.csm_downloads = [];
+      updateDownloadCounter(CSM.csm_downloads.length);
     }
 
     // clear the model layer from the map
@@ -921,16 +919,17 @@ window.console.log("generateMetadataTable..");
         <th class="hoverColor" style="width:12rem" >Id&nbsp<span></span></th>
         <th class="hoverColor" onClick="sortMetadataTableByRow(2,'a')">Model&nbsp<span id='sortCol_2' class="fas fa-angle-down"></span></th>
         <th class="hoverColor">Metric</span></th>
-        <th class="hoverColor" onClick="sortMetadataTableByRow(4,'n')">Depth&nbsp<span id='sortCol_4' class="fas fa-angle-down"></span></th>
-        <th class="hoverColor">Note&nbsp<span class="fas fa-angle-down"></span></th>
-        <th style="width:20%;"><div class="col text-center">
-<!--download all -->
+        <th class="hoverColor" onClick="sortMetadataTableByRow(4,'n')">Depth(km)<span id='sortCol_4' class="fas fa-angle-down"></span></th>
+        <th class="hoverColor">Num Data Points</th>
+        <th style="width:20%;"><div class="col text-center">Downloads<span id="download-counter"></div>
+<!--download all
                 <div class="btn-group download-now">
                     <button id="download-all" type="button" class="btn btn-dark" value="metadata"
                             onclick="CSM.downloadDataAll();" disabled>
                             DOWNLOAD&nbsp<span id="download-counter"></span>
                     </button>
                 </div>
+-->
         </th>
 </tr>
 </thead>
@@ -993,6 +992,7 @@ window.console.log("generateMetadataTable..");
           $("#csm-secondLatTxt").val("");
           $("#csm-secondLonTxt").val("");
           skipRectangle();
+	  this.unselectAllRegion();
         }
 
         this.resetLatlon = function () {
@@ -1252,7 +1252,7 @@ window.console.log("change ModelMetric with ..",v);
 	    this.setupModelMetric(mlist,v,orig['metric']);
 	    this.setupModelDepth(mlist,v,orig['depth']);
             this.freshSearch();
-            $("#searchAgain").click();
+            //$("#searchAgain").click();
             } else { // go to default
 	      this.setupModelMetric(mlist,v,0);
               this.setupModelDepth(mlist,v,0);
@@ -1320,7 +1320,7 @@ window.console.log("change ModelMetric with ..",v);
 	if(keys[0] == "gid") { 
            jfirst=1;
         }
-        if(keys[jlen] == "geom") {
+        if(keys[jlen-1] == "geom") {
            jlen=jlen-1;
         }
   
@@ -1334,6 +1334,8 @@ window.console.log("change ModelMetric with ..",v);
           csvblob +='\n';
         }
   
+window.console.log("HERE");
+
 // grab rest of the data
         for(let i=0; i< len; i++) {
             meta=mlist[i];

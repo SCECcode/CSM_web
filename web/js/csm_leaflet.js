@@ -37,7 +37,7 @@ var rectangle_options = {
               color: default_color,
               weight: default_weight,
               opacity: 0.5,
-              fill: true,
+              fill: false,
               fillColor: null, //same as color by default
               fillOpacity: 0.1,
               clickable: false
@@ -48,10 +48,11 @@ var rectangleDrawer;
 var mymap, baseLayers, layerControl, currentLayer;
 var mainLegend;
 
-// track all rectangles, never remove
-// valid: 1 is visible, 0 is not(already got removed)
+// track rectangles, 
+// limit number to be keep at a time
 //var tmp={"layer":layer, "gid": gid,  "valid":1, "latlngs":[{"lat":a,"lon":b},{"lat":c,"lon":d}]};
-var csm_latlon_area_list=[];
+var csm_region_latlngs=null; // just 1 region at a time
+var csm_latlon_area_list=[]; // all layers that is associated with the same latlngs
 var track_csm_latlon_area_gid=0;
 
 // track all marker, never remove
@@ -206,8 +207,7 @@ function setup_viewer()
 
   function onMapZoom(e) { 
     var zoom=mymap.getZoom();
-window.console.log("MAP got zoomed..>>",zoom);
-//  need to update borehole sticks
+//window.console.log("MAP got zoomed..>>",zoom);
     updateCSMBoreholes(mymap);
   }
 
@@ -432,7 +432,6 @@ function add_bounding_rectangle(a,b,c,d) {
   let gid=getRnd();
 
   window.console.log("add_bounding_rectangle..",gid);
-// ??? old one	csm_latlon_area_list.length+1;
   layer.on({
     mouseover: function(e) {
       layer.setStyle({color:default_highlight_color, weight: default_highlight_weight});
@@ -443,9 +442,25 @@ function add_bounding_rectangle(a,b,c,d) {
       CSM.unhighlight_metadata_row(gid);
     },
   });
-  var tmp={"layer":layer, "gid": gid, "valid":1, "latlngs":[{"lat":a,"lon":b},{"lat":c,"lon":d}]};
-  csm_latlon_area_list.push(tmp);
-  track_csm_latlon_area_gid=gid;
+  let nlatlngs=[{"lat":a,"lon":b},{"lat":c,"lon":d}];
+  var tmp={"layer":layer, "gid":gid, "valid":1, "latlngs":nlatlngs};
+
+// ??? NOT SURE
+  if(csm_region_latlngs != null ) {
+    if(sameLatlngs(csm_region_latlngs, nlatlngs)) { // same
+      csm_latlon_area_list.push(tmp);
+      track_csm_latlon_area_gid=gid;
+      } else { // remove all
+        CSM.unselectAllRegion();
+        csm_latlon_area_list=[ tmp ];
+        track_csm_latlon_area_gid=gid;
+        csm_region_latlngs = nlatlngs;
+    }
+    } else {
+      csm_latlon_area_list.push(tmp);
+      track_csm_latlon_area_gid=gid;
+      csm_region_latlngs = nlatlngs;
+  }
   return layer;
 }
 
@@ -464,6 +479,13 @@ window.console.log("remove rectangle layer one");
         let layer=tmp.layer;
         viewermap.removeLayer(layer);
         tmp.valid=0;
+// remove tmp from the list
+        csm_latlon_area_list.splice(i,1);
+// window.console.log("remove a bounding rectangle", gid);
+        if(csm_latlon_area_list.length == 0) {
+          track_csm_latlon_area_gid=0;
+          csm_region_latlngs = null;
+        }		 
         return;
      }
    }
@@ -496,16 +518,12 @@ window.console.log("unhighlight rectangle layer one");
    }
 }
 
-function remove_bounding_rectangle_layer_all() {
-window.console.log("remove rectangle layer all");
-   let len=csm_latlon_area_list.length;
-   for(let i=0; i<len; i++) {
-     let tmp=csm_latlon_area_list[0];
-     var layer=tmp.layer;
-     if(tmp.valid == 1) {
-       viewermap.removeLayer(layer);
-       tmp.valid=0;
-     }
+function remove_all_bounding_rectangle_layer() {
+   if(csm_region_latlngs != null ) {
+     CSM.unselectAllRegion();
+     csm_latlon_area_list=[];
+     track_csm_latlon_area_gid=0;
+     csm_region_latlngs = null;
    }
 }
 
@@ -527,10 +545,31 @@ window.console.log("add_bounding_rectangle_layer..");
         layer.bindPopup(popupContent);
       }
   });
-  var tmp={"layer":layer, "gid":gid, "valid":1, "latlngs":[{"lat":a,"lon":b},{"lat":c,"lon":d}]};
-  
-  csm_latlon_area_list.push(tmp);
-  track_csm_latlon_area_gid=gid;
+window.console.log("IN adding from map..");
+  let aa=parseFloat(a.toFixed(5));
+  let bb=parseFloat(b.toFixed(5));
+  let cc=parseFloat(c.toFixed(5));
+  let dd=parseFloat(d.toFixed(5));
+
+  let nlatlngs=[{"lat":aa,"lon":bb},{"lat":cc,"lon":dd}];
+  var tmp={"layer":layer, "gid":gid, "valid":1, "latlngs":nlatlngs};
+
+// NOT SURE
+  if(csm_region_latlngs != null ) {
+    if(sameLatlngs(csm_region_latlngs, nlatlngs)) { // same
+      csm_latlon_area_list.push(tmp);
+      track_csm_latlon_area_gid=gid;
+      } else { // remove all
+        CSM.unselectAllRegion();
+        csm_latlon_area_list=[ tmp ];
+        track_csm_latlon_area_gid=gid;
+        csm_region_latlngs = nlatlngs;
+    } 
+    } else {
+      csm_latlon_area_list.push(tmp);
+      track_csm_latlon_area_gid=gid;
+      csm_region_latlngs = nlatlngs;
+  }
   return layer;
 }
 

@@ -29,19 +29,19 @@ jQuery(document).ready(function() {
 
   $('#modelType').on("change", function() {
       let model_type=$(this).val();
-      CSM.changeModelModel(CSM.csm_models, model_type);
 window.console.log("--- changing modelModel");
+      CSM.changeModelModel(CSM.csm_models, model_type);
   });
 
   $('#modelDepth').on("change", function() {
       let model_depth=$(this).val();
       CSM.changeModelDepth(model_depth);
-window.console.log("--- changing modelDepth");
+//window.console.log("--- changing modelDepth");
   });
   $('#modelMetric').on("change", function() {
       let model_metric=$(this).val();
       CSM.changeModelMetric(model_metric);
-window.console.log("--- changing modelMetric");
+//window.console.log("--- changing modelMetric");
   });
 
   $("#toReset").on('click', function () {
