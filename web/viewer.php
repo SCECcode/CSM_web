@@ -28,7 +28,8 @@ $csm = new CSM();
     <script type='text/javascript' src='js/vendor/jquery.min.js'></script>
     <script type='text/javascript' src='js/vendor/bootstrap.min.js'></script>
     <script type='text/javascript' src='js/vendor/jquery-ui.js'></script>
-    <script type='text/javascript' src='js/vendor/ersi-leaflet.js'></script>
+    <script type='text/javascript' src='js/vendor/esri-leaflet.js'></script>
+    <script type='text/javascript' src='js/vendor/esri-leaflet-vector.js'></script>
     <script type='text/javascript' src='js/vendor/FileSaver.js'></script>
     <script type='text/javascript' src='js/vendor/jszip.js'></script>
     <script type='text/javascript' src='js/vendor/jquery.floatThead.min.js'></script>
@@ -36,6 +37,7 @@ $csm = new CSM();
 
     <script type='text/javascript' src='js/vendor/togeojson.js'></script>
     <script type='text/javascript' src='js/vendor/leaflet-kmz-src.js'></script>
+    <script type='text/javascript' src='js/vendor/html2canvas.js'></script>
 
     <link rel="stylesheet" href="js/vendor/plugin/Leaflet.draw/leaflet.draw.css">
     <script type='text/javascript' src="js/vendor/plugin/Leaflet.draw/Leaflet.draw.js"></script>
@@ -78,19 +80,13 @@ $csm = new CSM();
 <!-- pixi pixiOverlay -->
     <script type="text/javascript" src="js/vendor/pixi.js"></script>
     <script type="text/javascript" src="js/vendor/pixiOverlay/L.PixiOverlay.js"></script>
-<!--
-    <script type="text/javascript" src="js/vendor/pixiOverlay/example.min.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/leaflet-pixi-overlay@1.9.4/L.PixiOverlay.min.js "></script>
-    <script type="text/javascript" src="js/vendor/pixiOverlay/MarkerContainer.js"></script>
-    <script type="text/javascript" src="js/vendor/pixiOverlay/bezier-easing.js"></script>
--->
     <script type="text/javascript" src="js/cxm_pixi.js"></script>
 
 <!-- cxm js -->
     <script type="text/javascript" src="js/cxm_kml.js?v=1"></script>
     <script type="text/javascript" src="js/cxm_model_util.js?v=1"></script>
     <script type="text/javascript" src="js/cxm_misc_util.js?v=1"></script>
+    <script type="text/javascript" src="js/cxm_html2canvas.js?v=1"></script>
 
 <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-495056-12"></script>
@@ -132,6 +128,10 @@ $csm = new CSM();
                 <span class="glyphicon glyphicon-share"></span> Export Marker Latlng</button>
     </div>
 -->
+    <div style="display:">
+      <button id="snapBtn" class="btn cxm-small-btn" onClick="toSnap()">
+                <span class="glyphicon glyphicon-camera"></span>Take a screenshot</button>
+    </div>
 
 <!-- top-intro -->
    <div id="top-intro" style="display:">

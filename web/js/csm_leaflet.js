@@ -113,7 +113,12 @@ function get_map()
 function setup_viewer()
 {
 // esri
+	
+  // web@scec.org  - ArcGIS apiKey
+  var esri_apiKey = "AAPK2ee0c01ab6d24308b9e833c6b6752e69Vo4_5Uhi_bMaLmlYedIB7N-3yuFv-QBkdyjXZZridaef1A823FMPeLXqVJ-ePKNy";
+//  var esri_topographic = L.esri.Vector.vectorBasemapLayer("arcgis-topographic", {apikey: esri_apiKey});
   var esri_topographic = L.esri.basemapLayer("Topographic");
+
   var esri_imagery = L.esri.basemapLayer("Imagery");
   var esri_ng = L.esri.basemapLayer("NationalGeographic");
 
