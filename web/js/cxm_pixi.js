@@ -674,11 +674,12 @@ if(event.type == "undefined") {
 
         let scaleFactor=16; // default came from seismicity
         if(spec.scale_hint == 2 ) { // when grid points are about 2km len is 70k
-          scaleFactor=6;
+		scaleFactor=24;
+          //scaleFactor=6;
           //scaleFactor=10;
         }
         if(spec.scale_hint == 5) {  // when grid points are about 5km
-          scaleFactor=2.5; 
+          scaleFactor=8; 
         }
 
 // :-) very hacky, just in case it got zoomed in before search

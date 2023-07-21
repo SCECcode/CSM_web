@@ -17,21 +17,31 @@ $csm = new CSM();
     <link rel="stylesheet" href="css/vendor/bootstrap-grid.min.css">
     <link rel="stylesheet" href="css/vendor/leaflet.awesome-markers.css">
     <link rel="stylesheet" href="css/vendor/leaflet.css">
+<!--
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+-->
     <link rel="stylesheet" href="css/vendor/jquery-ui.css">
     <link rel="stylesheet" href="css/vendor/glyphicons.css">
     <link rel="stylesheet" href="css/vendor/all.css">
     <link rel="stylesheet" href="css/cxm-ui.css?v=1">
 
-    <script type="text/javascript" src="js/vendor/leaflet-src.js"></script>
+    <script type="text/javascript" src="js/vendor/leaflet.js" crossorigin=""></script>
+<!--
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+-->
+
     <script type='text/javascript' src='js/vendor/leaflet.awesome-markers.min.js'></script>
     <script type='text/javascript' src='js/vendor/popper.min.js'></script>
     <script type='text/javascript' src='js/vendor/jquery.min.js'></script>
     <script type='text/javascript' src='js/vendor/bootstrap.min.js'></script>
     <script type='text/javascript' src='js/vendor/jquery-ui.js'></script>
     <script type='text/javascript' src='js/vendor/esri-leaflet.js'></script>
+    <script type='text/javascript' src='js/vendor/esri-leaflet-vector.js' crossorigin=""></script>
 <!--
-    <script type='text/javascript' src='js/vendor/esri-leaflet-vector.js'></script>
+<script src="https://unpkg.com/esri-leaflet@3.0.10/dist/esri-leaflet.js"></script>
+<script src="https://unpkg.com/esri-leaflet-vector@4.1.0/dist/esri-leaflet-vector.js" crossorigin=""></script>
 -->
+
     <script type='text/javascript' src='js/vendor/FileSaver.js'></script>
     <script type='text/javascript' src='js/vendor/jszip.js'></script>
     <script type='text/javascript' src='js/vendor/jquery.floatThead.min.js'></script>
@@ -90,8 +100,10 @@ $csm = new CSM();
     <script type="text/javascript" src="js/cxm_misc_util.js?v=1"></script>
     <script type="text/javascript" src="js/cxm_html2canvas.js?v=1"></script>
 
-<!-- Global site tag (gtag.js) - Google Analytics -->
+<!-- Global site tag (gtag.js) - Google Analytics 
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-495056-12"></script>
+-->
+
     <script type="text/javascript">
         $ = jQuery;
         var tableLoadCompleted = false;
@@ -227,7 +239,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                   <option value="esri NG">ESRI National Geographic</option>
                   <option value="otm topo">OTM Topographic</option>
                   <option value="osm street">OSM Street</option>
-                  <option value="shaded relief">Shaded Relief</option>
+                  <option value="shaded relief">ESRI Shaded Relief</option>
               </select>
             </div> <!-- end of basemap -->
           </div> <!-- row -->

@@ -114,13 +114,17 @@ function setup_viewer()
 {
 // esri
 	
-  // web@scec.org  - ArcGIS apiKey
+  // web@scec.org  - ArcGIS apiKey, https://leaflet-extras.github.io/leaflet-providers/preview/
   var esri_apiKey = "AAPK2ee0c01ab6d24308b9e833c6b6752e69Vo4_5Uhi_bMaLmlYedIB7N-3yuFv-QBkdyjXZZridaef1A823FMPeLXqVJ-ePKNy";
-//  var esri_topographic = L.esri.Vector.vectorBasemapLayer("arcgis-topographic", {apikey: esri_apiKey});
-  var esri_topographic = L.esri.basemapLayer("Topographic");
+  var esri_topographic = L.esri.Vector.vectorBasemapLayer("ArcGIS:Topographic", {apikey: esri_apiKey});
+  var esri_imagery = L.esri.Vector.vectorBasemapLayer("ArcGIS:Imagery", {apikey: esri_apiKey});
+//var esri_ng = L.esri.Vector.vectorBasemapLayer("ArcGIS:NationalGeographic", {apikey: esri_apiKey});
+//var shaded_relief = L.esri.Vector.vectorBasemapLayer("ArcGIS:ShadedRelief", {apikey: esri_apiKey});
 
-  var esri_imagery = L.esri.basemapLayer("Imagery");
+//  var esri_topographic = L.esri.basemapLayer("Topographic");
+//  var esri_imagery = L.esri.basemapLayer("Imagery");
   var esri_ng = L.esri.basemapLayer("NationalGeographic");
+  var shaded_relief =  L.esri.basemapLayer("ShadedRelief");
 
 // otm topo
   var topoURL='https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png';
@@ -145,7 +149,6 @@ function setup_viewer()
   var openURL='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
   var openAttribution ='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
   var osm_street=L.tileLayer(openURL, {attribution: openAttribution, maxZoom:18});
-  var shaded_relief =  L.esri.basemapLayer("ShadedRelief");
 
   baseLayers = {
     "esri topo" : esri_topographic,
@@ -157,16 +160,20 @@ function setup_viewer()
     "osm street" : osm_street,
     "shaded relief": shaded_relief
   };
-  //  "shaded relief": shaded_relief
+
   var overLayer = {};
   var basemap = L.layerGroup();
   currentLayer = esri_topographic;
 
 
 // ==> mymap <==
-  mymap = L.map('CSM_plot', { zoomSnap: 0.25, drawControl:false, layers: [esri_topographic, basemap], zoomControl:true} );
+// mymap = L.map('CSM_plot', { zoomSnap: 0.25, drawControl:false, layers: [esri_topographic, basemap], zoomControl:true} );
+  mymap = L.map('CSM_plot', { zoomSnap: 0.25, drawControl:false, zoomControl:true} );
+
   mymap.setView(init_map_coordinates, init_map_zoom_level);
   mymap.attributionControl.addAttribution(scecAttribution);
+
+  esri_topographic.addTo(mymap);
 
 // basemap selection
   var ctrl_div=document.getElementById('external_leaflet_control');
