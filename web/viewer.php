@@ -38,7 +38,9 @@ $csm = new CSM();
 
     <script type='text/javascript' src='js/vendor/togeojson.js'></script>
     <script type='text/javascript' src='js/vendor/leaflet-kmz-src.js'></script>
+<!--
     <script type='text/javascript' src='js/vendor/html2canvas.js'></script>
+-->
 
     <link rel="stylesheet" href="js/vendor/plugin/Leaflet.draw/leaflet.draw.css">
     <script type='text/javascript' src="js/vendor/plugin/Leaflet.draw/Leaflet.draw.js"></script>
@@ -87,7 +89,10 @@ $csm = new CSM();
     <script type="text/javascript" src="js/cxm_kml.js?v=1"></script>
     <script type="text/javascript" src="js/cxm_model_util.js?v=1"></script>
     <script type="text/javascript" src="js/cxm_misc_util.js?v=1"></script>
+
+<!--
     <script type="text/javascript" src="js/cxm_html2canvas.js?v=1"></script>
+-->
 
 <!-- Global site tag (gtag.js) - Google Analytics --> 
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-495056-12"></script>
@@ -130,7 +135,7 @@ $csm = new CSM();
                 <span class="glyphicon glyphicon-share"></span> Export Marker Latlng</button>
     </div>
 -->
-    <div style="display:">
+    <div style="display:none">
       <button id="snapBtn" class="btn cxm-small-btn" onClick="toSnap()">
                 <span class="glyphicon glyphicon-camera"></span></button>
     </div>
@@ -411,8 +416,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
     </div>
     <div id="pixi-legend-title" align="center" class="legend content mt-1" style="border-top:2px solid grey">Degrees</div>
 </div>
-  </div>
-<!-- legend -->
+  </div> <!-- legend -->
 
           </div>
        </div>
