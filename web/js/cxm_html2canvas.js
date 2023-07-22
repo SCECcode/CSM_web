@@ -2,15 +2,14 @@
    cxm_html2canvas.js
 ***/
 
-/**
 HTMLCanvasElement.prototype.getContext = function(origFn) {
   return function(type, attribs) {
+	  window.console.log("    ----USING new getContext");
     attribs = attribs || {};
     attribs.preserveDrawingBuffer = true;
     return origFn.call(this, type, attribs);
   };
 }(HTMLCanvasElement.prototype.getContext);
-**/
 
 
 function toSnap() {
@@ -25,6 +24,63 @@ var isIE = /*@cc_on!@*/false || !!document.documentMode;
 
 
 function jpgDownload(fname) {
+
+/***
+HTMLCanvasElement.prototype.getContext = function(origFn) {
+  return function(type, attribs) {
+	  window.console.log("    ----USING newnew getContext");
+    attribs = attribs || {};
+    attribs.preserveDrawingBuffer = true;
+    return origFn.call(this, type, attribs);
+  };
+}(HTMLCanvasElement.prototype.getContext);
+***/
+
+   var dname=fname;
+   if(dname == null) {
+     var f = new Date().getTime();
+     var ff= f.toString();
+     dname="csm_"+ff+".png";
+   }
+
+window.console.log("new dname is ",dname);
+
+var elt = document.getElementById('top-map');
+window.console.log("HERE");
+let ww=elt.clientWidth;
+let hh=elt.clientHeight;
+
+var config = {
+    useCORS: true,
+    width: ww,
+    height: hh,
+    backgroundColor: null,
+    logging: true,
+    imageTimeout: 0
+};
+
+html2canvas(elt, config).then(function (canvas) {
+    var link = document.createElement('a');
+    link.download = dname;
+    link.href = canvas.toDataURL();
+    link.click();
+    link.remove();
+})
+
+window.console.log("done");
+}
+
+
+function jpgDownload0(fname) {
+
+HTMLCanvasElement.prototype.getContext = function(origFn) {
+  return function(type, attribs) {
+    attribs = attribs || {};
+    attribs.preserveDrawingBuffer = true;
+    return origFn.call(this, type, attribs);
+  };
+}(HTMLCanvasElement.prototype.getContext);
+
    var dname=fname;
    if(dname == null) {
      var f = new Date().getTime();
@@ -90,12 +146,7 @@ window.console.log("HERE 3");
              }
          }
        }, /* onrendered */
-       useCORS: true, 
-       width: 400,
-       height: 500,
-       backgroundColor: null,
-       logging: true,
-       imageTimeout: 0
+       useCORS: true 
    });
 }
 
