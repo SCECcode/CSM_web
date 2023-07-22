@@ -198,6 +198,8 @@ window.console.log("calling reset");
           document.getElementById("cxm-model-cfm").click();
         }
 
+        // XX
+    
         // go back to default view,
         viewermap.setView(this.defaultMapView.coordinates, this.defaultMapView.zoom);
    };

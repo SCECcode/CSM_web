@@ -118,13 +118,13 @@ function setup_viewer()
   var esri_apiKey = "AAPK2ee0c01ab6d24308b9e833c6b6752e69Vo4_5Uhi_bMaLmlYedIB7N-3yuFv-QBkdyjXZZridaef1A823FMPeLXqVJ-ePKNy";
   var esri_topographic = L.esri.Vector.vectorBasemapLayer("ArcGIS:Topographic", {apikey: esri_apiKey});
   var esri_imagery = L.esri.Vector.vectorBasemapLayer("ArcGIS:Imagery", {apikey: esri_apiKey});
-//var esri_ng = L.esri.Vector.vectorBasemapLayer("ArcGIS:NationalGeographic", {apikey: esri_apiKey});
-//var shaded_relief = L.esri.Vector.vectorBasemapLayer("ArcGIS:ShadedRelief", {apikey: esri_apiKey});
+  var osm_streets_relief= L.esri.Vector.vectorBasemapLayer("OSM:StreetsRelief", {apikey: esri_apiKey});
+  var esri_terrain = L.esri.Vector.vectorBasemapLayer("ArcGIS:Terrain", {apikey: esri_apiKey});
 
 //  var esri_topographic = L.esri.basemapLayer("Topographic");
 //  var esri_imagery = L.esri.basemapLayer("Imagery");
-  var esri_ng = L.esri.basemapLayer("NationalGeographic");
-  var shaded_relief =  L.esri.basemapLayer("ShadedRelief");
+//var esri_ng = L.esri.basemapLayer("NationalGeographic");
+//var shaded_relief =  L.esri.basemapLayer("ShadedRelief");
 
 // otm topo
   var topoURL='https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png';
@@ -153,12 +153,12 @@ function setup_viewer()
   baseLayers = {
     "esri topo" : esri_topographic,
     "esri imagery" : esri_imagery,
-    "Jawg Light" : jawg_light,
-    "Jawg Dark" : jawg_dark,
-    "esri NG" : esri_ng,
+    "jawg light" : jawg_light,
+    "jawg dark" : jawg_dark,
+    "osm streets relief" : osm_streets_relief,
     "otm topo": otm_topographic,
     "osm street" : osm_street,
-    "shaded relief": shaded_relief
+    "esri terrain": esri_terrain
   };
 
   var overLayer = {};

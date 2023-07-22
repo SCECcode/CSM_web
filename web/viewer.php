@@ -132,7 +132,7 @@ $csm = new CSM();
 -->
     <div style="display:">
       <button id="snapBtn" class="btn cxm-small-btn" onClick="toSnap()">
-                <span class="glyphicon glyphicon-camera"></span>Take a screenshot</button>
+                <span class="glyphicon glyphicon-camera"></span></button>
     </div>
 
 <!-- top-intro -->
@@ -222,12 +222,12 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                                                onchange="switchLayer(this.value);">
                   <option selected value="esri topo">ESRI Topographic</option>
                   <option value="esri imagery">ESRI Imagery</option>
-                  <option value="Jawg Light">Jawg Light</option>
-                  <option value="Jawg Dark">Jawg Dark</option>
-                  <option value="esri NG">ESRI National Geographic</option>
+                  <option value="jawg light">Jawg Light</option>
+                  <option value="jawg dark">Jawg Dark</option>
+                  <option value="osm streets relief">OSM Streets Relief</option>
                   <option value="otm topo">OTM Topographic</option>
                   <option value="osm street">OSM Street</option>
-                  <option value="shaded relief">ESRI Shaded Relief</option>
+                  <option value="esri terrain">ESRI Terrain</option>
               </select>
             </div> <!-- end of basemap -->
           </div> <!-- row -->

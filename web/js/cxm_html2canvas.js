@@ -2,49 +2,20 @@
    cxm_html2canvas.js
 ***/
 
+/**
+HTMLCanvasElement.prototype.getContext = function(origFn) {
+  return function(type, attribs) {
+    attribs = attribs || {};
+    attribs.preserveDrawingBuffer = true;
+    return origFn.call(this, type, attribs);
+  };
+}(HTMLCanvasElement.prototype.getContext);
+**/
+
+
 function toSnap() {
 	window.console.log("toSnap");
-	jpgDownload3("csm_view");
-}
-
-function jpgDownload0(fname) {
-   var dname=fname;
-   if(dname == null) {
-     var f = new Date().getTime();
-     var ff= f.toString();
-     dname="csm_"+ff+".jpg";
-   }
-
-   html2canvas(document.body, {
-       onrendered: function(canvas) {
-/*
-           return Canvas2Image.saveAsPNG(canvas);
-*/
-    document.body.appendChild(canvas);
-    canvas.id = "ctx"
-    var ctx = document.getElementById('ctx');
-    var img = ctx.toDataURL("image/png");
-    window.open(img);
-
-      }});
-}
-
-function jpgDownload2(fname) {
-   var dname=fname;
-   if(dname == null) {
-     var f = new Date().getTime();
-     var ff= f.toString();
-     dname="csm_"+ff+".jpg";
-   }
-
-   var items = document.getElementsByTagName("canvas");
-   var cnt=items.length;
-window.console.log("NUMBER OF canvas is ",cnt);
-   var _canvas=items[0];
-window.console.log(typeof _canvas);
-   var rawImg = _canvas.toDataURL("image/jpeg");
-   rawImg= rawImg.replace("image/jpeg", "image/octet-stream");
-   document.location.href = rawImg;
+	jpgDownload("csm_viewer_snap.jpg");
 }
 
 var isSafari = !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
@@ -52,20 +23,29 @@ var isSafari = !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
 var isChrome = !!window.chrome && !!window.chrome.webstore;
 var isIE = /*@cc_on!@*/false || !!document.documentMode;
 
-function jpgDownload3(fname) {
+
+function jpgDownload(fname) {
    var dname=fname;
    if(dname == null) {
      var f = new Date().getTime();
      var ff= f.toString();
      dname="csm_"+ff+".jpg";
    }
+window.console.log("new dname is ",dname);
 
-   html2canvas(document.body, {
+	// top-map
+   var  elt = document.getElementsByClassName('leaflet-pane leaflet-map-pane')[0];
+   html2canvas(elt, {
        onrendered: function(canvas) {
 // RETINA FIX
          var rawImg;
          var pixelDensityRatio=queryForRetina(canvas);
+
+window.console.log("ration is ", pixielDensityRatio);
+
          if(pixelDensityRatio != 1) {
+
+window.console.log("HERE 1");
            var newCanvas = document.createElement("canvas");
            var _width = canvas.width;
            var _height = canvas.height;
@@ -74,12 +54,17 @@ function jpgDownload3(fname) {
            var newCtxt = newCanvas.getContext("2d");
            newCtxt.drawImage(canvas, 0,0, _width, _height, 
                                   0,0, _width, _height);
+
            rawImg = newCanvas.toDataURL("image/jpeg",1);
+
            } else {
+window.console.log("HERE 2");
+
              var ctxt = canvas.getContext("2d");
              rawImg = canvas.toDataURL("image/jpeg",1);
          }
 
+window.console.log("HERE 3");
          if( ! isIE ) { // this only works for firefox and chrome
            var dload = document.createElement('a');
            dload.href = rawImg;
@@ -106,9 +91,14 @@ function jpgDownload3(fname) {
          }
        }, /* onrendered */
        useCORS: true, 
-       preserveDrawingBuffer:true	    
+       width: 400,
+       height: 500,
+       backgroundColor: null,
+       logging: true,
+       imageTimeout: 0
    });
 }
+
 
 // testing for retina
 function queryForRetina(canv) {

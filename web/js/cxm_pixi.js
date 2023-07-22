@@ -753,7 +753,8 @@ var marker = new PIXI.Point([34.0105, -120.8415], {color: "#ff7800", weight: 1} 
 window.console.log("PIXI: total of len, ",collect_len); 
      }
 
-      renderer.render(container,{ antialias: true, resolution:2 });
+// camera ??      renderer.render(container,{ antialias: true, resolution:2 });
+     renderer.render(container,{ antialias: false, resolution:2 });
     }, pixiContainer, {
       doubleBuffering: doubleBuffering,
       destroyInteractionManager: true
