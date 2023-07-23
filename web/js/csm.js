@@ -183,7 +183,9 @@ var csm_csv_keys= {
 // but leave the external model state the same
     this.resetAll = function () {
 
-window.console.log("calling reset");
+        this.setupModelMetric(this.csm_models,0);
+        this.setupModelDepth(this.csm_models,0);
+
         this.resetSearch();
 
         if ($("#cxm-model-csm-boreholes").prop('checked')) {
@@ -198,8 +200,6 @@ window.console.log("calling reset");
           document.getElementById("cxm-model-cfm").click();
         }
 
-        // XX
-    
         // go back to default view,
         viewermap.setView(this.defaultMapView.coordinates, this.defaultMapView.zoom);
    };
@@ -1073,6 +1073,7 @@ window.console.log("generateMetadataTable..");
     };
      
     // need to trigger modelType change to first model
+    // metric and depth are using what is there..
     this.resetModelType = function () {
        let elt=document.getElementById('modelType');
        elt.value = 0;

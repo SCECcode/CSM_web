@@ -12,6 +12,20 @@ HTMLCanvasElement.prototype.getContext = function(origFn) {
 }(HTMLCanvasElement.prototype.getContext);
 
 
+// https://github.com/niklasvh/html2canvas/issues/567
+var transform=$(".leaflet-map-pane").css("transform");
+if (transform) {
+var c = transform.split(",");
+var d = parseFloat(c[4]);
+var h = parseFloat(c[5]);
+$(".leaflet-map-pane").css({
+"transform": "none",
+"left": d,
+"top": h
+})
+}
+
+
 function toSnap() {
 	window.console.log("toSnap");
 	jpgDownload("csm_viewer_snap.jpg");
@@ -60,14 +74,56 @@ var config = {
 };
 
 html2canvas(elt, config).then(function (canvas) {
-    var link = document.createElement('a');
-    link.download = dname;
-    link.href = canvas.toDataURL();
-    link.click();
-    link.remove();
+
+
+//this canvas got a 'shifted svg and so need to redraw or recreate it.
+
+
+window.console.log("SNAP..");
+
+let map = document.querySelector(".leaflet-overlay-pane .leaflet-zoom-animated");
+var transform=map.style.transform;
+
+let svgs=document.getElementsByTagName("svg");
+let $svg=svgs[0];
+
+// https://github.com/niklasvh/html2canvas/issues/567
+var ss=$svg.style;
+
+if (transform) {
+  window.console.log("SNAP:  transform ", transform);
+  // translate3d(-64px, -57px, 0px)"
+  var a = transform.split("(");
+  var b = a[1].split(",");
+  var c=b[0].split("p");
+  var d=parseFloat(c[0]);
+  var cc=b[1].split("p");
+  var h = parseFloat(cc[0]);
+
+  $svg.style.transform="";
+  //$svg.style.left=d;
+  //$svg.style.top=h;
+
+  var newCanvas = document.createElement("canvas");
+  newCanvas.width = canvas.width;
+  newCanvas.height = canvas.height;
+  var newCtxt = newCanvas.getContext("2d");
+  newCtxt.drawImage(canvas, 0,0, canvas.width, canvas.width,
+                                  0,0, newCanvas.width, newCanvas.height);
+
+  var rawImg = newCanvas.toDataURL("image/jpeg",1);
+
+
+  var link = document.createElement('a');
+  link.download = dname;
+  link.href = rawImg;
+  link.click();
+  link.remove();
+}
+
+//$(svg).css({ left: 0, top: 0, transform: transform})
 })
 
-window.console.log("done");
 }
 
 
@@ -146,6 +202,7 @@ window.console.log("HERE 3");
              }
          }
        }, /* onrendered */
+       allowTaint:true,
        useCORS: true 
    });
 }
