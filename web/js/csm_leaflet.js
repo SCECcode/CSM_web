@@ -407,6 +407,7 @@ function addCircleMarkerLayerGroup(latlngs,description,colors=[]) {
      var color="black";
      if(colors.length != 0) {
        color=colors[i];
+     }
      var marker=makeLeafletCircleMarker(latlng,color);
      marker.bindTooltip(desc);
      markers.push(marker);

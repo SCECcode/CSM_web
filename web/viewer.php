@@ -87,7 +87,7 @@ $csm = new CSM();
     <script type="text/javascript" src="js/cxm_kml.js?v=1"></script>
     <script type="text/javascript" src="js/cxm_model_util.js?v=1"></script>
     <script type="text/javascript" src="js/cxm_misc_util.js?v=1"></script>
-<!-- camera -->
+<!-- camera
     <script type="text/javascript" src="js/cxm_html2canvas.js?v=1"></script>
 -->
 
