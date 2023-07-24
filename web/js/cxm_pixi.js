@@ -280,8 +280,9 @@ function refSegmentMarkerRGBList(idx) {
 function pixiGetSHmaxColor(v) {
    let clist=refSegmentMarkerRGBList(0);
    let vs_max=90;
-   let offset=getSegmentRangeIdx(v, 12, 90, -90);
-   return clist[offset];offset;
+   let offset=getSegmentRangeIdx(parseInt(v), 12, 90, -90);
+window.console.log("color  used...",clist[offset]);
+   return clist[offset];
 }
 
 // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fillRect
