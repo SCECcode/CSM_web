@@ -281,7 +281,6 @@ function pixiGetSHmaxColor(v) {
    let clist=refSegmentMarkerRGBList(0);
    let vs_max=90;
    let offset=getSegmentRangeIdx(parseInt(v), 12, 90, -90);
-window.console.log("color  used...",clist[offset]);
    return clist[offset];
 }
 

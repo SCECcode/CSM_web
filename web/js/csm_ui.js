@@ -130,9 +130,9 @@ function calc_ends(i,lat_s,lon_s,shmax_s,zoom) {
   let cosdlat=0.8269;
   let shmax_r = shmax * Math.PI / 180;
 
-  let scale= (0.0013*(zoom * zoom)) - (0.0359 * zoom) + 0.2489;
+  // let scale= (0.0013*(zoom * zoom)) - (0.0359 * zoom) + 0.2489;
+  let scale = (1.5824) * Math.exp(-0.459 * zoom);
 
-window.console.log("  calc_ends: zoom ", zoom, " scale ",scale);
   let x1=  (lon - (scale / cosdlat * Math.sin(shmax_r)))
   let x2=  (lon + (scale / cosdlat * Math.sin(shmax_r)))
   let y1=  (lat - (scale * Math.cos(shmax_r)));
@@ -167,6 +167,9 @@ used on excel to fit the scale equation:
 12,0.007
 13,0.004
 14,0.002
+15,0.001
+16,0.001
+17,0.001
 */
 
   return ends;
