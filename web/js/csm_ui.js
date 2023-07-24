@@ -132,6 +132,7 @@ function calc_ends(i,lat_s,lon_s,shmax_s,zoom) {
 
   let scale= (0.0013*(zoom * zoom)) - (0.0359 * zoom) + 0.2489;
 
+window.console.log("  calc_ends: zoom ", zoom, " scale ",scale);
   let x1=  (lon - (scale / cosdlat * Math.sin(shmax_r)))
   let x2=  (lon + (scale / cosdlat * Math.sin(shmax_r)))
   let y1=  (lat - (scale * Math.cos(shmax_r)));
