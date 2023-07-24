@@ -114,6 +114,7 @@ var csm_boreholes_latlngs=[];
 var csm_boreholes_azimuth=[];
 var csm_boreholes_id=[];
 var csm_boreholes_tips=[];
+var csm_boreholes_colors=[];
 
 function downloadBorehole() {
   saveAsURLFile('./csm_data/LuttrellHardebeckJGR2021_Table1.csv');
@@ -208,12 +209,14 @@ function makeBoreholeLayers(mymap) {
     let lon=latlngs["lon"];
     let id=csm_boreholes_id[i];
     let azimuth=csm_boreholes_azimuth[i];
+    let color=pixiGetSHmaxColor(azimuth); 
+    csm_boreholes_colors.push(color);
 
     let end=calc_ends(i,lat,lon,azimuth,zoom); //[{"lat":lat,"lon":lon},{"lat":lat,"lon":lon}];
     ends.push({"id":id,"zoom":zoom,"ends":end});
   }
 
-  let markergroup=addCircleMarkerLayerGroup(csm_boreholes_latlngs,csm_boreholes_tips);
+  let markergroup=addCircleMarkerLayerGroup(csm_boreholes_latlngs,csm_boreholes_tips,csm_boreholes_colors);
   let linegroup=addPolylineLayerGroup(ends);
 
   csm_boreholes_layer={ "zoom":zoom, "marker":markergroup, "line":linegroup };

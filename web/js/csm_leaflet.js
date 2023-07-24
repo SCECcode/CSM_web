@@ -358,7 +358,7 @@ function addIconMarkerLayerGroup(latlngs,description,sz) {
 // TODO: make this a layer with sticks azimuth calculation
 //       and add mouse in/mouse out and focusing event
 //       and also zoom in and zoom out pixiel calc
-function makeLeafletCircleMarker(latlng,cname) {
+function makeLeafletCircleMarker(latlng,cname,color) {
   let zoom=mymap.getZoom();
   let sz=2;
   if(zoom <= 7) sz=1;
@@ -366,8 +366,8 @@ function makeLeafletCircleMarker(latlng,cname) {
 
   let marker = L.circleMarker(latlng,
         {
-            color: "black",
-            fillColor: "black",
+            color: color,
+            fillColor: color,
             fillOpacity: 1,
             radius: sz,
             riseOnHover: true,
@@ -396,7 +396,7 @@ function makeLeafletPolyline(latlngs) {
   return line;
 }
 
-function addCircleMarkerLayerGroup(latlngs,description) {
+function addCircleMarkerLayerGroup(latlngs,description,colors=[]) {
   var cnt=latlngs.length;
   if(cnt < 1)
     return null;
@@ -404,7 +404,10 @@ function addCircleMarkerLayerGroup(latlngs,description) {
   for(var i=0;i<cnt;i++) {
      var latlng = latlngs[i];
      var desc = description[i];
-     var marker=makeLeafletCircleMarker(latlng);
+     var color="black";
+     if(colors.length != 0) {
+       color=colors[i];
+     var marker=makeLeafletCircleMarker(latlng,color);
      marker.bindTooltip(desc);
      markers.push(marker);
   }

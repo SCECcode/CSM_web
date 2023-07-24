@@ -268,6 +268,21 @@ function getSegmentMarkerRGBList(idx) {
   return mlist;
 }
 
+// no need to make a copy, just ref it
+function refSegmentMarkerRGBList(idx) {
+  let cmaps=pixi_cmap_tb.csm_cmaps_rgb;
+  let cmap=cmaps[idx];
+  return cmap.rgbs;
+}
+
+// given a shmax value, what color does it match too
+// shmax is between -90 to 90
+function pixiGetSHmaxColor(v) {
+   let clist=refSegmentMarkerRGBList(0);
+   let vs_max=90;
+   let offset=getSegmentRangeIdx(v, 12, 90, -90);
+   return clist[offset];offset;
+}
 
 // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fillRect
 function _createTexture(color) {
