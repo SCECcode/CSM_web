@@ -15,6 +15,19 @@ var DATA_MAX_V=undefined;
 var DATA_MIN_V=undefined;
 var DATA_count=0;
 
+var Context_count=0;
+
+HTMLCanvasElement.prototype.getContext = function(origFn) {
+  return function(type, attribs) {
+          window.console.log("    ----Calling new getContext,", Context_count);
+    Context_count++;
+    attribs = attribs || {};
+//    attribs.preserveDrawingBuffer = true;
+    return origFn.call(this, type, attribs);
+  };
+}(HTMLCanvasElement.prototype.getContext);
+
+
 var pixi_cmap_tb={
   csm_cmaps_rgb: [
     { type:0,
@@ -286,6 +299,7 @@ function pixiGetSHmaxColor(v) {
 
 // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fillRect
 function _createTexture(color) {
+  window.console.log(" -> createTexture..", color);
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext("2d");
   ctx.fillStyle = color;
@@ -882,6 +896,10 @@ function pixiSetPixiOpacity(uid, alpha) {
 //pixiOverlayList.push({"uid":uid,"visible":1,"segment":segments,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
 function pixiGetPixiOpacity(uid) {
     let pixi=pixiFindPixiWithUid(uid);
+    if(pixi == null) {
+     window.console.log("BAD.. pixi is not found with uid",  uid);
+     return 0.8;
+    }
     let layer=pixi.overlay;
     let pContainer=pixi.top;
     opacity=pContainer.alpha;
