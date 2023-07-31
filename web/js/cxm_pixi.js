@@ -1,134 +1,47 @@
 /***
    cxm_pixi.js
+
 ***/
 
-/* marker's resizing size's zoom threshold */
-var vs_zoom_threshold=5;
+/* How many segments to chunk a set of data */
+const PIXI_DEFAULT_DATA_SEGMENT_COUNT=undefined;
 
-// pixi, Leafle.overlayLayer.js
-/* data sections, to matching marker name markerN_icon.png */
-const DEFAULT_DATA_SEGMENT_COUNT= 20; // marker name from 1 to 20
-
-var DATA_SEGMENT_COUNT=0; // supplied from client 
-
+var DATA_SEGMENT_COUNT=undefined; // chunking supplied from client 
 var DATA_MAX_V=undefined;
 var DATA_MIN_V=undefined;
-var DATA_count=0;
+var DATA_count=undefined;
 
-var pixi_cmap_tb={
-  csm_cmaps_rgb: [
-    { type:0,
-      note:"for SHmax",
-             rgbs: [ "rgb(0,0,77)",
-                     "rgb(0,0,166)",
-                     "rgb(0,0,255)",
-                     "rgb(102,102,255)",
-                     "rgb(166,166,255)",
-                     "rgb(230,230,255)",
-                     "rgb(255,230,230)",
-                     "rgb(255,166,166)",
-                     "rgb(255,102,102)", 
-                     "rgb(255,0,0)",
-                     "rgb(166,0,0)",
-                     "rgb(77,0,0)"]},
-    { type:1,
-      note:"for Aphi",
-             rgbs: [
-                     "rgb(52,16,60)",
-                     "rgb(59,91,169)",
-                     "rgb(78,132,196)",
-                     "rgb(130,210,225)",
-                     "rgb(253,245,166)",
-                     "rgb(247,237,65)",
-                     "rgb(232,216,25)",
-                     "rgb(220,183,38)",
-                     "rgb(242,101,34)",
-                     "rgb(239,60,35)",
-                     "rgb(217,34,38)",
-                     "rgb(131,21,23)"
-	     ]},
+var pixi_cmap_tb=undefined;
 
-    { type:2,
-      note:"for Dif, Iso",
-             rgbs: [ "rgb(140,62.125,115.75)",
-                     "rgb(143,71,153.25)",
-                     "rgb(133.25,87.125,187.75)",
-                     "rgb(114.25,109.87,211.87)",
-                     "rgb(91.125,137.38,211.88)",
-                     "rgb(70.875,167,216)",
-                     "rgb(59.125,194.25,193.88)",
-                     "rgb(64.125,214.88,161.88)",
-                     "rgb(84.75,226.75,129.38)", 
-                     "rgb(120.12,230.75,105.13)",
-                     "rgb(165.62,226.12,95.625)",
-                     "rgb(211.12,217.38,106.37)"]}
-  ],
-  csm_cmaps_rgba: [
-    { type:0,
-      note:"for SHmax",
-             rgbs: [ "rgba(0,0,77,0.6)",
-                     "rgba(0,0,166,0.6)",
-                     "rgba(0,0,255,0.6)",
-                     "rgba(102,102,255,0.6)",
-                     "rgba(166,166,255,0.6)",
-                     "rgba(255,230,230,0.6)",
-                     "rgba(255,166,166,0.6)",
-                     "rgba(255,102,102,0.6)", 
-                     "rgba(255,0,0,0.6)",
-                     "rgba(166,0,0,0.6)",
-                     "rgba(77,0,0,0.6)"]},
-    { type:1,
-      note:"for Aphi",
-             rgbs: [
-                     "rgba(52,16,60,0.6)",
-                     "rgba(59,91,169,0.6)",
-                     "rgba(78,132,196,0.6)",
-                     "rgba(130,210,225,0.6)",
-                     "rgba(253,245,166,0.6)",
-                     "rgba(247,237,65,0.6)",
-                     "rgba(232,216,25,0.6)",
-                     "rgba(220,183,38,0.6)",
-                     "rgba(242,101,34,0.6)",
-                     "rgba(239,60,35,0.6)",
-                     "rgba(217,34,38,0.6)",
-                     "rgba(131,21,23,0.6)"
-	     ]},
+/*************************************************************************/
 
-    { type:2,
-      note:"for Dif, Iso",
-             rgbs: [ "rgba(140,62.125,115.75,0.6)",
-                     "rgba(143,71,153.25,0.6)",
-                     "rgba(133.25,87.125,187.75,0.6)",
-                     "rgba(114.25,109.87,211.87,0.6)",
-                     "rgba(91.125,137.38,211.88,0.6)",
-                     "rgba(70.875,167,216,0.6)",
-                     "rgba(59.125,194.25,193.88,0.6)",
-                     "rgba(64.125,214.88,161.88,0.6)",
-                     "rgba(84.75,226.75,129.38,0.6)", 
-                     "rgba(120.12,230.75,105.13,0.6)",
-                     "rgba(165.62,226.12,95.625,0.6)",
-                     "rgba(211.12,217.38,106.37,0.6)"]}
-  ]
-};
+/**
+   a place to park all the pixiOverlay from the session 
+   [ {"uid":uid, "vis":true, "segment":20, "layer": overlay,
+     "top":pixiContainer,"inner":[ {"container":c0, "visible":1 }, ...],
+     "latlnglist":pixiLatlngList} ] 
 
-/********************************************/
-/* a place to park all the pixiOverlay from the session */
-/* [ {"uid":uid, "vis":true, "segment":20, "layer": overlay,         */
-/*    "top":pixiContainer,"inner":[ {"container":c0, "visible":1 }, ...], "latlnglist":pixiLatlngList} ] */
+   for each overlay layer, this is all the data
+     pixiLatlngList= {"uid":uid,"data":datalist} 
+       (array of arrays)
+       datalist[ [{'lat':v,'lon':vv}...], [{...}], ... ]
+
+**/
+
 var pixiOverlayList=[];
 
 /* expose pixiOverlay's util to global scope */
 var pixi_project=null;
 
 /* textures in a marker container                         */
-/* [ markerTexture0, markerTexture1,... markerTexture19 ] */
 var markerTexturesPtr;
-var markerTexturesSet0=[];
-var markerTexturesSet1=[];
-var markerTexturesSet2=[];
 
 var loadOnce=1;
 
+
+
+/*************************************************************************/
+// print each segment's count and whole set's count
 function printMarkerLatlngInfo(plist) {
   let sum=0;
   window.console.log("PIXI: For: "+plist.uid);
@@ -140,7 +53,7 @@ function printMarkerLatlngInfo(plist) {
   window.console.log("PIXI:  sum up :"+sum);
 }
 
-function updateMarkerLatlng(plist,idx,lat,lng) {
+function addMarkerLatlng(plist,idx,lat,lng) {
   let dlist=plist[idx];
   dlist.push({'lat':lat,"lng":lng});
 }
@@ -156,6 +69,7 @@ function getMarkerLatlngs(latlonlist,idx) {
   return dlist;
 }
 
+/*************************************************************************/
 function getSegmentRangeIdx(vs_target, N, vs_max, vs_min) {
   if(vs_target <= vs_min) {
     return 0;  
@@ -254,9 +168,10 @@ function getSegmentRangeList(N, vs_max, vs_min) {
   return slist;
 }
 
-function getSegmentMarkerRGBList(idx) {
+// get a list of rgbs from the table
+function pixiGetSegmentMarkerRGBList(idx) {
   var mlist= [];
-  let cmaps=pixi_cmap_tb.csm_cmaps_rgb;
+  let cmaps=pixi_cmap_tb.data_rgb;
   let sz=cmaps.length;
   if(idx < sz) {
      let cmap=cmaps[idx];
@@ -275,65 +190,29 @@ function refSegmentMarkerRGBList(idx) {
   return cmap.rgbs;
 }
 
-// given a shmax value, what color does it match too
-// shmax is between -90 to 90
-function pixiGetSHmaxColor(v) {
-   let clist=refSegmentMarkerRGBList(0);
-   let vs_max=90;
-   let offset=getSegmentRangeIdx(parseInt(v), 12, 90, -90);
-   return clist[offset];
-}
+// from pixi,
+//  >> Adds a BaseTexture to the global BaseTextureCache. This cache is shared across the whole PIXI object.
+// PIXI.BaseTexture.addToCache (baseTexture, id)
+// PIXI.BaseTexture.from (source, options, strict) PIXI.BaseTexture static
+//
 
 // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fillRect
-function _createTexture(color) {
+function pixiCreateBaseTexture(color,name) {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext("2d");
   ctx.fillStyle = color;
   ctx.fillRect(0, 0, 14, 14);
 
   let texture=PIXI.Texture.from(canvas);
+  PIXI.BaseTexture.addToCache(texture,name);
   return texture;
 }
 
-// from pixi,
-//  >> Adds a BaseTexture to the global BaseTextureCache. This cache is shared across the whole PIXI object.
-// PIXI.BaseTexture.addToCache (baseTexture, id)
-// PIXI.BaseTexture.from (source, options, strict) PIXI.BaseTexture static
-//
+/*************************************************************************/
+/*************************************************************************/
 function init_pixi(loader) {
   pixiOverlayList=[];
-
-// setup list for SHmax, Aphi, Iso, Dif
-  let rgblist=getSegmentMarkerRGBList(0);
-  for(let i =0; i< 12; i++) {
-    let name="markerSet0_"+i;
-    let rgb=rgblist[i];
-    let texture=_createTexture(rgb);
-    PIXI.BaseTexture.addToCache(texture,name);
-    markerTexturesSet0.push(texture);
-  }
-  rgblist=getSegmentMarkerRGBList(1);
-  for(let i =0; i< 12; i++) {
-    let name="markerSet1_"+i;
-    let rgb=rgblist[i];
-    let texture=_createTexture(rgb);
-    PIXI.BaseTexture.addToCache(texture,name);
-    markerTexturesSet1.push(texture);
-  }
-  rgblist=getSegmentMarkerRGBList(2);
-  for(let i =0; i< 12; i++) {
-    let name="markerSet2_"+i;
-    let rgb=rgblist[i];
-    let texture=_createTexture(rgb);
-    PIXI.BaseTexture.addToCache(texture,name);
-    markerTexturesSet2.push(texture);
-  }
-
-/*
-  let marker11Texture = PIXI.Texture.from('img/marker11_icon.png');
-  PIXI.BaseTexture.addToCache(marker11Texture,"markerSet12_11");
-  markerTextures12.push(marker11Texture);
-*/
+  csm_init_pixi();
 }
 
 
@@ -342,26 +221,6 @@ function setup_pixi() {
     init_pixi();
     loadOnce=0;
   }
-}
-
-function makeOnePixiLayer(uid,file) {
-
-  makePixiOverlayLayer(uid,file);
-  let pixiLayer = pixiFindPixiWithUid(uid);
-
-  let ticker = new PIXI.Ticker();
-
-  ticker.add(function(delta) { 
-    pixiLayer.redraw({type: 'redraw', delta: delta});
-  });
-
-  viewermap.on('changestart', function() { ticker.start(); });
-  viewermap.on('changeend', function() { ticker.stop(); });
-  viewermap.on('zoomstart', function() { ticker.start(); });
-  viewermap.on('zoomend', function() { ticker.stop(); });
-  viewermap.on('zoomanim', pixiLayer.redraw, pixiLayer);
-
-  return {"pixiLayer":pixiLayer,"max_v":DATA_MAX_V,"min_v":DATA_MIN_V,"count_v":DATA_count };
 }
 
 // toggle off a child container from an overlay layer
@@ -469,7 +328,7 @@ function _loadup_data_list(uid,latlist,lonlist,vallist) {
       let lat=item[1];
       let val=item[0];
       let idx=getSegmentRangeIdx(val, DATA_SEGMENT_COUNT, DATA_MAX_V, DATA_MIN_V);
-      updateMarkerLatlng(datalist,idx,lat,lon);
+      addMarkerLatlng(datalist,idx,lat,lon);
    }
    pixiLatlngList= {"uid":uid,"data":datalist} ; 
 
@@ -483,7 +342,7 @@ function makePixiOverlayLayerWithList(uid,latlist,lonlist,vallist,spec) {
     if(spec.seg_cnt!=0) { 
       DATA_SEGMENT_COUNT = spec.seg_cnt;
       } else {
-        DATA_SEGMENT_COUNT = DEFAULT_DATA_SEGMENT_COUNT;
+        DATA_SEGMENT_COUNT = PIXI_DEFAULT_DATA_SEGMENT_COUNT;
     }
     if(spec.data_max != undefined) { 
       DATA_MAX_V = spec.data_max;
@@ -577,7 +436,7 @@ function _loadup_data_url(uid,url) {
       let lat=item[1];
       let vel=item[0];
       let idx=getSegmentRangeIdx(vel, DATA_SEGMENT_COUNT, DATA_MAX_V, DATA_MIN_V);
-      updateMarkerLatlng(datalist,idx,lat,lon);
+      addMarkerLatlng(datalist,idx,lat,lon);
    }
    pixiLatlngList= {"uid":uid,"data":datalist} ; 
 

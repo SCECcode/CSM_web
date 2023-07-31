@@ -82,6 +82,7 @@ $csm = new CSM();
     <script type="text/javascript" src="js/vendor/pixi.js"></script>
     <script type="text/javascript" src="js/vendor/pixiOverlay/L.PixiOverlay.js"></script>
     <script type="text/javascript" src="js/cxm_pixi.js"></script>
+    <script type="text/javascript" src="js/csm_pixi_util.js"></script>
 
 <!-- cxm js -->
     <script type="text/javascript" src="js/cxm_kml.js?v=1"></script>
