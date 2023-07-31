@@ -28,17 +28,28 @@ var pixi_cmap_tb=undefined;
 
 **/
 
+/**
+
+HTMLCanvasElement.prototype.getContext = function(origFn) {
+  return function(type, attribs) {
+          window.console.log("    ----Calling new getContext,", Context_count);
+    Context_count++;
+    attribs = attribs || {};
+//    attribs.preserveDrawingBuffer = true;
+    return origFn.call(this, type, attribs);
+  };
+}(HTMLCanvasElement.prototype.getContext);
+**/
+
 var pixiOverlayList=[];
 
 /* expose pixiOverlay's util to global scope */
 var pixi_project=null;
 
-/* textures in a marker container                         */
+/* textures in a marker containeri */
 var markerTexturesPtr;
 
 var loadOnce=1;
-
-
 
 /*************************************************************************/
 // print each segment's count and whole set's count
@@ -741,6 +752,10 @@ function pixiSetPixiOpacity(uid, alpha) {
 //pixiOverlayList.push({"uid":uid,"visible":1,"segment":segments,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
 function pixiGetPixiOpacity(uid) {
     let pixi=pixiFindPixiWithUid(uid);
+    if(pixi == null) {
+     window.console.log("BAD.. pixi is not found with uid",  uid);
+     return 0.8;
+    }
     let layer=pixi.overlay;
     let pContainer=pixi.top;
     opacity=pContainer.alpha;

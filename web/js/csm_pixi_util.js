@@ -96,3 +96,14 @@ function csm_init_pixi() {
   }
 
 }
+
+// given a shmax value, what color does it match too
+// shmax is between -90 to 90
+function pixiGetSHmaxColor(v) {
+   let clist=refSegmentMarkerRGBList(0);
+   let vs_max=90;
+   let offset=getSegmentRangeIdx(parseInt(v), 12, 90, -90);
+   return clist[offset];
+}
+
+
