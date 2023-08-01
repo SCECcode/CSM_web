@@ -81,7 +81,7 @@ function getMarkerLatlngs(latlonlist,idx) {
 }
 
 /*************************************************************************/
-function getSegmentRangeIdx(vs_target, N, vs_max, vs_min) {
+function pixiGetSegmentRangeIdx(vs_target, N, vs_max, vs_min) {
   if(vs_target <= vs_min) {
     return 0;  
   }
@@ -133,8 +133,8 @@ function pixiFindSegmentProperties(uid) {
 }
 
 
-// create a list of N values
-function getSegmentRangeList(N, vs_max, vs_min) {
+// create a list of N values for creating legend labels
+function pixiGetSegmentRangeList(N, vs_max, vs_min) {
   var step = (vs_max - vs_min)/N;
   var mult=10;
   let abs_step=Math.abs(step);
@@ -177,28 +177,6 @@ function getSegmentRangeList(N, vs_max, vs_min) {
 // including the last one
   slist.push( (Math.floor(vs_max*mult)/mult).toFixed(digits));
   return slist;
-}
-
-// get a list of rgbs from the table
-function pixiGetSegmentMarkerRGBList(idx) {
-  var mlist= [];
-  let cmaps=pixi_cmap_tb.data_rgb;
-  let sz=cmaps.length;
-  if(idx < sz) {
-     let cmap=cmaps[idx];
-     rgbs=cmap.rgbs;
-     for (const idx in rgbs) {
-       mlist.push(rgbs[idx]);
-     }
-  }
-  return mlist;
-}
-
-// no need to make a copy, just ref it
-function refSegmentMarkerRGBList(idx) {
-  let cmaps=pixi_cmap_tb.csm_cmaps_rgb;
-  let cmap=cmaps[idx];
-  return cmap.rgbs;
 }
 
 // from pixi,
@@ -338,7 +316,7 @@ function _loadup_data_list(uid,latlist,lonlist,vallist) {
       let lon=item[2];
       let lat=item[1];
       let val=item[0];
-      let idx=getSegmentRangeIdx(val, DATA_SEGMENT_COUNT, DATA_MAX_V, DATA_MIN_V);
+      let idx=pixiGetSegmentRangeIdx(val, DATA_SEGMENT_COUNT, DATA_MAX_V, DATA_MIN_V);
       addMarkerLatlng(datalist,idx,lat,lon);
    }
    pixiLatlngList= {"uid":uid,"data":datalist} ; 
@@ -446,7 +424,7 @@ function _loadup_data_url(uid,url) {
       let lon=item[2];
       let lat=item[1];
       let vel=item[0];
-      let idx=getSegmentRangeIdx(vel, DATA_SEGMENT_COUNT, DATA_MAX_V, DATA_MIN_V);
+      let idx=pixiGetSegmentRangeIdx(vel, DATA_SEGMENT_COUNT, DATA_MAX_V, DATA_MIN_V);
       addMarkerLatlng(datalist,idx,lat,lon);
    }
    pixiLatlngList= {"uid":uid,"data":datalist} ; 
@@ -490,17 +468,12 @@ https://github.com/pixijs/pixijs/discussions/8025
 
 // set the markerTexturesPtr to the right set
     let segment_color_list;
-    if(spec.rgb_set == 0) {
-      markerTexturesPtr=markerTexturesSet0;
-      segment_color_list=getSegmentMarkerRGBList(0);
-    } else if (spec.rgb_set == 1 ) {
-      markerTexturesPtr=markerTexturesSet1;
-      segment_color_list=getSegmentMarkerRGBList(1);
-    } else {
-      markerTexturesPtr=markerTexturesSet2;
-      segment_color_list=getSegmentMarkerRGBList(2);
-    }
-    let segment_label_list=getSegmentRangeList(DATA_SEGMENT_COUNT, DATA_MAX_V, DATA_MIN_V);
+    
+
+    markerTexturesPtr=getMarkerTextures(spec.rgb_set);
+    segment_color_list=getSegmentMarkerRGBList(spec.rgb_set);
+
+    let segment_label_list=pixiGetSegmentRangeList(DATA_SEGMENT_COUNT, DATA_MAX_V, DATA_MIN_V);
 
 
     for(var i=0; i<DATA_SEGMENT_COUNT; i++) {

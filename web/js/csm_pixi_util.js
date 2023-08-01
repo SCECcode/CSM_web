@@ -10,9 +10,9 @@ const CSM_DEFAULT_DATA_SEGMENT_COUNT= 12;
 
 /* there are 3 different markerTextures set.. */
 const CSM_TEXTURE_SETS= 3; 
-var csmMarkerTexturesSet0=[];
-var csmMarkerTexturesSet1=[];
-var csmMarkerTexturesSet2=[];
+var markerTexturesSet0=[];
+var markerTexturesSet1=[];
+var markerTexturesSet2=[];
 
 var csm_pixi_cmap_tb={
   data_rgb: [
@@ -73,21 +73,21 @@ function csm_init_pixi() {
   PIXI_DEFAULT_DATA_SEGMENT_COUNT=CSM_DEFAULT_DATA_SEGMENT_COUNT;
 
 // setup list for SHmax, Aphi, Iso, Dif
-  let rgblist=pixiGetSegmentMarkerRGBList(0);
-  for(let i =0; i< rgb_length; i++) {
+  let rgblist=getSegmentMarkerRGBList(0);
+  for(let i =0; i< rgblist.length; i++) {
     let name="markerSet0_"+i;
     let rgb=rgblist[i];
     let texture=pixiCreateBaseTexture(rgb,name);
     markerTexturesSet0.push(texture);
   }
-  rgblist=pixiGetSegmentMarkerRGBList(1);
-  for(let i =0; i< rgb_length; i++) {
+  rgblist=getSegmentMarkerRGBList(1);
+  for(let i =0; i< rgblist.length; i++) {
     let name="markerSet1_"+i;
     let rgb=rgblist[i];
     let texture=pixiCreateBaseTexture(rgb,name);
     markerTexturesSet1.push(texture);
   }
-  rgblist=pixiGetSegmentMarkerRGBList(2);
+  rgblist=getSegmentMarkerRGBList(2);
   for(let i =0; i< rgblist.length; i++) {
     let name="markerSet2_"+i;
     let rgb=rgblist[i];
@@ -99,11 +99,31 @@ function csm_init_pixi() {
 
 // given a shmax value, what color does it match too
 // shmax is between -90 to 90
-function pixiGetSHmaxColor(v) {
-   let clist=refSegmentMarkerRGBList(0);
+function getSHmaxColor(v) {
+
+   let clist=getSegmentMarkerRGBList(0);
+
    let vs_max=90;
-   let offset=getSegmentRangeIdx(parseInt(v), 12, 90, -90);
+   let offset=pixiGetSegmentRangeIdx(parseInt(v), 12, 90, -90);
    return clist[offset];
 }
 
+function getSegmentMarkerRGBList(rgb_set) {
+  let cmaps=csm_pixi_cmap_tb.data_rgb;
+  let cmap=cmaps[rgb_set];
+  return cmap.rgbs;
+}
 
+function getMarkerTextures(rgb_set) {
+    switch(rgb_set)  {
+      case 0:
+        return markerTexturesSet0;
+      case 1:
+        return markerTexturesSet1;
+      case 2:
+        return markerTexturesSet2;
+      default:
+        window.console.log("BAD..");
+        return null;
+    }
+}
