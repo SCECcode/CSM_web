@@ -4,7 +4,7 @@
 ***/
 
 /* How many segments to chunk a set of data */
-const PIXI_DEFAULT_DATA_SEGMENT_COUNT=undefined;
+var PIXI_DEFAULT_DATA_SEGMENT_COUNT=undefined;
 
 var DATA_SEGMENT_COUNT=undefined; // chunking supplied from client 
 var DATA_MAX_V=undefined;
