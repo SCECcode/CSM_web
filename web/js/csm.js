@@ -233,7 +233,9 @@ var csm_csv_keys= {
     this.resetSearch = function (){
 window.console.log("calling --->> resetSearch.");
 
+	pixiResetAllOverlayOpacity();
         pixiClearAllPixiOverlay();
+
         this.setupPixiSegmentDebug(0,{});
 	this.unselectAllRegion();
 

@@ -30,6 +30,9 @@ var PIXI_pixiOverlayList=[];
 /* How many segments to chunk a set of data */
 var PIXI_DEFAULT_DATA_SEGMENT_COUNT=undefined;
 
+var PIXI_DEFAULT_OPACITY=0.8;
+
+
 var DATA_SEGMENT_COUNT=undefined; // chunking supplied from client 
 var DATA_MAX_V=undefined;
 var DATA_MIN_V=undefined;
@@ -340,7 +343,7 @@ function makePixiOverlayLayer(uid,pixiLatlngList,spec) {
     let zoomChangeTs = null;
     let pixiContainer = null;
     let overlay = null;
-    let opacity = 0.8;
+    let opacity = PIXI_DEFAULT_OPACITY;
 
     if(PIXI_pixiOverlayList.length == 0) { // first one
       pixiContainer = new PIXI.Container({vertices: true, tint: true});
@@ -725,17 +728,46 @@ function pixiSetPixiOverlayOpacity(uid,alpha) {
     if(ret == null) return;
     let pidx=ret.pidx; 
     let pixi=ret.pixi;
+    pixi.opacity=alpha;
 
     let layer=PIXI_pixiOverlayList[pidx];
-    let opacity=pixi.opacity;
-    pixi.opacity=alpha;
+    let overlay=layer.overlay;
+    let pContainer=layer.top;
 
 // should be the same
     if(layer.active_uid != uid) {
       window.console.log("pixiGetPixiOverlayOpacity.. BAD.. should match");
     }
-    layer.opacity=alpha; 
-    return opacity;
+    layer.active_opacity=alpha; 
+
+    pContainer.alpha=alpha;
+    overlay.redraw({type: 'redraw'});
+}
+
+function pixiResetAllOverlayOpacity() {
+  for(let i=0; i< PIXI_pixiOverlayList.length; i++) {
+    let layer=PIXI_pixiOverlayList[i];
+    if(layer.visible == false) {
+      continue;
+    }
+    if(layer.active_opacity == PIXI_DEFAULT_OPACITY) {
+      continue;
+    }
+    let target=layer.active_uid;
+    let overlay=layer.overlay;
+    let pContainer=layer.top;
+    let groups=layer.groups;
+    for(let j=0; j<groups.length; j++) {
+       let t=groups[i];
+        if(t.uid == target) {
+          t.opacity=PIXI_DEFAULT_OPACITY;
+          break;
+        }
+    }
+    layer.active_opacity=PIXI_DEFAULT_OPACITY;
+    pContainer.alpha=PIXI_DEFAULT_OPACITY;
+    overlay.redraw({type: 'redraw'});
+  }
 }
 
 /*************************************************************************/
