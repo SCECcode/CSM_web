@@ -316,10 +316,10 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
          <div id="search-option" class="col-12 mt-4"style="border:solid 0px green" >
             <ul id="option" class="navigation col-11" style="padding: 0 0 0 0;margin-bottom: 0">
 
-              <li id='csm-model' class='row navigationLi' style="display:none;border:solid 0px red;">
+              <li id='csm-model' class='row navigationLi' style="display:;border:solid 1px black;">
 <!--  segment debug toggle set -->
                   <div class="row">
-                    <div class="col-10" id="pixi-segment-debug" style="display:none;">
+                    <div class="col-12" id="pixi-segment-debug" style="display:;">
                       <div id="pixi-segment"></div>
                     </div>
                   </div>
@@ -381,7 +381,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
          </div>
 
 <!-- description page -->
-         <div id="csm-description" class="col-12 pr-0" style="font-size:14px; background-color:rgb(245,245,245); max-width:450px" >
+         <div id="csm-description" class="col-12 pr-0" style="display:none;font-size:14px; background-color:rgb(245,245,245); max-width:450px" >
            <br>
            <p><b>You Selected:</b></p>
            <p id="csm-model-description"></p>

@@ -487,7 +487,7 @@ window.console.log("PIXI: total of len, ",collect_len);
     let groups = [];
     groups.push( { "uid":uid, "visible":true, "segments":segments, "opacity": opacity, inner:pContainers} ); 
     PIXI_pixiOverlayList.push({ "visible":true, "active_uid":uid, "active_opacity":opacity, "overlay":overlay,
-                           "top":pixiContainer, "groups": groups");
+                           "top":pixiContainer, "groups": groups });
 
 window.console.log(">>> PIXI..adding into poxiOverlayList with uid of:",uid);
 
@@ -572,7 +572,7 @@ function _toggleInnerGroupSegment(target,pidx,sidx) {
             if(group.visible == true) {
               let tmp=group.inner;
               if(sidx < tmp.length) {
-                let chunk=tmp[sidx];k
+                let chunk=tmp[sidx];
                 if(chunk.visible ==true) {
                   top.removeChild(chunk);
                   chunk.visible=false;
@@ -580,7 +580,7 @@ function _toggleInnerGroupSegment(target,pidx,sidx) {
                     top.addChild(chunk);
                     chunk.visible=true;
                 }
-                overlayer.redraw(chunk);
+                overlay.redraw(chunk);
               }
             }
             return;
@@ -690,8 +690,7 @@ function pixiShowPixiOverlay(uid) {
       _clearInnerGroup(active,pidx);
     } 
 
-    _addInnerGroup(uid,top,groups);
-    layer.visible=true;
+    _addInnerGroup(uid,pidx);
     layer.active_uid=uid;
     layer.active_opacity=opacity;
 // not sure if this is needed
@@ -711,11 +710,11 @@ function pixiGetPixiOverlayOpacity(uid) {
     let pidx=ret.pidx; 
     let pixi=ret.pixi;
 
-    let layer=PIXI_pixiOverlayList[i];
+    let layer=PIXI_pixiOverlayList[pidx];
     let opacity=pixi.opacity;
 
 // should be the same
-    if( (layer.active_uid != uid) || (pixi.opacity != layer.opacity)) {
+    if( (layer.active_uid != uid) || (pixi.opacity != layer.active_opacity)) {
       window.console.log("pixiGetPixiOverlayOpacity.. BAD.. should match");
     }
     return opacity;
@@ -727,7 +726,7 @@ function pixiSetPixiOverlayOpacity(uid,alpha) {
     let pidx=ret.pidx; 
     let pixi=ret.pixi;
 
-    let layer=PIXI_pixiOverlayList[i];
+    let layer=PIXI_pixiOverlayList[pidx];
     let opacity=pixi.opacity;
     pixi.opacity=alpha;
 
@@ -758,7 +757,7 @@ function pixiToggleMarkerContainer(uid,target_segment_idx) {
     window.console.log("PIXI: grouplayer not visible To TOGGLE!!\n");
     return;
   } 
-  _toggleInnerGroupSegment(target,pidx,target_segment_idx);
+  _toggleInnerGroupSegment(uid,pidx,target_segment_idx);
 }
 
 /*************************************************************************/

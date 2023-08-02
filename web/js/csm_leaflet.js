@@ -535,12 +535,18 @@ window.console.log("unhighlight rectangle layer one");
 }
 
 function remove_all_bounding_rectangle_layer() {
-   if(csm_region_latlngs != null ) {
-     CSM.unselectAllRegion();
-     csm_latlon_area_list=[];
-     track_csm_latlon_area_gid=0;
-     csm_region_latlngs = null;
+   if(csm_region_latlngs == null) return;
+
+   let areas=csm_latlon_area_list;
+   for(let i=0; i<areas.length; i++) {
+     let tmp=csm_latlon_area_list[i];
+     let layer=tmp.layer;
+     viewermap.removeLayer(layer);
    }
+   CSM.unselectAllRegion();
+   csm_latlon_area_list=[];
+   track_csm_latlon_area_gid=0;
+   csm_region_latlngs = null;
 }
 
 // input from the map

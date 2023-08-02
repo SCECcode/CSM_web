@@ -7,7 +7,7 @@
 
 var CSM = new function () {
 
-    this.model_debug = 0;
+    this.model_debug = 1;
     this.model_initialized = false;
     // 
     // complete set of csm models info from the backend-service,
@@ -405,7 +405,7 @@ window.console.log("in freshSearch --model");
           let seginfo=pixiFindSegmentProperties(pixiuid);
           CSM.setupPixiSegmentDebug(pixiuid,seginfo);
           CSM.setupPixiLegend(pixiuid,spec,seginfo);
-          let opacity=pixiGetPixiOpacity(pixiuid);
+          let opacity=pixiGetPixiOverlayOpacity(pixiuid);
           setOpacitySliderHandle(opacity);		   
           } else {
             pixiuid = this.search(this.searchType.model, spec, spec_idx, spec_data);
@@ -429,7 +429,7 @@ window.console.log("in freshSearch --latlon");
           let seginfo=pixiFindSegmentProperties(pixiuid);
           CSM.setupPixiSegmentDebug(pixiuid,seginfo);
           CSM.setupPixiLegend(pixiuid,spec,seginfo);
-          let opacity=pixiGetPixiOpacity(pixiuid);
+          let opacity=pixiGetPixiOverlayOpacity(pixiuid);
           setOpacitySliderHandle(opacity);		   
           } else {
             pixiuid = this.search(this.searchType.model, spec, spec_idx, spec_data);
@@ -616,6 +616,8 @@ window.console.log("Did not find any PHP result");
                 notify(" No data in the marked area!! ");
                 //alert(" No data in the marked area!! "); 
                 CSM.removeWaitSpin();
+// remove all the rectangle drawn on the map 
+		remove_all_bounding_rectangle_layer();
             } else {
                 if(type==CSM.searchType.model) { 
                     let tmp=JSON.parse(search_result); 
@@ -672,7 +674,7 @@ window.console.log("Did not find any PHP result");
                     let seginfo=pixiFindSegmentProperties(pixiuid);
                     CSM.setupPixiSegmentDebug(pixiuid,seginfo);
                     CSM.setupPixiLegend(pixiuid,spec,seginfo);
-                    let opacity=pixiGetPixiOpacity(pixiuid);
+                    let opacity=pixiGetPixiOverlayOpacity(pixiuid);
                     setOpacitySliderHandle(opacity);		   
 
                     return pixiuid;
@@ -726,7 +728,7 @@ window.console.log("calling redrawModel..");
           let seginfo=pixiFindSegmentProperties(pixiuid);
           CSM.setupPixiSegmentDebug(pixiuid,seginfo);
           CSM.setupPixiLegend(pixiuid,spec, seginfo);
-          let opacity=pixiGetPixiOpacity(pixiuid);
+          let opacity=pixiGetPixiOverlayOpacity(pixiuid);
           setOpacitySliderHandle(opacity);		   
           } else {
             pixiuid = this.search(this.searchType.model, spec, spec_idx, spec_data);
