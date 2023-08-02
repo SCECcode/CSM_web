@@ -370,9 +370,9 @@ window.console.log("calling --->> clearSearch.");
 
       let pixiuid= this.lookupModelLayers(
                     spec_idx[0], spec_idx[1], spec_idx[2]);
-      let old=pixiGetPixiOpacity(pixiuid);
+      let old=pixiGetPixiOverlayOpacity(pixiuid);
       if(alpha != old) {
-        pixiSetPixiOpacity(pixiuid, alpha);
+        pixiSetPixiOverlayOpacity(pixiuid, alpha);
       }
     }
 
@@ -401,7 +401,7 @@ window.console.log("in freshSearch --model");
                        spec_idx[0], spec_idx[1], spec_idx[2]);
 
         if(pixiuid != null) { // reuse and add to viewer map 
-          pixiTogglePixiOverlay(pixiuid);
+          pixiShowPixiOverlay(pixiuid);
           let seginfo=pixiFindSegmentProperties(pixiuid);
           CSM.setupPixiSegmentDebug(pixiuid,seginfo);
           CSM.setupPixiLegend(pixiuid,spec,seginfo);
@@ -425,7 +425,7 @@ window.console.log("in freshSearch --latlon");
                        spec_idx[0], spec_idx[1], spec_idx[2]);
 
         if(pixiuid != null) { // reuse and add to viewer map 
-          pixiTogglePixiOverlay(pixiuid);
+          pixiShowPixiOverlay(pixiuid);
           let seginfo=pixiFindSegmentProperties(pixiuid);
           CSM.setupPixiSegmentDebug(pixiuid,seginfo);
           CSM.setupPixiLegend(pixiuid,spec,seginfo);
@@ -722,8 +722,7 @@ window.console.log("calling redrawModel..");
                        spec_idx[0], spec_idx[1], spec_idx[2]);
 
         if(pixiuid != null) { // reuse and add to viewer map
-          pixiClearAllPixiOverlay();
-          pixiTogglePixiOverlay(pixiuid);
+          pixiShowPixiOverlay(pixiuid);
           let seginfo=pixiFindSegmentProperties(pixiuid);
           CSM.setupPixiSegmentDebug(pixiuid,seginfo);
           CSM.setupPixiLegend(pixiuid,spec, seginfo);

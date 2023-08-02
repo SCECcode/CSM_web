@@ -521,6 +521,7 @@ function pixiFindPixiSegmentsWithUid(uid) {
     return null;
 }
 
+
 function pixiFindPixiOpacityWithUid(uid) {
     let ret=pixiFindPixiWithUid(uid);
     if(ret != null) {
@@ -562,6 +563,7 @@ function _foundOverlay(uid) {
 
 function _toggleInnerGroupSegment(target,pidx,sidx) {
     let layer=PIXI_pixiOverlayList[pidx];
+    let overlay=layer.overlay;
     let top=layer.top;
     let groups=layer.groups;
     for(let j=0; j< groups.length; j++) {
@@ -578,7 +580,7 @@ function _toggleInnerGroupSegment(target,pidx,sidx) {
                     top.addChild(chunk);
                     chunk.visible=true;
                 }
-                layer.redraw(chunk);
+                overlayer.redraw(chunk);
               }
             }
             return;
@@ -590,6 +592,7 @@ function _toggleInnerGroupSegment(target,pidx,sidx) {
 function _clearInnerGroup(target,pidx) {
     let layer=PIXI_pixiOverlayList[pidx];
     let top=layer.top;
+    let overlay=layer.overlay;
     let groups=layer.groups;
     for(let j=0; j< groups.length; j++) {
         let group=groups[j];
@@ -600,7 +603,7 @@ function _clearInnerGroup(target,pidx) {
                 let chunk=tmp[j];
                 chunk.visible=false;
                 top.removeChild(chunk);
-                layer.redraw(chunk);
+                overlay.redraw(chunk);
               }
               group.visible=false;
 window.console.log("PIXI: clear one group..uid=",group.uid);
@@ -613,6 +616,7 @@ window.console.log("PIXI: clear one group..uid=",group.uid);
 function _addInnerGroup(target,pidx) {
     let layer=PIXI_pixiOverlayList[pidx];
     let top=layer.top;
+    let overlay=layer.overlay;
     let groups=layer.groups;
     for(let j=0; j< groups.length; j++) {
         let group=groups[j];
@@ -623,7 +627,7 @@ function _addInnerGroup(target,pidx) {
                 let chunk=tmp[j];
                 chunk.visible=true;
                 top.addChild(chunk);
-                layer.redraw(chunk);
+                overlay.redraw(chunk);
               }
 window.console.log("PIXI: adding one group..uid=",group.uid);
               group.visible=true;
@@ -661,10 +665,12 @@ function pixiClearAllPixiOverlay() {
           continue;
         }
         let target=layer.active_uid;
+        let overlay=layer.overlay;
         _clearInnerGroup(target,i);
         layer.active_uid=null;
         layer.active_opacity=0;
         layer.visible=false;
+	viewermap.removeLayer(overlay);    
     }
 }
 
@@ -675,20 +681,62 @@ function pixiShowPixiOverlay(uid) {
     let pixi=ret.pixi;
     let opacity=pixi.opacity;
     let layer=PIXI_pixiOverlayList[pidx];
+    let overlay = layer.overlay;
     let active=layer.active_uid;
 
     if(layer.visible == true) {
       if(active == uid) return; // do nothing
       // turn off the current one
       _clearInnerGroup(active,pidx);
-    }
+    } 
 
     _addInnerGroup(uid,top,groups);
     layer.visible=true;
     layer.active_uid=uid;
     layer.active_opacity=opacity;
 // not sure if this is needed
-    layer.redraw({type: 'redraw'});
+    overlay.redraw({type: 'redraw'});
+
+    if(layer.visible == false) {
+      viewermap.addLayer(overlay);
+    }
+    layer.visible=true;
+}
+
+
+// from a overlay that has this uid 
+function pixiGetPixiOverlayOpacity(uid) {
+    let ret=pixiFindPixiWithUid(uid);
+    if(ret == null) return;
+    let pidx=ret.pidx; 
+    let pixi=ret.pixi;
+
+    let layer=PIXI_pixiOverlayList[i];
+    let opacity=pixi.opacity;
+
+// should be the same
+    if( (layer.active_uid != uid) || (pixi.opacity != layer.opacity)) {
+      window.console.log("pixiGetPixiOverlayOpacity.. BAD.. should match");
+    }
+    return opacity;
+}
+
+function pixiSetPixiOverlayOpacity(uid,alpha) {
+    let ret=pixiFindPixiWithUid(uid);
+    if(ret == null) return;
+    let pidx=ret.pidx; 
+    let pixi=ret.pixi;
+
+    let layer=PIXI_pixiOverlayList[i];
+    let opacity=pixi.opacity;
+    pixi.opacity=alpha;
+
+// should be the same
+    if(layer.active_uid != uid) {
+      window.console.log("pixiGetPixiOverlayOpacity.. BAD.. should match");
+    }
+    layer.opacity=alpha; 
+    return opacity;
 }
 
 /*************************************************************************/
