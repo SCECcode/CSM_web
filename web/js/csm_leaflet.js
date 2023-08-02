@@ -75,7 +75,7 @@ function refresh_map()
   if (viewermap == undefined) {
     window.console.log("refresh_map: BAD BAD BAD");
     } else {
-      window.console.log("refresh_map: calling setView");
+//window.console.log("refresh_map: calling setView");
       viewermap.setView( init_map_coordinates, init_map_zoom_level);
   }
 }
@@ -85,7 +85,7 @@ function set_map(center,zoom)
   if (viewermap == undefined) {
     window.console.log("set_map: BAD BAD BAD");
     } else {
-      window.console.log("set_map: calling setView");
+//window.console.log("set_map: calling setView");
       viewermap.setView(center, zoom);
   }
 }
@@ -447,7 +447,7 @@ function add_bounding_rectangle(a,b,c,d) {
   var layer=addRectangleLayer(a,b,c,d);
   let gid=getRnd();
 
-  window.console.log("add_bounding_rectangle..",gid);
+//window.console.log("add_bounding_rectangle..",gid);
   layer.on({
     mouseover: function(e) {
       layer.setStyle({color:default_highlight_color, weight: default_highlight_weight});
@@ -487,7 +487,7 @@ function get_bounding_rectangle_layer_gid() {
 
 // idx starts from 1
 function remove_bounding_rectangle_layer(gid) {
-window.console.log("remove rectangle layer one");
+//window.console.log("remove rectangle layer one");
    let len=csm_latlon_area_list.length;
    for(let i=0; i<len; i++) {
      let tmp=csm_latlon_area_list[i];
@@ -497,7 +497,7 @@ window.console.log("remove rectangle layer one");
         tmp.valid=0;
 // remove tmp from the list
         csm_latlon_area_list.splice(i,1);
-// window.console.log("remove a bounding rectangle", gid);
+//window.console.log("remove a bounding rectangle", gid);
         if(csm_latlon_area_list.length == 0) {
           track_csm_latlon_area_gid=0;
           csm_region_latlngs = null;
@@ -509,7 +509,7 @@ window.console.log("remove rectangle layer one");
 
 // idx is a string
 function highlight_bounding_rectangle_layer(gid) {
-window.console.log("highlight rectangle layer one");
+//window.console.log("highlight rectangle layer one");
    let len=csm_latlon_area_list.length;
    for(let i=0; i<len; i++) {
      let tmp=csm_latlon_area_list[i];
@@ -522,7 +522,7 @@ window.console.log("highlight rectangle layer one");
 }
 
 function unhighlight_bounding_rectangle_layer(gid) {
-window.console.log("unhighlight rectangle layer one");
+//window.console.log("unhighlight rectangle layer one");
    let len=csm_latlon_area_list.length;
    for(let i=0; i<len; i++) {
      let tmp=csm_latlon_area_list[i];
@@ -551,7 +551,7 @@ function remove_all_bounding_rectangle_layer() {
 
 // input from the map
 function add_bounding_rectangle_layer(layer, a,b,c,d) {
-window.console.log("add_bounding_rectangle_layer..");
+//window.console.log("add_bounding_rectangle_layer..");
   let gid=getRnd();
   layer.on({
       mouseover: function(e) {
@@ -567,7 +567,7 @@ window.console.log("add_bounding_rectangle_layer..");
         layer.bindPopup(popupContent);
       }
   });
-window.console.log("IN adding from map..");
+//window.console.log("IN adding from map..");
   let aa=parseFloat(a.toFixed(5));
   let bb=parseFloat(b.toFixed(5));
   let cc=parseFloat(c.toFixed(5));
