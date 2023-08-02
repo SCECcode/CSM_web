@@ -3,32 +3,51 @@
 
 ***/
 
+/***
+
+  { "visible":true,
+    "overlay":overlay,
+    "top":pixiContainer,
+    "active_uid":aUid,
+    "active_opacity":aOpacity,
+    "groups": [{"uid":uid,"visible":1, "segments": segments, opacity:opacity,inner:pContainers},...]}
+
+ JUST one master pixi overlay for CSM,  with groups of pContainers -- 
+    one(group/layer)  per uid/model-metric-depth
+ pContainers = [ one pContainer per chunking segments ]
+
+ for each group,  all data are put in this structure with 12 chunks/segments
+     pixiLatlngList= {"uid":uid,"data":datalist} 
+       (array of arrays)
+       datalist[ [{'lat':v,'lon':vv}...], [{...}], ... ]
+
+ segments track number of data per segment/chunk
+       [ len1, len2 .. ]
+
+***/
+var PIXI_pixiOverlayList=[];
+
 /* How many segments to chunk a set of data */
 var PIXI_DEFAULT_DATA_SEGMENT_COUNT=undefined;
 
 var DATA_SEGMENT_COUNT=undefined; // chunking supplied from client 
 var DATA_MAX_V=undefined;
 var DATA_MIN_V=undefined;
-var DATA_count=undefined;
+var DATA_count=0;
 
 var pixi_cmap_tb=undefined;
 
+/* expose pixiOverlay's util to global scope */
+var pixi_project=null;
+
+/* textures in a marker containeri */
+var markerTexturesPtr=null;
+
+var loadOnce=1;
+
+
 /*************************************************************************/
-
-/**
-   a place to park all the pixiOverlay from the session 
-   [ {"uid":uid, "vis":true, "segment":20, "layer": overlay,
-     "top":pixiContainer,"inner":[ {"container":c0, "visible":1 }, ...],
-     "latlnglist":pixiLatlngList} ] 
-
-   for each overlay layer, this is all the data
-     pixiLatlngList= {"uid":uid,"data":datalist} 
-       (array of arrays)
-       datalist[ [{'lat':v,'lon':vv}...], [{...}], ... ]
-
-**/
-
-/**
+/** debug for seeing where canvas context were called
 
 HTMLCanvasElement.prototype.getContext = function(origFn) {
   return function(type, attribs) {
@@ -40,16 +59,6 @@ HTMLCanvasElement.prototype.getContext = function(origFn) {
   };
 }(HTMLCanvasElement.prototype.getContext);
 **/
-
-var pixiOverlayList=[];
-
-/* expose pixiOverlay's util to global scope */
-var pixi_project=null;
-
-/* textures in a marker containeri */
-var markerTexturesPtr;
-
-var loadOnce=1;
 
 /*************************************************************************/
 // print each segment's count and whole set's count
@@ -100,9 +109,10 @@ function pixiFindSegmentProperties(uid) {
   let labellist=[];
   let lengthlist=[];
   let checklist=[];
-  let pixi=pixiFindPixiWithUid(uid);
+  let ret=pixiFindPixiWithUid(uid);
 
-  if(pixi) {
+  if(ret != null) {
+    let pixi=ret.pixi;
     let clist=pixi.inner;
     let sz=clist.length;
 
@@ -200,10 +210,9 @@ function pixiCreateBaseTexture(color,name) {
 /*************************************************************************/
 /*************************************************************************/
 function init_pixi(loader) {
-  pixiOverlayList=[];
+  PIXI_pixiOverlayList=[];
   csm_init_pixi();
 }
-
 
 function setup_pixi() {
   if(loadOnce) {
@@ -211,49 +220,6 @@ function setup_pixi() {
     loadOnce=0;
   }
 }
-
-// toggle off a child container from an overlay layer
-function pixiToggleMarkerContainer(uid,target_segment_idx) {
-
-  let pixi=pixiFindPixiWithUid(uid);
-
-  if(pixi.visible==false) {
-    window.console.log("PIXI: layer not visible To TOGGLE!!\n");
-    return;
-  } 
-  let layer=pixi.overlay;
-  let clist=pixi.inner;
-  let top=pixi.top;
-  let seglist=pixi.segment;
-  let sz=clist.length;
-
-  let target_segment="segment_"+target_segment_idx;
-  let tloc=0;
-
-  let citem=clist[target_segment_idx]; // target particalContainer
-  let term;
-  let vis;
-  for(let i=0; i<sz; i++) {
-    let citem=clist[i];
-    let term=citem.csm_properties;
-    if(term.segment_name == target_segment) { // found the item
-      tloc=i;
-      if(citem.visible) { // toggle off
-        top.removeChild(citem);
-        citem.visible=false;
-        vis=false;
-        } else { // toggle on
-          citem.visible=true;
-          top.addChild(citem);
-          vis=true;
-      }
-      // need to refresh the layer
-      layer.redraw(citem);
-      return vis;
-    }
-  }
-}
-
 
 // order everything into a sorted array
 // break up data into buckets (one per segment)
@@ -324,7 +290,7 @@ function _loadup_data_list(uid,latlist,lonlist,vallist) {
    return pixiLatlngList;
 }
 
-// this is from csm
+// this is for CSM
 function makePixiOverlayLayerWithList(uid,latlist,lonlist,vallist,spec) {
     var pixiLatlngList;
 
@@ -353,6 +319,402 @@ function makePixiOverlayLayerWithList(uid,latlist,lonlist,vallist,spec) {
     return makePixiOverlayLayer(uid,pixiLatlngList,spec);
 }
 
+
+/*************************************************************************/
+/**
+  MAIN creation routine
+
+  spec = {'data_max':3.0, 'data_min':1.0, 'seg_cnt':12};
+  data_max and data_min is client specified limits
+
+  for each group,  all data are put in this structure with 12 chunks/segments
+     pixiLatlngList= {"uid":uid,"data":datalist}
+       (array of arrays)
+       datalist[ [{'lat':v,'lon':vv}...], [{...}], ... ]
+
+  return 'uid'
+ 
+**/
+function makePixiOverlayLayer(uid,pixiLatlngList,spec) {
+
+    let zoomChangeTs = null;
+    let pixiContainer = null;
+    let overlay = null;
+    let opacity = 0.8;
+
+    if(PIXI_pixiOverlayList.length == 0) { // first one
+      pixiContainer = new PIXI.Container({vertices: true, tint: true});
+      } else {
+        let pixi=PIXI_pixiOverlayList[0];
+        pixiContainer = pixi['top'];
+        overlay=pixi['overlay'];
+window.console.log("NOT DONE YET.");
+return uid;
+    }
+    pixiContainer.alpha=opacity;
+
+    let pContainers=[]; //particle container
+    let segments=[];
+
+// set the markerTexturesPtr to the right set
+    let segment_color_list;
+
+    markerTexturesPtr=getMarkerTextures(spec.rgb_set);
+    segment_color_list=getSegmentMarkerRGBList(spec.rgb_set);
+
+    let segment_label_list=pixiGetSegmentRangeList(DATA_SEGMENT_COUNT, DATA_MAX_V, DATA_MIN_V);
+
+    for(var i=0; i<DATA_SEGMENT_COUNT; i++) {
+      var length=getMarkerCount(pixiLatlngList,i);
+
+      var a = new PIXI.ParticleContainer(length, {vertices: true, tint: true});
+      // add properties for our patched particleRenderer:
+      a.texture = markerTexturesPtr[i];
+      a.baseTexture = markerTexturesPtr[i].baseTexture;
+      a.anchor = {x: 0.5, y: 0.5};
+      a.visible = true;
+
+      // each set shares the same segment_gid, using uid as master global id
+      a.csm_properties = { segment_gid:uid,
+                           segment_name:"segment_"+i,
+                           segment_cnt:length,
+                           segment_label: segment_label_list[i],
+                           segment_label_end: segment_label_list[i+1],
+                           segment_color: segment_color_list[i]};          
+
+      pixiContainer.addChild(a);
+      pContainers.push(a);
+    }
+
+    var doubleBuffering = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+    overlay=L.pixiOverlay(function(utils, event) {
+
+//window.console.log("PIXI:event type --- ", event.type);
+
+        if(event.type == "undefined") {
+          window.console.log(" ???? XXX why is event type of undefined ???");
+        }
+
+        var zoom = utils.getMap().getZoom();
+        var container = utils.getContainer();
+        var renderer = utils.getRenderer();
+        pixi_project = utils.latLngToLayerPoint;
+        var getScale = utils.getScale;
+        var invScale = 1 / getScale();
+  
+        if (event.type === "redraw") {
+  //window.console.log(" >>>   PIXI: redraw event");
+          renderer.render(container);
+        }
+  
+        if (event.type === 'add') {
+  //window.console.log("PIXI: add event");
+  
+          if (_foundOverlay(uid)) { // only add it first time
+            return;
+          }
+  
+          let mapcenter=viewermap.getCenter();
+          let mapzoom=viewermap.getZoom();
+  
+          var origin = pixi_project([mapcenter['lat'], mapcenter['lng']]);
+  
+          let scaleFactor=16; // default came from seismicity
+          if(spec.scale_hint == 2 ) { // when grid points are about 2km len is 70k
+		  scaleFactor=24;
+            //scaleFactor=6;
+            //scaleFactor=10;
+          }
+          if(spec.scale_hint == 5) {  // when grid points are about 5km
+            scaleFactor=8; 
+          }
+  
+  // :-) very hacky, just in case it got zoomed in before search
+          let t= (8/invScale);
+          scaleFactor=scaleFactor / t;
+  
+  //window.console.log("PIXI:in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>"+getScale()+" invScale"+invScale+"localscale is "+(invScale/scaleFactor));
+  
+          // fill in the particles one group at a time
+          let collect_len=0;
+          segments=[];
+          for(var i=0; i< DATA_SEGMENT_COUNT; i++ ) {
+  
+             var latlngs=getMarkerLatlngs(pixiLatlngList,i);
+             var len=latlngs.length;
+  
+             var a=pContainers[i];
+             a.x = origin.x;
+             a.y = origin.y;
+             a.localScale = invScale/scaleFactor;
+  
+             collect_len=collect_len+len;
+  //window.console.log("PIXI: group ",i," len is ",len);
+             segments.push(len);
+             for (var j = 0; j < len; j++) {
+                var latlng=latlngs[j];
+                var ll=latlng['lat'];
+                var gg=latlng['lng'];
+                var coords = pixi_project([ll,gg]);
+  
+  
+  // our patched particleContainer accepts simple {x: ..., y: ...} objects as children:
+  //window.console.log("    and xy at "+coords.x+" "+coords.y);
+              
+                var marker = new PIXI.TilingSprite(markerTexturesPtr[i]);
+                marker.clampMargin = -0.5;
+               
+                marker.alpha=1; // add, multiply,screen
+                marker.blendMode=0; // add, multiply,screen
+  
+                marker.x = coords.x - origin.x;
+                marker.y= coords.y - origin.y;
+  
+                marker.scale.set(invScale/scaleFactor);
+                var aParticle=a.addChild(marker);
+           }
+        }
+window.console.log("PIXI: total of len, ",collect_len); 
+     }
+
+     renderer.render(container,{ antialias: false, resolution:2 });
+    }, pixiContainer, {
+      doubleBuffering: doubleBuffering,
+      destroyInteractionManager: true
+    }).addTo(viewermap);
+
+    let groups = [];
+    groups.push( { "uid":uid, "visible":true, "segments":segments, "opacity": opacity, inner:pContainers} ); 
+    PIXI_pixiOverlayList.push({ "visible":true, "active_uid":uid, "active_opacity":opacity, "overlay":overlay,
+                           "top":pixiContainer, "groups": groups");
+
+window.console.log(">>> PIXI..adding into poxiOverlayList with uid of:",uid);
+
+    return uid;
+}
+
+
+/*************************************************************************/
+// utilities for a group -
+//({"uid":uid,"visible":true,"segments":segments,"opacity":opacity,inner:pContainers}) 
+//return pidx, and group
+function pixiFindPixiWithUid(uid) {
+    for(let i=0; i< PIXI_pixiOverlayList.length; i++) {
+        let groups=PIXI_pixiOverlayList[i].groups;
+        for(let j=0; j<groups.length; j++) {
+          let group=groups[i];
+          if(group.uid ==  uid) {
+            return {"pidx":i, "pixi":group};
+          }
+        }
+    }
+    return null;
+}
+
+function pixiFindPixiSegmentsWithUid(uid) {
+    let ret=pixiFindPixiWithUid(uid);
+    if(ret != null) {
+        let pixi=ret.pixi;
+        return pixi.segments;   
+    }
+    return null;
+}
+
+function pixiFindPixiOpacityWithUid(uid) {
+    let ret=pixiFindPixiWithUid(uid);
+    if(ret != null) {
+        let pixi=ret.pixi;
+        return pixi.opacity;   
+    }
+    return null;
+}
+
+function pixiFindPixiVisibleWithUid(uid) {
+    let ret=pixiFindPixiWithUid(uid);
+    if(ret != null) {
+        let pixi=ret.pixi;
+        return pixi.visible;   
+    }
+    return null;
+}
+
+function _foundOverlay(uid) {
+    let ret=pixiFindPixiWithUid(uid);
+    if(ret != null) {
+        return 1;
+    }
+    return 0;
+}
+/** need this ??
+  let target_segment="segment_"+target_segment_idx;
+  let tloc=0;
+
+  let citem=clist[target_segment_idx]; // target particalContainer
+  let term;
+  let vis;
+  for(let i=0; i<sz; i++) {
+    let citem=clist[i];
+    let term=citem.csm_properties;
+    if(term.segment_name == target_segment) { // found the item
+      tloc=i;
+**/
+
+function _toggleInnerGroupSegment(target,pidx,sidx) {
+    let layer=PIXI_pixiOverlayList[pidx];
+    let top=layer.top;
+    let groups=layer.groups;
+    for(let j=0; j< groups.length; j++) {
+        let group=groups[j];
+        if(group.uid == target) { // found it.
+            if(group.visible == true) {
+              let tmp=group.inner;
+              if(sidx < tmp.length) {
+                let chunk=tmp[sidx];k
+                if(chunk.visible ==true) {
+                  top.removeChild(chunk);
+                  chunk.visible=false;
+                  } else {
+                    top.addChild(chunk);
+                    chunk.visible=true;
+                }
+                layer.redraw(chunk);
+              }
+            }
+            return;
+        }
+    }
+}
+
+
+function _clearInnerGroup(target,pidx) {
+    let layer=PIXI_pixiOverlayList[pidx];
+    let top=layer.top;
+    let groups=layer.groups;
+    for(let j=0; j< groups.length; j++) {
+        let group=groups[j];
+        if(group.uid == target) { // found it.
+            if(group.visible == true) {
+              let tmp=group.inner;
+              for(let j=0; j<tmp.length; j++) {
+                let chunk=tmp[j];
+                chunk.visible=false;
+                top.removeChild(chunk);
+                layer.redraw(chunk);
+              }
+              group.visible=false;
+window.console.log("PIXI: clear one group..uid=",group.uid);
+              } else {
+                return;
+            }
+        }
+    }
+}
+function _addInnerGroup(target,pidx) {
+    let layer=PIXI_pixiOverlayList[pidx];
+    let top=layer.top;
+    let groups=layer.groups;
+    for(let j=0; j< groups.length; j++) {
+        let group=groups[j];
+        if(group.uid == target) { // found it.
+            if(group.visible == false) {
+              let tmp=group.inner;
+              for(let j=0; j<tmp.length; j++) {
+                let chunk=tmp[j];
+                chunk.visible=true;
+                top.addChild(chunk);
+                layer.redraw(chunk);
+              }
+window.console.log("PIXI: adding one group..uid=",group.uid);
+              group.visible=true;
+              } else {
+                return;
+            }
+        }
+    }
+}
+
+/*************************************************************************/
+//({"active_uid":uid,"active_opacity":opacity,"overlay":overlay,"top":pixiContainer,"groups": groups")
+function pixiFindPixiOverlayByIdx(pidx=0) {
+    if(PIXI_pixiOverlayList.length < pidx) return null;
+    let tmp=PIXI_pixiOverlayList[pidx];
+    return tmp.overlay;
+}
+
+function pixiFindPixiContainerByIdx(pidx=0) {
+    if(PIXI_pixiOverlayList.length < pidx) return null;
+    let tmp=PIXI_pixiOverlayList[pidx];
+    return tmp.top;
+}
+
+/*************************************************************************/
+/* there is just 1 overlay with different groups of pContainers/inner,
+   clearing the pixi overlay means remove current active group's container
+   from the viewer map 
+({"uid":uid,"visible":true,"segments":segments,"opacity":opacity,inner:pContainers}) 
+*/
+function pixiClearAllPixiOverlay() {
+    for(let i=0; i< PIXI_pixiOverlayList.length; i++) {
+        let layer=PIXI_pixiOverlayList[i];
+        if(layer.visible == false) {
+          continue;
+        }
+        let target=layer.active_uid;
+        _clearInnerGroup(target,i);
+        layer.active_uid=null;
+        layer.active_opacity=0;
+        layer.visible=false;
+    }
+}
+
+function pixiShowPixiOverlay(uid) {
+    let ret=pixiFindPixiWithUid(uid);
+    if(ret == null) return;
+    let pidx=ret.pidx; 
+    let pixi=ret.pixi;
+    let opacity=pixi.opacity;
+    let layer=PIXI_pixiOverlayList[pidx];
+    let active=layer.active_uid;
+
+    if(layer.visible == true) {
+      if(active == uid) return; // do nothing
+      // turn off the current one
+      _clearInnerGroup(active,pidx);
+    }
+
+    _addInnerGroup(uid,top,groups);
+    layer.visible=true;
+    layer.active_uid=uid;
+    layer.active_opacity=opacity;
+// not sure if this is needed
+    layer.redraw({type: 'redraw'});
+}
+
+/*************************************************************************/
+// for debug toggling a chunk from pContainers
+// toggle off a child container from an overlay layer
+function pixiToggleMarkerContainer(uid,target_segment_idx) {
+
+  let ret=pixiFindPixiWithUid(uid);
+  if(ret == null) return;
+
+  let pixi=ret.pixi;
+  let pidx=ret.pidx;
+
+  let layer=PIXI_pixiOverlayList[pidx];
+  let top=layer.top;
+  let groups=layer.groups;
+
+  if(layer.visible==false || pixi.visible==false) {
+    window.console.log("PIXI: grouplayer not visible To TOGGLE!!\n");
+    return;
+  } 
+  _toggleInnerGroupSegment(target,pidx,target_segment_idx);
+}
+
+/*************************************************************************/
+// for CGM
 // order everything into a sorted array
 // break up data into buckets (one per segment)
 // input : lon lat vel
@@ -440,297 +802,4 @@ function makePixiOverlayLayerWithFile(uid,file) {
     return makePixiOverlayLayer(uid,pixiLatlngList,spec);
 }
 
-// spec = {'data_max':3.0, 'data_min':1.0, 'seg_cnt':20};
-// data_max and data_min is client specified limits
-//
-// pixiOverlayList.push({"uid":uid,"vis":1,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
-// return 'uid'
-// 
-function makePixiOverlayLayer(uid,pixiLatlngList,spec) {
 
-    let zoomChangeTs = null;
-
-/****
-const filter = new PIXI.filters.AlphaFilter(1);
-container.filters = [filter];
-filter.alpha = 0.5; // <-- tween this propert
-
-https://github.com/pixijs/pixijs/discussions/8025
-*****/
-
-    let pixiContainer = new PIXI.Container({vertices: true, tint: true});
-    //let alphaFilter = new PIXI.AlphaFilter(1);
-    //pixiContainer.filters = [alphaFilter];
-    pixiContainer.alpha=0.8;
-
-    let pContainers=[]; //particle container
-    let segments=[];
-
-// set the markerTexturesPtr to the right set
-    let segment_color_list;
-    
-
-    markerTexturesPtr=getMarkerTextures(spec.rgb_set);
-    segment_color_list=getSegmentMarkerRGBList(spec.rgb_set);
-
-    let segment_label_list=pixiGetSegmentRangeList(DATA_SEGMENT_COUNT, DATA_MAX_V, DATA_MIN_V);
-
-
-    for(var i=0; i<DATA_SEGMENT_COUNT; i++) {
-      var length=getMarkerCount(pixiLatlngList,i);
-
-      var a = new PIXI.ParticleContainer(length, {vertices: true, tint: true});
-      // add properties for our patched particleRenderer:
-      a.texture = markerTexturesPtr[i];
-      a.baseTexture = markerTexturesPtr[i].baseTexture;
-      a.anchor = {x: 0.5, y: 0.5};
-      a.visible = 1;
-
-      a.csm_properties = { segment_name:"segment_"+i,
-                           segment_cnt:length,
-                           segment_label: segment_label_list[i],
-                           segment_label_end: segment_label_list[i+1],
-                           segment_color: segment_color_list[i]};          
-
-      pixiContainer.addChild(a);
-      pContainers.push(a);
-    }
-
-    var doubleBuffering = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-
-    var overlay=L.pixiOverlay(function(utils, event) {
-
-//window.console.log("PIXI:event type --- ", event.type);
-
-if(event.type == "undefined") {
-    window.console.log(" ???? XXX why is event type of undefined ???");
-}
-
-      var zoom = utils.getMap().getZoom();
-      var container = utils.getContainer();
-      var renderer = utils.getRenderer();
-      pixi_project = utils.latLngToLayerPoint;
-      var getScale = utils.getScale;
-      var invScale = 1 / getScale();
-
-      if (event.type === "redraw") {
-//window.console.log(" >>>   PIXI: redraw event");
-        renderer.render(container);
-      }
-
-      if (event.type === 'add') {
-//window.console.log("PIXI: add event");
-
-        if (_foundOverlay(uid)) { // only add it first time
-          return;
-        }
-
-        let mapcenter=viewermap.getCenter();
-        let mapzoom=viewermap.getZoom();
-
-        var origin = pixi_project([mapcenter['lat'], mapcenter['lng']]);
-
-        let scaleFactor=16; // default came from seismicity
-        if(spec.scale_hint == 2 ) { // when grid points are about 2km len is 70k
-		scaleFactor=24;
-          //scaleFactor=6;
-          //scaleFactor=10;
-        }
-        if(spec.scale_hint == 5) {  // when grid points are about 5km
-          scaleFactor=8; 
-        }
-
-// :-) very hacky, just in case it got zoomed in before search
-        let t= (8/invScale);
-        scaleFactor=scaleFactor / t;
-
-//window.console.log("PIXI:in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>"+getScale()+" invScale"+invScale+"localscale is "+(invScale/scaleFactor));
-
-        // fill in the particles one group at a time
-        let collect_len=0;
-        segments=[];
-        for(var i=0; i< DATA_SEGMENT_COUNT; i++ ) {
-
-           var latlngs=getMarkerLatlngs(pixiLatlngList,i);
-           var len=latlngs.length;
-
-           var a=pContainers[i];
-           a.x = origin.x;
-           a.y = origin.y;
-           a.localScale = invScale/scaleFactor;
-
-           collect_len=collect_len+len;
-//window.console.log("PIXI: group ",i," len is ",len);
-           segments.push(len);
-           for (var j = 0; j < len; j++) {
-              var latlng=latlngs[j];
-              var ll=latlng['lat'];
-              var gg=latlng['lng'];
-              var coords = pixi_project([ll,gg]);
-
-
-// our patched particleContainer accepts simple {x: ..., y: ...} objects as children:
-//window.console.log("    and xy at "+coords.x+" "+coords.y);
-            
-/** XXX  orginail way, 
-              var aParticle=a.addChild({ x: coords.x - origin.x, y: coords.y - origin.y });
-**/
-
-              var marker = new PIXI.TilingSprite(markerTexturesPtr[i]);
-        //      var marker = new PIXI.Sprite(markerTexturesPtr[i]);
-              marker.clampMargin = -0.5;
-              //TilingSprite: marker.clampMargin = -0.5;
-             
-              marker.alpha=1; // add, multiply,screen
-              marker.blendMode=0; // add, multiply,screen
-
-              marker.x = coords.x - origin.x;
-              marker.y= coords.y - origin.y;
-
-              marker.scale.set(invScale/scaleFactor);
-
-             /*
-marker.popup = L.popup({className: 'pixi-popup'})
-                 .setLatLng(latlng)
-                 .setContent('<b>Hello world!</b><br>I am a popup.'+ latlng['lat']+' '+latlng['lng']).openOn(viewermap);
-           */
- 
-/*
-let mx = coords.x - origin.x;
-let my = coords.y - origin.y;
-let nx = mx+0.01;
-let ny = my+0.01;
-//var bounds = [[mx, my], [nx,ny]];
-var bounds=[[34.0105, -120.8415], [34.011, -120.8]];
-var marker = new PIXI.Point([34.0105, -120.8415], {color: "#ff7800", weight: 1} );
-*/
-
-              var aParticle=a.addChild(marker);
-           }
-        }
-window.console.log("PIXI: total of len, ",collect_len); 
-     }
-
-// camera ??      renderer.render(container,{ antialias: true, resolution:2 });
-     renderer.render(container,{ antialias: false, resolution:2 });
-    }, pixiContainer, {
-      doubleBuffering: doubleBuffering,
-      destroyInteractionManager: true
-    }).addTo(viewermap);
-
-    pixiOverlayList.push({"uid":uid,"visible":1,"segment":segments,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
-
-window.console.log(">>> PIXI..adding into poxiOverlayList with uid of:",uid);
-
-    return uid;
-}
-
-
-function pixiFindSegCntWithUid(uid) {
-   let seg=pixiFindSegmentsWithUid(uid);
-   if(seg) return seg.length;
-   return 0;
-}
-     
-/// { val1, val2, val3, .. val20 }
-function pixiFindSegmentsWithUid(uid) {
-  for(let i=0; i<pixiOverlayList.length; i++) {
-     let pixi=pixiOverlayList[i];
-     if(pixi.uid == uid) {
-       return pixi.segments;
-     }
-  }
-  return 0;
-}
-
-function pixiFindSegmentsWithUid(uid) {
-    let pixi=pixiFindPixiWithUid(uid);
-    if(pixi) return pixi.segment;
-    return null;
-}
-
-function pixiFindOverlayWithUid(uid) {
-    let pixi=pixiFindPixiWithUid(uid);
-    if(pixi) return pixi.overlay;
-    return null;
-}
-
-function pixiFindPixiWithUid(uid) {
-  for(let i=0; i<pixiOverlayList.length; i++) {
-     let pixi=pixiOverlayList[i];
-     if(pixi.uid == uid) {
-       return pixi;
-     }
-  }
-  return null;
-}
-function _foundOverlay(uid) {
-  for(let i=0; i<pixiOverlayList.length; i++) {
-     let pixi=pixiOverlayList[i];
-     if(pixi.uid == uid) {
-       return 1;
-     }
-  }
-  return 0;
-}
-
-function pixiClearPixiOverlay(uid) {
-    let pixi=pixiFindPixiWithUid(uid);
-    if(pixi && pixi.visible == 1) {
-       let layer=pixi.overlay;
-       viewermap.removeLayer(layer);
-       pixi.visible=0;
-window.console.log("PIXI: clear one..uid=",pixi.uid);
-    }
-}
-
-function pixiClearAllPixiOverlay() {
-  let cnt=pixiOverlayList.length;
-  for(let i=0; i<cnt; i++) {
-    let pixi=pixiOverlayList[i];
-    if(pixi.visible == 1) {
-       let layer=pixi.overlay;
-       viewermap.removeLayer(layer);
-       pixi.visible=0;
-window.console.log("PIXI: clear All..uid=",pixi.uid);
-    }
-  }
-}
-
-function pixiTogglePixiOverlay(uid) {
-    let pixi=pixiFindPixiWithUid(uid);
-    let v=pixi.visible;
-    let layer=pixi.overlay;
-    if(v==1) {
-       pixi.visible=0;
-       viewermap.removeLayer(layer);
-       } else {
-         viewermap.addLayer(layer);
-         pixi.visible=1;
-    }
-}
-
-//pixiOverlayList.push({"uid":uid,"visible":1,"segment":segments,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
-function pixiSetPixiOpacity(uid, alpha) {
-    let pixi=pixiFindPixiWithUid(uid);
-    let v=pixi.visible;
-    let layer=pixi.overlay;
-    if(v==1) {
-       let pContainer=pixi.top;
-       pContainer.alpha=alpha;
-       layer.redraw({type: 'redraw'});
-    }
-}
-
-//pixiOverlayList.push({"uid":uid,"visible":1,"segment":segments,"overlay":overlay,"top":pixiContainer,"inner":pContainers,"latlnglist":pixiLatlngList});
-function pixiGetPixiOpacity(uid) {
-    let pixi=pixiFindPixiWithUid(uid);
-    if(pixi == null) {
-     window.console.log("BAD.. pixi is not found with uid",  uid);
-     return 0.8;
-    }
-    let layer=pixi.overlay;
-    let pContainer=pixi.top;
-    opacity=pContainer.alpha;
-    return opacity;
-}
