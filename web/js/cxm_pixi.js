@@ -371,7 +371,6 @@ return uid;
       var length=getMarkerCount(pixiLatlngList,i);
 
       var a = new PIXI.ParticleContainer(length, {vertices: true, tint: true});
-      // add properties for our patched particleRenderer:
       a.texture = markerTexturesPtr[i];
       a.baseTexture = markerTexturesPtr[i].baseTexture;
       a.anchor = {x: 0.5, y: 0.5};
@@ -436,8 +435,6 @@ return uid;
   // :-) very hacky, just in case it got zoomed in before search
           let t= (8/invScale);
           scaleFactor=scaleFactor / t;
-  
-  //window.console.log("PIXI:in L.pixiOverlay layer, auto zoom at "+zoom+" scale at>"+getScale()+" invScale"+invScale+"localscale is "+(invScale/scaleFactor));
   
           // fill in the particles one group at a time
           let collect_len=0;
@@ -550,19 +547,6 @@ function _foundOverlay(uid) {
     }
     return 0;
 }
-/** need this ??
-  let target_segment="segment_"+target_segment_idx;
-  let tloc=0;
-
-  let citem=clist[target_segment_idx]; // target particalContainer
-  let term;
-  let vis;
-  for(let i=0; i<sz; i++) {
-    let citem=clist[i];
-    let term=citem.csm_properties;
-    if(term.segment_name == target_segment) { // found the item
-      tloc=i;
-**/
 
 function _toggleInnerGroupSegment(target,pidx,sidx) {
     let layer=PIXI_pixiOverlayList[pidx];
@@ -606,10 +590,10 @@ function _clearInnerGroup(target,pidx) {
                 let chunk=tmp[j];
                 chunk.visible=false;
                 top.removeChild(chunk);
-                overlay.redraw(chunk);
               }
               group.visible=false;
 window.console.log("PIXI: clear one group..uid=",group.uid);
+              overlay.redraw({type: 'redraw'});
               } else {
                 return;
             }
@@ -630,10 +614,11 @@ function _addInnerGroup(target,pidx) {
                 let chunk=tmp[j];
                 chunk.visible=true;
                 top.addChild(chunk);
-                overlay.redraw(chunk);
               }
 window.console.log("PIXI: adding one group..uid=",group.uid);
+              top.alpha=group.opacity;
               group.visible=true;
+              overlay.redraw({type: 'redraw'});
               } else {
                 return;
             }
