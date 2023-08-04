@@ -340,34 +340,39 @@ function makePixiOverlayLayerWithList(uid,latlist,lonlist,vallist,spec) {
 **/
 function makePixiOverlayLayer(uid,pixiLatlngList,spec) {
 
-    let zoomChangeTs = null;
-    let pixiContainer = null;
-    let overlay = null;
-    let opacity = PIXI_DEFAULT_OPACITY;
+    var pixiContainer = null;
+    var overlay = null;
+    var groups = [];
+
+    var zoomChangeTs = null;
+    var pixiContainer = null;
+
+    var opacity = PIXI_DEFAULT_OPACITY;
+    var doubleBuffering = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
     if(PIXI_pixiOverlayList.length == 0) { // first one
       pixiContainer = new PIXI.Container({vertices: true, tint: true});
       } else {
-        let pixi=PIXI_pixiOverlayList[0];
-        pixiContainer = pixi['top'];
-        overlay=pixi['overlay'];
-window.console.log("NOT DONE YET.");
-return uid;
+        pixi=PIXI_pixiOverlayList[0];
+        pixiContainer = pixi.top;
+        overlay = pixi.overlay;
+        groups = pixi.groups;
     }
+
     pixiContainer.alpha=opacity;
 
-    let pContainers=[]; //particle container
-    let segments=[];
+    var pContainers=[]; //particle container
+    var segments=[];
 
 // set the markerTexturesPtr to the right set
-    let segment_color_list;
+    var segment_color_list;
 
     markerTexturesPtr=getMarkerTextures(spec.rgb_set);
     segment_color_list=getSegmentMarkerRGBList(spec.rgb_set);
 
-    let segment_label_list=pixiGetSegmentRangeList(DATA_SEGMENT_COUNT, DATA_MAX_V, DATA_MIN_V);
+    var segment_label_list=pixiGetSegmentRangeList(DATA_SEGMENT_COUNT, DATA_MAX_V, DATA_MIN_V);
 
-    for(var i=0; i<DATA_SEGMENT_COUNT; i++) {
+    for(let i=0; i<DATA_SEGMENT_COUNT; i++) {
       var length=getMarkerCount(pixiLatlngList,i);
 
       var a = new PIXI.ParticleContainer(length, {vertices: true, tint: true});
@@ -388,11 +393,18 @@ return uid;
       pContainers.push(a);
     }
 
-    var doubleBuffering = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if(overlay != null) {
+        if(pixi.visible == false) {
+           // add to the map first,
+window.console.log("XXX === need to add back the layer..");
+           viewermap.addLayer(overlay);
+        }
+        overlay.redraw({type: 'redraw', data: {'pixiLatlngList':pixiLatlngList,'spec':spec }});
 
-    overlay=L.pixiOverlay(function(utils, event) {
+      } else { 
+        overlay=L.pixiOverlay(function(utils, event) {
 
-//window.console.log("PIXI:event type --- ", event.type);
+window.console.log("PIXI: calling pixiOverlay - callback");
 
         if(event.type == "undefined") {
           window.console.log(" ???? XXX why is event type of undefined ???");
@@ -405,15 +417,28 @@ return uid;
         var getScale = utils.getScale;
         var invScale = 1 / getScale();
   
-        if (event.type === "redraw") {
-  //window.console.log(" >>>   PIXI: redraw event");
-          renderer.render(container);
+        if (event.type === "iedraw") {
+window.console.log(" >>>   PIXI: redraw event");
+          var mylatlngs=event.data;
+window.console.log(" >>>   PIXI: redraw event data:",mylatlngs);
         }
   
-        if (event.type === 'add') {
-  //window.console.log("PIXI: add event");
+        if (event.type === 'add' || event.type === "redraw") {
+
+if (event.type === "redraw") {
+  window.console.log(" >>>   2 PIXI: redraw event");
+          var data=event.data;
+          if(data != undefined) { 
+            pixiLatlngList=data.pixiLatlngList;
+            uid=pixiLatlngList.uid;
+            spec=data.spec;
+window.console.log(" >>>   2 PIXI: redraw event data:",spec);
+          }
+}
+
+if (event.type === "add") window.console.log(" >>>   PIXI: add event");
   
-          if (_foundOverlay(uid)) { // only add it first time
+          if (event.type === "add" && _foundOverlay(uid)) { // only add it first time
             return;
           }
   
@@ -424,9 +449,7 @@ return uid;
   
           let scaleFactor=16; // default came from seismicity
           if(spec.scale_hint == 2 ) { // when grid points are about 2km len is 70k
-		  scaleFactor=24;
-            //scaleFactor=6;
-            //scaleFactor=10;
+            scaleFactor=24;
           }
           if(spec.scale_hint == 5) {  // when grid points are about 5km
             scaleFactor=8; 
@@ -436,6 +459,7 @@ return uid;
           let t= (8/invScale);
           scaleFactor=scaleFactor / t;
   
+if( event.type === "add") {
           // fill in the particles one group at a time
           let collect_len=0;
           segments=[];
@@ -472,22 +496,23 @@ return uid;
                 marker.y= coords.y - origin.y;
   
                 marker.scale.set(invScale/scaleFactor);
-                var aParticle=a.addChild(marker);
+                a.addChild(marker);
            }
         }
 window.console.log("PIXI: total of len, ",collect_len); 
-     }
+        groups.push( { "uid":uid, "visible":true, "segments":segments, "opacity": opacity, inner:pContainers} ); 
+}
+       }
 
-     renderer.render(container,{ antialias: false, resolution:2 });
+       renderer.render(container,{ antialias: false, resolution:2 });
     }, pixiContainer, {
       doubleBuffering: doubleBuffering,
       destroyInteractionManager: true
     }).addTo(viewermap);
 
-    let groups = [];
-    groups.push( { "uid":uid, "visible":true, "segments":segments, "opacity": opacity, inner:pContainers} ); 
     PIXI_pixiOverlayList.push({ "visible":true, "active_uid":uid, "active_opacity":opacity, "overlay":overlay,
                            "top":pixiContainer, "groups": groups });
+   }
 
 window.console.log(">>> PIXI..adding into poxiOverlayList with uid of:",uid);
 
