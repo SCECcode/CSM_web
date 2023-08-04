@@ -417,28 +417,81 @@ window.console.log("PIXI: calling pixiOverlay - callback");
         var getScale = utils.getScale;
         var invScale = 1 / getScale();
   
-        if (event.type === "iedraw") {
+        if (event.type === "redraw") {
 window.console.log(" >>>   PIXI: redraw event");
-          var mylatlngs=event.data;
-window.console.log(" >>>   PIXI: redraw event data:",mylatlngs);
-        }
-  
-        if (event.type === 'add' || event.type === "redraw") {
 
-if (event.type === "redraw") {
-  window.console.log(" >>>   2 PIXI: redraw event");
           var data=event.data;
-          if(data != undefined) { 
+
+          if(data != undefined) {
             pixiLatlngList=data.pixiLatlngList;
             uid=pixiLatlngList.uid;
             spec=data.spec;
-window.console.log(" >>>   2 PIXI: redraw event data:",spec);
-          }
-}
 
-if (event.type === "add") window.console.log(" >>>   PIXI: add event");
+            let mapcenter=viewermap.getCenter();
+            let mapzoom=viewermap.getZoom();
   
-          if (event.type === "add" && _foundOverlay(uid)) { // only add it first time
+            var origin = pixi_project([mapcenter['lat'], mapcenter['lng']]);
+  
+            let scaleFactor=16; // default came from seismicity
+            if(spec.scale_hint == 2 ) { // when grid points are about 2km len is 70k
+              scaleFactor=24;
+            }
+            if(spec.scale_hint == 5) {  // when grid points are about 5km
+              scaleFactor=8; 
+            }
+  
+  // :-) very hacky, just in case it got zoomed in before search
+            let t= (8/invScale);
+            scaleFactor=scaleFactor / t;
+  
+          // fill in the particles one group at a time
+            let collect_len=0;
+            segments=[];
+            for(var i=0; i< DATA_SEGMENT_COUNT; i++ ) {
+  
+               var latlngs=getMarkerLatlngs(pixiLatlngList,i);
+               var len=latlngs.length;
+  
+               var a=pContainers[i];
+               a.x = origin.x;
+               a.y = origin.y;
+               a.localScale = invScale/scaleFactor;
+  
+               collect_len=collect_len+len;
+  //window.console.log("PIXI: group ",i," len is ",len);
+               segments.push(len);
+               for (var j = 0; j < len; j++) {
+                  var latlng=latlngs[j];
+                  var ll=latlng['lat'];
+                  var gg=latlng['lng'];
+                  var coords = pixi_project([ll,gg]);
+              
+                  var marker = new PIXI.TilingSprite(markerTexturesPtr[i]);
+                  marker.clampMargin = -0.5;
+               
+                  marker.alpha=1; // add, multiply,screen
+                  marker.blendMode=0; // add, multiply,screen
+  
+                  marker.x = coords.x - origin.x;
+                  marker.y= coords.y - origin.y;
+    
+                  marker.scale.set(invScale/scaleFactor);
+                  a.addChild(marker);
+              }
+            }
+            groups.push( { "uid":uid, "visible":true, "segments":segments, "opacity": opacity, inner:pContainers} ); 
+	    // XXX need to setup to show this
+		 let gptr=groups; 
+                 let pptr=PIXI_pixiOverlayList;
+
+            // setup to show this
+	    //?? pixiShowPixiOverlay(uid);
+          }
+        }
+  
+        if (event.type === 'add') {
+
+          if (_foundOverlay(uid)) { // only add it first time
             return;
           }
   
@@ -459,7 +512,6 @@ if (event.type === "add") window.console.log(" >>>   PIXI: add event");
           let t= (8/invScale);
           scaleFactor=scaleFactor / t;
   
-if( event.type === "add") {
           // fill in the particles one group at a time
           let collect_len=0;
           segments=[];
@@ -497,11 +549,9 @@ if( event.type === "add") {
   
                 marker.scale.set(invScale/scaleFactor);
                 a.addChild(marker);
-           }
-        }
-window.console.log("PIXI: total of len, ",collect_len); 
-        groups.push( { "uid":uid, "visible":true, "segments":segments, "opacity": opacity, inner:pContainers} ); 
-}
+             }
+          }
+//window.console.log("PIXI: total of len, ",collect_len); 
        }
 
        renderer.render(container,{ antialias: false, resolution:2 });
@@ -510,12 +560,14 @@ window.console.log("PIXI: total of len, ",collect_len);
       destroyInteractionManager: true
     }).addTo(viewermap);
 
+    groups.push( { "uid":uid, "visible":true, "segments":segments, "opacity": opacity, inner:pContainers} ); 
     PIXI_pixiOverlayList.push({ "visible":true, "active_uid":uid, "active_opacity":opacity, "overlay":overlay,
                            "top":pixiContainer, "groups": groups });
    }
 
 window.console.log(">>> PIXI..adding into poxiOverlayList with uid of:",uid);
 
+    let tmp=PIXI_pixiOverlayList[0];
     return uid;
 }
 
@@ -528,7 +580,7 @@ function pixiFindPixiWithUid(uid) {
     for(let i=0; i< PIXI_pixiOverlayList.length; i++) {
         let groups=PIXI_pixiOverlayList[i].groups;
         for(let j=0; j<groups.length; j++) {
-          let group=groups[i];
+          let group=groups[j];
           if(group.uid ==  uid) {
             return {"pidx":i, "pixi":group};
           }
