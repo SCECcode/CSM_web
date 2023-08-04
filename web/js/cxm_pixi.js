@@ -397,7 +397,7 @@ function makePixiOverlayLayer(uid,pixiLatlngList,spec) {
         if(pixi.visible == false) {
            // add to the map first,
 window.console.log("XXX === need to add back the layer..");
-           viewermap.addLayer(overlay);
+// XXX           viewermap.addLayer(overlay);
         }
         overlay.redraw({type: 'redraw', data: {'pixiLatlngList':pixiLatlngList,'spec':spec }});
 
@@ -735,7 +735,7 @@ function pixiClearAllPixiOverlay() {
         layer.active_uid=null;
         layer.active_opacity=0;
         layer.visible=false;
-	viewermap.removeLayer(overlay);    
+//XXX	viewermap.removeLayer(overlay);    
     }
 }
 
@@ -762,7 +762,7 @@ function pixiShowPixiOverlay(uid) {
     overlay.redraw({type: 'redraw'});
 
     if(layer.visible == false) {
-      viewermap.addLayer(overlay);
+//XXX      viewermap.addLayer(overlay);
     }
     layer.visible=true;
 }
