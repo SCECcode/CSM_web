@@ -423,6 +423,7 @@ window.console.log(" >>>   PIXI: redraw event");
           var data=event.data;
 
           if(data != undefined) {
+window.console.log(" >>>   PIXI: redraw event -- with data update");
             pixiLatlngList=data.pixiLatlngList;
             uid=pixiLatlngList.uid;
             spec=data.spec;
@@ -480,13 +481,15 @@ window.console.log(" >>>   PIXI: redraw event");
               }
             }
             groups.push( { "uid":uid, "visible":true, "segments":segments, "opacity": opacity, inner:pContainers} ); 
-	    // XXX need to setup to show this
-		 let gptr=groups; 
-                 let pptr=PIXI_pixiOverlayList;
+            pixi.visble=true;
+            pixi.active_uid=uid;
+            pixi.active_opacity=opacity;		    
 
-            // setup to show this
-	    //?? pixiShowPixiOverlay(uid);
-          }
+	    // XXX debug
+	    let gptr=groups; 
+            let pptr=PIXI_pixiOverlayList;
+            renderer.render(container,{ antialias: false, resolution:2 });
+          } else { return ; }
         }
   
         if (event.type === 'add') {
