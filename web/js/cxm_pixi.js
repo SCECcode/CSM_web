@@ -466,7 +466,11 @@ window.console.log(" >>>   PIXI: redraw event -- with data update");
                a.localScale = invScale/scaleFactor;
   
                collect_len=collect_len+len;
-  window.console.log("PIXI: group ",i," len is ",len);
+
+ let tt=a.csm_properties;
+  window.console.log("PIXI: for REDRAW group ",i," len is ",len);
+  window.console.log("   -- is this visible ?",a.visible);
+
                segments.push(len);
                for (var j = 0; j < len; j++) {
                   var latlng=latlngs[j];
@@ -489,7 +493,7 @@ window.console.log(" >>>   PIXI: redraw event -- with data update");
             }
 
             groups.push( { "uid":uid, "visible":true, "segments":segments, "opacity": opacity, "inner":pContainers} ); 
-            pixi.visble=true;
+            pixi.visible=true;
             pixi.active_uid=uid;
             pixi.active_opacity=opacity;		    
           } 
@@ -533,7 +537,7 @@ window.console.log(" >>>   PIXI: add event");
              a.localScale = invScale/scaleFactor;
   
              collect_len=collect_len+len;
-  //window.console.log("PIXI: group ",i," len is ",len);
+  window.console.log("PIXI: for ADD group ",i," len is ",len);
              segments.push(len);
              for (var j = 0; j < len; j++) {
                 var latlng=latlngs[j];
