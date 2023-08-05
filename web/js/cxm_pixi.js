@@ -43,7 +43,7 @@ var pixi_cmap_tb=undefined;
 /* expose pixiOverlay's util to global scope */
 var pixi_project=null;
 
-/* textures in a marker containeri */
+/* textures in a marker container */
 var markerTexturesPtr=null;
 
 var loadOnce=1;
@@ -341,11 +341,11 @@ function makePixiOverlayLayerWithList(uid,latlist,lonlist,vallist,spec) {
 function makePixiOverlayLayer(uid,pixiLatlngList,spec) {
 
     var pixiContainer = null;
+    var pixi = null;
     var overlay = null;
     var groups = [];
 
     var zoomChangeTs = null;
-    var pixiContainer = null;
 
     var opacity = PIXI_DEFAULT_OPACITY;
     var doubleBuffering = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -356,7 +356,6 @@ function makePixiOverlayLayer(uid,pixiLatlngList,spec) {
         pixi=PIXI_pixiOverlayList[0];
         pixiContainer = pixi.top;
         overlay = pixi.overlay;
-        groups = pixi.groups;
     }
 
     pixiContainer.alpha=opacity;
@@ -431,6 +430,14 @@ window.console.log(" >>>   PIXI: redraw event -- with data update");
             let mapcenter=viewermap.getCenter();
             let mapzoom=viewermap.getZoom();
   
+            let pixi=PIXI_pixiOverlayList[0];
+
+            let pixiContainer=pixi.top;
+            let groups = pixi.groups;
+            let overlay = pixi.overlay;
+
+            let dumdum=pContainers;
+		  
             var origin = pixi_project([mapcenter['lat'], mapcenter['lng']]);
   
             let scaleFactor=16; // default came from seismicity
@@ -459,7 +466,7 @@ window.console.log(" >>>   PIXI: redraw event -- with data update");
                a.localScale = invScale/scaleFactor;
   
                collect_len=collect_len+len;
-  //window.console.log("PIXI: group ",i," len is ",len);
+  window.console.log("PIXI: group ",i," len is ",len);
                segments.push(len);
                for (var j = 0; j < len; j++) {
                   var latlng=latlngs[j];
@@ -480,19 +487,16 @@ window.console.log(" >>>   PIXI: redraw event -- with data update");
                   a.addChild(marker);
               }
             }
-            groups.push( { "uid":uid, "visible":true, "segments":segments, "opacity": opacity, inner:pContainers} ); 
+
+            groups.push( { "uid":uid, "visible":true, "segments":segments, "opacity": opacity, "inner":pContainers} ); 
             pixi.visble=true;
             pixi.active_uid=uid;
             pixi.active_opacity=opacity;		    
-
-	    // XXX debug
-	    let gptr=groups; 
-            let pptr=PIXI_pixiOverlayList;
-            renderer.render(container,{ antialias: false, resolution:2 });
-          } else { return ; }
+          } 
         }
   
         if (event.type === 'add') {
+window.console.log(" >>>   PIXI: add event");
 
           if (_foundOverlay(uid)) { // only add it first time
             return;
@@ -557,6 +561,7 @@ window.console.log(" >>>   PIXI: redraw event -- with data update");
 //window.console.log("PIXI: total of len, ",collect_len); 
        }
 
+window.console.log("  PIXI calling renderer.render..");
        renderer.render(container,{ antialias: false, resolution:2 });
     }, pixiContainer, {
       doubleBuffering: doubleBuffering,
@@ -568,7 +573,7 @@ window.console.log(" >>>   PIXI: redraw event -- with data update");
                            "top":pixiContainer, "groups": groups });
    }
 
-window.console.log(">>> PIXI..adding into poxiOverlayList with uid of:",uid);
+window.console.log(">>> PIXI..Make new layer into poxiOverlayList with uid of:",uid);
 
     let tmp=PIXI_pixiOverlayList[0];
     return uid;
@@ -661,8 +666,9 @@ function _clearInnerGroup(target,pidx) {
     let top=layer.top;
     let overlay=layer.overlay;
     let groups=layer.groups;
-    for(let j=0; j< groups.length; j++) {
-        let group=groups[j];
+window.console.log("PIXI: clearInnerGroup..",target);
+    for(let i=0; i< groups.length; i++) {
+        let group=groups[i];
         if(group.uid == target) { // found it.
             if(group.visible == true) {
               let tmp=group.inner;
@@ -672,7 +678,7 @@ function _clearInnerGroup(target,pidx) {
                 top.removeChild(chunk);
               }
               group.visible=false;
-window.console.log("PIXI: clear one group..uid=",group.uid);
+window.console.log("PIXI: clear one group..uid=",target);
               overlay.redraw({type: 'redraw'});
               } else {
                 return;
@@ -685,17 +691,19 @@ function _addInnerGroup(target,pidx) {
     let top=layer.top;
     let overlay=layer.overlay;
     let groups=layer.groups;
-    for(let j=0; j< groups.length; j++) {
-        let group=groups[j];
+window.console.log("PIXI: addInnerGroup..",target);
+    for(let i=0; i< groups.length; i++) {
+        let group=groups[i];
         if(group.uid == target) { // found it.
             if(group.visible == false) {
               let tmp=group.inner;
+window.console.log(" --- groupd id,",j);
               for(let j=0; j<tmp.length; j++) {
                 let chunk=tmp[j];
                 chunk.visible=true;
                 top.addChild(chunk);
               }
-window.console.log("PIXI: adding one group..uid=",group.uid);
+window.console.log("PIXI: adding one group..uid=",target);
               top.alpha=group.opacity;
               group.visible=true;
               overlay.redraw({type: 'redraw'});
