@@ -452,20 +452,18 @@ window.console.log(" >>>   PIXI: redraw event -- with data update");
             var segments=[];
             for(var i=0; i< DATA_SEGMENT_COUNT; i++ ) {
   
-               var latlngs=getPaticleLatlngs(pixiLatlngList,i);
+               var latlngs=getParticleLatlngs(pixiLatlngList,i);
                var len=latlngs.length;
                var pTexture = particleTexturesPtr[i];
   
-               var a=particleContainer[i];
+               var a=particleContainers[i];
                a.x = origin.x;
                a.y = origin.y;
                a.localScale = invScale/scaleFactor;
   
                collect_len=collect_len+len;
 
- let tt=a.csm_properties;
-  window.console.log("PIXI: for REDRAW group ",i," len is ",len);
-  window.console.log("   -- is this visible ?",a.visible);
+ //window.console.log("PIXI: for REDRAW group ",i," len is ",len);
 
                segments.push(len);
                for (var j = 0; j < len; j++) {
@@ -563,8 +561,8 @@ window.console.log(" >>>   PIXI: add event");
           particleGroups.push( { "uid":uid, "visible":true, "segments":segments, "opacity": opacity, inner:particleContainers} ); 
        }
 
-window.console.log("  PIXI calling renderer.render..");
        renderer.render(container,{ antialias: false, resolution:2 });
+
     }, pixiContainer, {
       doubleBuffering: doubleBuffering,
       destroyInteractionManager: true
@@ -699,7 +697,6 @@ window.console.log("PIXI: addInnerGroup..",target);
             if(group.visible == false) {
               let tmp=group.inner;
               for(let j=0; j<tmp.length; j++) {
-window.console.log(" --- groupd id,",j);
                 let chunk=tmp[j];
                 chunk.visible=true;
                 top.addChild(chunk);

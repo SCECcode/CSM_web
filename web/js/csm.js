@@ -7,7 +7,7 @@
 
 var CSM = new function () {
 
-    this.model_debug = 1;
+    this.model_debug = 0;
     this.model_initialized = false;
     // 
     // complete set of csm models info from the backend-service,
@@ -526,7 +526,7 @@ window.console.log("in freshSearch --latlon");
     };
 
     this.togglePixiLegend = function(pixiuid, n, label) {
-window.console.log("calling togglePixiLegend.. with ",n,"on pixiuid ",pixiuid);
+//window.console.log("calling togglePixiLegend.. with ",n,"on pixiuid ",pixiuid);
       let vis=pixiToggleParticleContainer(pixiuid,n);
     };
 
