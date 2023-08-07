@@ -23,7 +23,6 @@
 
  segments track number of data per segment/chunk
        [ len1, len2 .. ]
-
 ***/
 var PIXI_pixiOverlayList=[];
 
@@ -41,7 +40,10 @@ var DATA_count=0;
 var pixi_cmap_tb=undefined;
 
 /* expose pixiOverlay's util to global scope */
-var pixi_project=null;
+var pixi = null;
+var pixiProject=null;
+var pixiContainer = null;
+var pixiOverlay = null;
 
 /* textures in a marker container */
 var markerTexturesPtr=null;
@@ -340,9 +342,6 @@ function makePixiOverlayLayerWithList(uid,latlist,lonlist,vallist,spec) {
 **/
 function makePixiOverlayLayer(uid,pixiLatlngList,spec) {
 
-    var pixiContainer = null;
-    var pixi = null;
-    var overlay = null;
     var groups = [];
 
     var zoomChangeTs = null;
@@ -355,7 +354,7 @@ function makePixiOverlayLayer(uid,pixiLatlngList,spec) {
       } else {
         pixi=PIXI_pixiOverlayList[0];
         pixiContainer = pixi.top;
-        overlay = pixi.overlay;
+        pixiOverlay = pixi.overlay;
     }
 
     pixiContainer.alpha=opacity;
@@ -392,16 +391,16 @@ function makePixiOverlayLayer(uid,pixiLatlngList,spec) {
       pContainers.push(a);
     }
 
-    if(overlay != null) {
+    if(pixiOverlay != null) {
         if(pixi.visible == false) {
            // add to the map first,
 window.console.log("XXX === need to add back the layer..");
-// XXX           viewermap.addLayer(overlay);
+// XXX           viewermap.addLayer(pixiOverlay);
         }
-        overlay.redraw({type: 'redraw', data: {'pixiLatlngList':pixiLatlngList,'spec':spec }});
+        pixiOverlay.redraw({type: 'redraw', data: {'pixiLatlngList':pixiLatlngList,'spec':spec }});
 
       } else { 
-        overlay=L.pixiOverlay(function(utils, event) {
+        pixiOverlay=L.pixiOverlay(function(utils, event) {
 
 window.console.log("PIXI: calling pixiOverlay - callback");
 
@@ -412,7 +411,7 @@ window.console.log("PIXI: calling pixiOverlay - callback");
         var zoom = utils.getMap().getZoom();
         var container = utils.getContainer();
         var renderer = utils.getRenderer();
-        pixi_project = utils.latLngToLayerPoint;
+        pixiProject = utils.latLngToLayerPoint;
         var getScale = utils.getScale;
         var invScale = 1 / getScale();
   
@@ -438,7 +437,7 @@ window.console.log(" >>>   PIXI: redraw event -- with data update");
 
             let dumdum=pContainers;
 		  
-            var origin = pixi_project([mapcenter['lat'], mapcenter['lng']]);
+            var origin = pixiProject([mapcenter['lat'], mapcenter['lng']]);
   
             let scaleFactor=16; // default came from seismicity
             if(spec.scale_hint == 2 ) { // when grid points are about 2km len is 70k
@@ -476,7 +475,7 @@ window.console.log(" >>>   PIXI: redraw event -- with data update");
                   var latlng=latlngs[j];
                   var ll=latlng['lat'];
                   var gg=latlng['lng'];
-                  var coords = pixi_project([ll,gg]);
+                  var coords = pixiProject([ll,gg]);
               
                   var marker = new PIXI.TilingSprite(markerTexturesPtr[i]);
                   marker.clampMargin = -0.5;
@@ -509,7 +508,7 @@ window.console.log(" >>>   PIXI: add event");
           let mapcenter=viewermap.getCenter();
           let mapzoom=viewermap.getZoom();
   
-          var origin = pixi_project([mapcenter['lat'], mapcenter['lng']]);
+          var origin = pixiProject([mapcenter['lat'], mapcenter['lng']]);
   
           let scaleFactor=16; // default came from seismicity
           if(spec.scale_hint == 2 ) { // when grid points are about 2km len is 70k
@@ -543,7 +542,7 @@ window.console.log(" >>>   PIXI: add event");
                 var latlng=latlngs[j];
                 var ll=latlng['lat'];
                 var gg=latlng['lng'];
-                var coords = pixi_project([ll,gg]);
+                var coords = pixiProject([ll,gg]);
   
   
   // our patched particleContainer accepts simple {x: ..., y: ...} objects as children:
@@ -573,7 +572,7 @@ window.console.log("  PIXI calling renderer.render..");
     }).addTo(viewermap);
 
     groups.push( { "uid":uid, "visible":true, "segments":segments, "opacity": opacity, inner:pContainers} ); 
-    PIXI_pixiOverlayList.push({ "visible":true, "active_uid":uid, "active_opacity":opacity, "overlay":overlay,
+    PIXI_pixiOverlayList.push({ "visible":true, "active_uid":uid, "active_opacity":opacity, "overlay":pixiOverlay,
                            "top":pixiContainer, "groups": groups });
    }
 
@@ -701,8 +700,8 @@ window.console.log("PIXI: addInnerGroup..",target);
         if(group.uid == target) { // found it.
             if(group.visible == false) {
               let tmp=group.inner;
-window.console.log(" --- groupd id,",j);
               for(let j=0; j<tmp.length; j++) {
+window.console.log(" --- groupd id,",j);
                 let chunk=tmp[j];
                 chunk.visible=true;
                 top.addChild(chunk);

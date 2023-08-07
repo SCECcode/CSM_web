@@ -193,11 +193,11 @@ var csm_csv_keys= {
         }
 
         if ($("#cxm-model-cfm").prop('checked')) {
-          document.getElementById("csm-model-cfm").click();
+          document.getElementById("cxm-model-cfm").click();
         }
 
         if ($("#cxm-model-gfm").prop('checked')) {
-          document.getElementById("cxm-model-cfm").click();
+          document.getElementById("cxm-model-gfm").click();
         }
 
         // go back to default view,
