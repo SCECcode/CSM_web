@@ -527,7 +527,7 @@ window.console.log("in freshSearch --latlon");
 
     this.togglePixiLegend = function(pixiuid, n, label) {
 window.console.log("calling togglePixiLegend.. with ",n,"on pixiuid ",pixiuid);
-      let vis=pixiToggleMarkerContainer(pixiuid,n);
+      let vis=pixiToggleParticleContainer(pixiuid,n);
     };
 
 // a layer is always generated with the full set of segments 
@@ -580,7 +580,7 @@ window.console.log("calling togglePixiLegend.. with ",n,"on pixiuid ",pixiuid);
 
     this.togglePixiSegment = function(pixiuid, n) {
 window.console.log("calling togglePixiSegment.. with ",n,"on pixiuid ",pixiuid);
-      let vis=pixiToggleMarkerContainer(pixiuid,n);
+      let vis=pixiToggleParticleContainer(pixiuid,n);
     }
 
     this.startWaitSpin = function() {

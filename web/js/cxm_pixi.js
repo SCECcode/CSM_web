@@ -9,11 +9,11 @@
     "top":pixiContainer,
     "active_uid":aUid,
     "active_opacity":aOpacity,
-    "groups": [{"uid":uid,"visible":1, "segments": segments, opacity:opacity,inner:pixiParticleContainers},...]}
+    "groups": [{"uid":uid,"visible":1, "segments": segments, opacity:opacity,inner:particleContainers},...]}
 
- JUST one master pixi overlay for CSM,  with groups of pixiParticleContainers -- 
+ JUST one master pixi overlay for CSM,  with groups of particleContainers -- 
     one(group/layer)  per uid/model-metric-depth
- pixiParticleContainers = [ one pixiParticleContainer per chunking segments ]
+ particleContainers = [ one particleContainer per chunking segments ]
 
  for each group,  all data are put in this structure with 12 chunks/segments
      pixiLatlngList= {"uid":uid,"data":datalist} 
@@ -386,7 +386,7 @@ function makePixiOverlayLayer(uid,pixiLatlngList,spec) {
                            segment_color: segment_color_list[i]};          
 
       pixiContainer.addChild(a);
-      pixiParticleContainers.push(a);
+      particleContainers.push(a);
     }
 
     if(pixiOverlay != null) {
@@ -430,11 +430,9 @@ window.console.log(" >>>   PIXI: redraw event -- with data update");
             let pixi=PIXI_pixiOverlayList[0];
 
             let pixiContainer=pixi.top;
-            let groups = pixi.groups;
-            let overlay = pixi.overlay;
+            let particleGroups = pixi.groups;
+            let pixiOverlay = pixi.overlay;
 
-            let dumdum=pixiParticleContainers;
-		  
             var origin = pixiProject([mapcenter['lat'], mapcenter['lng']]);
   
             let scaleFactor=16; // default came from seismicity
@@ -456,8 +454,9 @@ window.console.log(" >>>   PIXI: redraw event -- with data update");
   
                var latlngs=getPaticleLatlngs(pixiLatlngList,i);
                var len=latlngs.length;
+               var pTexture = particleTexturesPtr[i];
   
-               var a=pixiParticleContainer[i];
+               var a=particleContainer[i];
                a.x = origin.x;
                a.y = origin.y;
                a.localScale = invScale/scaleFactor;
@@ -475,7 +474,7 @@ window.console.log(" >>>   PIXI: redraw event -- with data update");
                   var gg=latlng['lng'];
                   var coords = pixiProject([ll,gg]);
               
-                  var particle = new PIXI.TilingSprite(particleTexturesPtr[i]);
+                  var particle = new PIXI.TilingSprite(pTexture);
                   particle.clampMargin = -0.5;
                
                   particle.alpha=1; // add, multiply,screen
@@ -489,7 +488,7 @@ window.console.log(" >>>   PIXI: redraw event -- with data update");
               }
             }
 
-            groups.push( { "uid":uid, "visible":true, "segments":segments, "opacity": opacity, "inner":pixiParticleContainers} ); 
+            particleGroups.push( { "uid":uid, "visible":true, "segments":segments, "opacity": opacity, "inner":particleContainers} ); 
             pixi.visible=true;
             pixi.active_uid=uid;
             pixi.active_opacity=opacity;		    
@@ -529,7 +528,7 @@ window.console.log(" >>>   PIXI: add event");
              var len=latlngs.length;
              var pTexture = particleTexturesPtr[i];
   
-             var a=pixiParticleContainers[i];
+             var a=particleContainers[i];
              a.x = origin.x;
              a.y = origin.y;
              a.localScale = invScale/scaleFactor;
@@ -561,6 +560,7 @@ window.console.log(" >>>   PIXI: add event");
              }
           }
 //window.console.log("PIXI: total of len, ",collect_len); 
+          particleGroups.push( { "uid":uid, "visible":true, "segments":segments, "opacity": opacity, inner:particleContainers} ); 
        }
 
 window.console.log("  PIXI calling renderer.render..");
@@ -570,9 +570,8 @@ window.console.log("  PIXI calling renderer.render..");
       destroyInteractionManager: true
     }).addTo(viewermap);
 
-    groups.push( { "uid":uid, "visible":true, "segments":segments, "opacity": opacity, inner:pixiParticleContainers} ); 
     PIXI_pixiOverlayList.push({ "visible":true, "active_uid":uid, "active_opacity":opacity, "overlay":pixiOverlay,
-                           "top":pixiContainer, "groups": groups });
+                           "top":pixiContainer, "groups": particleGroups });
    }
 
 window.console.log(">>> PIXI..Make new layer into poxiOverlayList with uid of:",uid);
@@ -584,7 +583,7 @@ window.console.log(">>> PIXI..Make new layer into poxiOverlayList with uid of:",
 
 /*************************************************************************/
 // utilities for a group -
-//({"uid":uid,"visible":true,"segments":segments,"opacity":opacity,inner:pixiParticleContainers}) 
+//({"uid":uid,"visible":true,"segments":segments,"opacity":opacity,inner:particleContainers}) 
 //return pidx, and group
 function pixiFindPixiWithUid(uid) {
     for(let i=0; i< PIXI_pixiOverlayList.length; i++) {
@@ -731,10 +730,10 @@ function pixiFindPixiContainerByIdx(pidx=0) {
 }
 
 /*************************************************************************/
-/* there is just 1 overlay with different groups of pixiParticleContainers/inner,
+/* there is just 1 overlay with different groups of particleContainers/inner,
    clearing the pixi overlay means remove current active group's container
    from the viewer map 
-({"uid":uid,"visible":true,"segments":segments,"opacity":opacity,inner:pixiParticleContainers}) 
+({"uid":uid,"visible":true,"segments":segments,"opacity":opacity,inner:particleContainers}) 
 */
 function pixiClearAllPixiOverlay() {
     for(let i=0; i< PIXI_pixiOverlayList.length; i++) {
@@ -846,7 +845,7 @@ function pixiResetAllOverlayOpacity() {
 }
 
 /*************************************************************************/
-// for debug toggling a chunk from pixiParticleContainers
+// for debug toggling a chunk from particleContainers
 // toggle off a child container from an overlay layer
 function pixiToggleParticleContainer(uid,target_segment_idx) {
 
