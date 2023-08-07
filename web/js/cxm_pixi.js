@@ -48,6 +48,9 @@ var pixiOverlay = null;
 /* textures in a marker container */
 var markerTexturesPtr=null;
 
+//particle container
+var pContainers=[]; 
+
 var loadOnce=1;
 
 
@@ -359,7 +362,7 @@ function makePixiOverlayLayer(uid,pixiLatlngList,spec) {
 
     pixiContainer.alpha=opacity;
 
-    var pContainers=[]; //particle container
+    pContainers=[]; //particle container
     var segments=[];
 
 // set the markerTexturesPtr to the right set
