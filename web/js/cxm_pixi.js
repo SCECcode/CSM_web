@@ -390,11 +390,6 @@ function makePixiOverlayLayer(uid,pixiLatlngList,spec) {
     }
 
     if(pixiOverlay != null) {
-        if(pixi.visible == false) {
-window.console.log("This layer is not visible.. !!! BAD ..");
-window.console.log("XXX === need to add back the layer..");
-// XXX           viewermap.addLayer(pixiOverlay);
-        }
         pixiOverlay.redraw({type: 'redraw', data: {'pixiLatlngList':pixiLatlngList,'spec':spec }});
 
       } else { 
@@ -414,7 +409,6 @@ window.console.log("PIXI: calling pixiOverlay - callback");
         var invScale = 1 / getScale();
   
         if (event.type === "redraw") {
-window.console.log(" >>>   PIXI: redraw event");
 
           var data=event.data;
 
@@ -490,7 +484,10 @@ window.console.log(" >>>   PIXI: redraw event -- with data update");
             pixi.visible=true;
             pixi.active_uid=uid;
             pixi.active_opacity=opacity;		    
-          } 
+window.console.log("        redraw adding into group--(",uid,") >>", particleGroups.length);
+            } else {
+               window.console.log(" >>>   PIXI: redraw event - with no data");
+          }
         }
   
         if (event.type === 'add') {
@@ -532,7 +529,6 @@ window.console.log(" >>>   PIXI: add event");
              a.localScale = invScale/scaleFactor;
   
              collect_len=collect_len+len;
-  window.console.log("PIXI: for ADD group ",i," len is ",len);
              segments.push(len);
              for (var j = 0; j < len; j++) {
                 var latlng=latlngs[j];
