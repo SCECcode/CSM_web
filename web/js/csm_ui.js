@@ -196,8 +196,8 @@ function retreiveBoreholes() {
     csm_boreholes_azimuth.push(azimuth);
     csm_boreholes_id.push(id);
 //
-//    let tip="borehole:"+id+"<br>type:"+type+"<br>lat:"+lat+"<br>lon:"+lon+"<br>azimuth:"+azimuth180;
-    let tip="borehole:"+id+"<br>type:"+type+"<br>lat:"+lat+"<br>lon:"+lon+"<br>azimuth:"+azimuth180+"("+azimuth+")";
+    let tip="borehole:"+id+"<br>type:"+type+"<br>lat:"+lat+"<br>lon:"+lon+"<br>azimuth:"+azimuth;
+//    let tip="borehole:"+id+"<br>type:"+type+"<br>lat:"+lat+"<br>lon:"+lon+"<br>azimuth:"+azimuth180+"("+azimuth+")";
     csm_boreholes_tips.push(tip);
   }
 }
