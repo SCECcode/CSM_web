@@ -188,17 +188,16 @@ function retreiveBoreholes() {
     let type=term[1];
     let lat=term[2];
     let lon=term[3];
-// convert from 0-180 to -90 to 90
+// convert from [(0,90) and (90,180)] to [(0,90) and (-90,0)]
     let azimuth180=term[6];
-    let azimuth= ((azimuth180 + 90)%180) - 90;
-
-term[6];
+    let azimuth= (azimuth180 <= 90)? azimuth180: (azimuth180-180); 
 //
     csm_boreholes_latlngs.push({"lat":lat,"lon":lon});
     csm_boreholes_azimuth.push(azimuth);
     csm_boreholes_id.push(id);
 //
-    let tip="borehole:"+id+"<br>type:"+type+"<br>lat:"+lat+"<br>lon:"+lon+"<br>azimuth:"+azimuth;
+//    let tip="borehole:"+id+"<br>type:"+type+"<br>lat:"+lat+"<br>lon:"+lon+"<br>azimuth:"+azimuth180;
+    let tip="borehole:"+id+"<br>type:"+type+"<br>lat:"+lat+"<br>lon:"+lon+"<br>azimuth:"+azimuth180+"("+azimuth+")";
     csm_boreholes_tips.push(tip);
   }
 }
