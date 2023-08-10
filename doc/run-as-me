@@ -2,7 +2,7 @@
 
    yum install git
 
-   git clone https://github.com/meihuisu/CSM_web.git
+   git clone https://github.com/sceccode/CSM_web.git
 
 ## echo "!!! running doc/run-as-me !!!'
 
