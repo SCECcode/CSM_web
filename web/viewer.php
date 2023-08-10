@@ -82,6 +82,7 @@ $csm = new CSM();
     <script type="text/javascript" src="js/vendor/pixi.js"></script>
     <script type="text/javascript" src="js/vendor/pixiOverlay/L.PixiOverlay.js"></script>
     <script type="text/javascript" src="js/cxm_pixi.js"></script>
+    <script type="text/javascript" src="js/csm_pixi_util.js"></script>
 
 <!-- cxm js -->
     <script type="text/javascript" src="js/cxm_kml.js?v=1"></script>
@@ -315,10 +316,10 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
          <div id="search-option" class="col-12 mt-4"style="border:solid 0px green" >
             <ul id="option" class="navigation col-11" style="padding: 0 0 0 0;margin-bottom: 0">
 
-              <li id='csm-model' class='row navigationLi' style="display:none;border:solid 0px red;">
+              <li id='csm-model' class='row navigationLi' style="display:none;border:solid 0px black;">
 <!--  segment debug toggle set -->
                   <div class="row">
-                    <div class="col-10" id="pixi-segment-debug" style="display:none;">
+                    <div class="col-12" id="pixi-segment-debug" style="display:;">
                       <div id="pixi-segment"></div>
                     </div>
                   </div>
@@ -331,17 +332,6 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                     <div class="col-6" style="border:solid 0px green">
 		      <p>Draw a rectangle on the map or enter latitudes and longitudes. Note: Use negative longitudes for California.
                       </p>
-<!--
-<div class="row">
-		      <button id="searchAgain" class="btn cxm-small-btn" onclick="CSM.searchLatlon(0,[])"><span>Search Again</span></button>
-</div>
-		      <button id="searchAgain" class="btn cxm-small-btn dropdown-toggle" onclick="CSM.searchLatlon(0,[])"><span class="glyphicon glyphicon-record" style="font-size:6px"></span></button>
-
-<div class="row">
-<button id="searchAgain" class="btn cxm-small-btn dropdown-toggle" onclick="CSM.searchLatlon(0,[])"><span class="glyphicon glyphicon-record" style="font-size:6px"></span></button>
-<button id="toReset" type="button" class="btn btn-dark" >Reset</button>
-</div>
--->
                     </div>
                     <div class="col-3 pl-0 pr-2">
                       <input type="text"
@@ -380,7 +370,7 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
          </div>
 
 <!-- description page -->
-         <div id="csm-description" class="col-12 pr-0" style="font-size:14px; background-color:rgb(245,245,245); max-width:450px" >
+         <div id="csm-description" class="col-12 pr-0" style="display:;font-size:14px; background-color:rgb(245,245,245); max-width:450px" >
            <br>
            <p><b>You Selected:</b></p>
            <p id="csm-model-description"></p>

@@ -107,6 +107,8 @@ the "scale" number is what needs to change depending on how zoomed in the
 viewer is.  If it's just looking at the Los Angeles area, "scale=0.1" is a good 
 number, but if we're looking at the whole of southern california, "scale=0.3" 
 might be a good number.
+
+borehole's SHmax azimuth is from 0 to 180 instead of -90 to 90
 ***/
 
 var csm_boreholes_layer={};
@@ -147,15 +149,15 @@ function calc_ends(i,lat_s,lon_s,shmax_s,zoom) {
   ends.push({"lat":y2,"lon":x2});
 
 /*
-  let middle={"lat":lat, "lon":lon};
-  let point1=mymap.latLngToContainerPoint(ends[0]);
-  let point2=mymap.latLngToContainerPoint(ends[1]);
-  let center=mymap.latLngToContainerPoint(middle);
+let middle={"lat":lat, "lon":lon};
+let point1=mymap.latLngToContainerPoint(ends[0]);
+let point2=mymap.latLngToContainerPoint(ends[1]);
+let center=mymap.latLngToContainerPoint(middle);
 
- // let v=mymap.distanceTo(latlngs[0], latlngs[1]);
-  let dist1=mymap.distance(ends[0], middle);	
-  let dist2=mymap.distance(middle, ends[1]);	
-  let dist=mymap.distance(ends[0], ends[1]);	
+// let v=mymap.distanceTo(latlngs[0], latlngs[1]);
+let dist1=mymap.distance(ends[0], middle);	
+let dist2=mymap.distance(middle, ends[1]);	
+let dist=mymap.distance(ends[0], ends[1]);	
 
 used on excel to fit the scale equation:
 6,0.08
@@ -186,13 +188,16 @@ function retreiveBoreholes() {
     let type=term[1];
     let lat=term[2];
     let lon=term[3];
-    let azimuth=term[6];
+// convert from [(0,90) and (90,180)] to [(0,90) and (-90,0)]
+    let azimuth180=term[6];
+    let azimuth= (azimuth180 <= 90)? azimuth180: (azimuth180-180); 
 //
     csm_boreholes_latlngs.push({"lat":lat,"lon":lon});
     csm_boreholes_azimuth.push(azimuth);
     csm_boreholes_id.push(id);
 //
     let tip="borehole:"+id+"<br>type:"+type+"<br>lat:"+lat+"<br>lon:"+lon+"<br>azimuth:"+azimuth;
+//    let tip="borehole:"+id+"<br>type:"+type+"<br>lat:"+lat+"<br>lon:"+lon+"<br>azimuth:"+azimuth180+"("+azimuth+")";
     csm_boreholes_tips.push(tip);
   }
 }
@@ -213,7 +218,7 @@ function makeBoreholeLayers(mymap) {
     let lon=latlngs["lon"];
     let id=csm_boreholes_id[i];
     let azimuth=csm_boreholes_azimuth[i];
-    let color=pixiGetSHmaxColor(azimuth); 
+    let color=getSHmaxColor(azimuth); 
     csm_boreholes_colors.push(color);
 
     let end=calc_ends(i,lat,lon,azimuth,zoom); //[{"lat":lat,"lon":lon},{"lat":lat,"lon":lon}];
