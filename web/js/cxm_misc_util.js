@@ -158,7 +158,6 @@ function inList(target, glist) {
 
 
 function updateDownloadCounter(select_count) {
-    window.console.log("download counter updated.."+select_count);
     let downloadCounterElem = $("#download-counter");
     let downloadBtnElem = $("#download-all");
     if (select_count <= 0) {
@@ -186,7 +185,7 @@ function sortMetadataTableByRow(n,type) {
   // Set the sorting direction to ascending:
   dir = "asc"; 
 
-window.console.log("Calling sortMetadataTableByRow..",n);
+//window.console.log("Calling sortMetadataTableByRow..",n);
 
   while (switching) {
     switching = false;
@@ -228,13 +227,13 @@ window.console.log("Calling sortMetadataTableByRow..",n);
       }
     }
     if (shouldSwitch) {
-window.console.log("need switching..");
+//window.console.log("need switching..");
       rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
       switching = true;
       switchcount ++; 
     } else {
 
-      window.console.log("done switching..");
+//window.console.log("done switching..");
       if(switchcount != 0) {
 
       }
@@ -278,7 +277,7 @@ function saveAsCSVBlobFile(fstub, data, timestamp)
     });
     //FileSaver.js
     saveAs(blob, fname);
-window.console.log("saving csv file", fname);
+//window.console.log("saving csv file", fname);
 }
 
 function saveAsBlobFile(fstub,data)

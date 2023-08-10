@@ -193,11 +193,11 @@ var csm_csv_keys= {
         }
 
         if ($("#cxm-model-cfm").prop('checked')) {
-          document.getElementById("csm-model-cfm").click();
+          document.getElementById("cxm-model-cfm").click();
         }
 
         if ($("#cxm-model-gfm").prop('checked')) {
-          document.getElementById("cxm-model-cfm").click();
+          document.getElementById("cxm-model-gfm").click();
         }
 
         // go back to default view,
@@ -233,7 +233,9 @@ var csm_csv_keys= {
     this.resetSearch = function (){
 window.console.log("calling --->> resetSearch.");
 
+	pixiResetAllOverlayOpacity();
         pixiClearAllPixiOverlay();
+
         this.setupPixiSegmentDebug(0,{});
 	this.unselectAllRegion();
 
@@ -370,9 +372,9 @@ window.console.log("calling --->> clearSearch.");
 
       let pixiuid= this.lookupModelLayers(
                     spec_idx[0], spec_idx[1], spec_idx[2]);
-      let old=pixiGetPixiOpacity(pixiuid);
+      let old=pixiGetPixiOverlayOpacity(pixiuid);
       if(alpha != old) {
-        pixiSetPixiOpacity(pixiuid, alpha);
+        pixiSetPixiOverlayOpacity(pixiuid, alpha);
       }
     }
 
@@ -401,11 +403,11 @@ window.console.log("in freshSearch --model");
                        spec_idx[0], spec_idx[1], spec_idx[2]);
 
         if(pixiuid != null) { // reuse and add to viewer map 
-          pixiTogglePixiOverlay(pixiuid);
+          pixiShowPixiOverlay(pixiuid);
           let seginfo=pixiFindSegmentProperties(pixiuid);
           CSM.setupPixiSegmentDebug(pixiuid,seginfo);
           CSM.setupPixiLegend(pixiuid,spec,seginfo);
-          let opacity=pixiGetPixiOpacity(pixiuid);
+          let opacity=pixiGetPixiOverlayOpacity(pixiuid);
           setOpacitySliderHandle(opacity);		   
           } else {
             pixiuid = this.search(this.searchType.model, spec, spec_idx, spec_data);
@@ -425,11 +427,11 @@ window.console.log("in freshSearch --latlon");
                        spec_idx[0], spec_idx[1], spec_idx[2]);
 
         if(pixiuid != null) { // reuse and add to viewer map 
-          pixiTogglePixiOverlay(pixiuid);
+          pixiShowPixiOverlay(pixiuid);
           let seginfo=pixiFindSegmentProperties(pixiuid);
           CSM.setupPixiSegmentDebug(pixiuid,seginfo);
           CSM.setupPixiLegend(pixiuid,spec,seginfo);
-          let opacity=pixiGetPixiOpacity(pixiuid);
+          let opacity=pixiGetPixiOverlayOpacity(pixiuid);
           setOpacitySliderHandle(opacity);		   
           } else {
             pixiuid = this.search(this.searchType.model, spec, spec_idx, spec_data);
@@ -524,8 +526,8 @@ window.console.log("in freshSearch --latlon");
     };
 
     this.togglePixiLegend = function(pixiuid, n, label) {
-window.console.log("calling togglePixiLegend.. with ",n,"on pixiuid ",pixiuid);
-      let vis=pixiToggleMarkerContainer(pixiuid,n);
+//window.console.log("calling togglePixiLegend.. with ",n,"on pixiuid ",pixiuid);
+      let vis=pixiToggleParticleContainer(pixiuid,n);
     };
 
 // a layer is always generated with the full set of segments 
@@ -578,7 +580,7 @@ window.console.log("calling togglePixiLegend.. with ",n,"on pixiuid ",pixiuid);
 
     this.togglePixiSegment = function(pixiuid, n) {
 window.console.log("calling togglePixiSegment.. with ",n,"on pixiuid ",pixiuid);
-      let vis=pixiToggleMarkerContainer(pixiuid,n);
+      let vis=pixiToggleParticleContainer(pixiuid,n);
     }
 
     this.startWaitSpin = function() {
@@ -616,6 +618,8 @@ window.console.log("Did not find any PHP result");
                 notify(" No data in the marked area!! ");
                 //alert(" No data in the marked area!! "); 
                 CSM.removeWaitSpin();
+// remove all the rectangle drawn on the map 
+		remove_all_bounding_rectangle_layer();
             } else {
                 if(type==CSM.searchType.model) { 
                     let tmp=JSON.parse(search_result); 
@@ -672,7 +676,7 @@ window.console.log("Did not find any PHP result");
                     let seginfo=pixiFindSegmentProperties(pixiuid);
                     CSM.setupPixiSegmentDebug(pixiuid,seginfo);
                     CSM.setupPixiLegend(pixiuid,spec,seginfo);
-                    let opacity=pixiGetPixiOpacity(pixiuid);
+                    let opacity=pixiGetPixiOverlayOpacity(pixiuid);
                     setOpacitySliderHandle(opacity);		   
 
                     return pixiuid;
@@ -722,12 +726,11 @@ window.console.log("calling redrawModel..");
                        spec_idx[0], spec_idx[1], spec_idx[2]);
 
         if(pixiuid != null) { // reuse and add to viewer map
-          pixiClearAllPixiOverlay();
-          pixiTogglePixiOverlay(pixiuid);
+          pixiShowPixiOverlay(pixiuid);
           let seginfo=pixiFindSegmentProperties(pixiuid);
           CSM.setupPixiSegmentDebug(pixiuid,seginfo);
           CSM.setupPixiLegend(pixiuid,spec, seginfo);
-          let opacity=pixiGetPixiOpacity(pixiuid);
+          let opacity=pixiGetPixiOverlayOpacity(pixiuid);
           setOpacitySliderHandle(opacity);		   
           } else {
             pixiuid = this.search(this.searchType.model, spec, spec_idx, spec_data);

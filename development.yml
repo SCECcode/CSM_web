@@ -5,7 +5,7 @@ services:
 
   db:
     ports:
-      - 5436:5432
+      - 5437:5432
     restart: unless-stopped
       
   web:
