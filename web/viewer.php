@@ -141,8 +141,10 @@ $csm = new CSM();
 <!-- top-intro -->
    <div id="top-intro" style="display:">
 <p>
-NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community Stress Model</a> are 
-...  See the <a href="guide">user guide</a> for more details and usage instructions.
+The <a href="<?php echo $host_site_actual_path; ?>">SCEC Community Stress Model (CSM)</a> is
+a suite of contributed models of stress and stressing rate in the southern California lithosphere.
+For more information about the CSM, see the <a href="https://www.scec.org/research/csm">CSM homepage</a>
+or the <a href="zenodo">CSM archive</a>.
 </p>
    </div>
 
@@ -335,13 +337,13 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                     </div>
                     <div class="col-3 pl-0 pr-2">
                       <input type="text"
-                          placeholder="Latitude"
+                          placeholder="Min Latitude"
                           id="csm-firstLatTxt"
                           title="first lat"
                           class="csm-latlon-item form-control">
                       <input type="text" 
                           id="csm-firstLonTxt" 
-                          placeholder='Longitude' 
+                          placeholder='Min Longitude' 
                           title="first lon"
                           class="csm-latlon-item form-control mt-1">
 <div class="row pl-3 pr-2 mt-2">
@@ -352,12 +354,12 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
                       <input type="text"
                           id="csm-secondLatTxt"
                           title="second lat"
-                          placeholder='Latitude '
+                          placeholder='Max Latitude '
                           class="csm-latlon-item form-control">
                       <input type="text"
                           id="csm-secondLonTxt"
                           title="second lon"
-                          placeholder='Longitude'
+                          placeholder='Max Longitude'
                           class="csm-latlon-item form-control mt-1">
 <div class="row pl-3 pr-0 mt-2">
                 <button id="searchAgain" type="button" class="btn btn-dark" style="width:110px" onclick="CSM.searchLatlon(0,[])" >Get Data</button>
@@ -390,20 +392,21 @@ NEW: The sites of the <a href="https://www.scec.org/research/csm">SCEC Community
           <div class="w-100 mb-1" id='CSM_plot'
              style="position:relative;border:solid 1px #ced4da; height:576px;">
 
+<!-- spinner -->
              <div class="spinDialog" style="position:absolute;top:40%;left:50%; z-index:9999;">
                <div id="csm-wait-spin" align="center" style="display:none;"><i class="glyphicon glyphicon-cog fa-spin" style="color:red"></i></div>
              </div>
 
 <!-- legend --> 
-  <div class="main-legend geometry top center" style="bottom:10%;background-color: rgba(255,255,255,0.5);">
-<div class="col">
-    <div class="row" style="margin:0px 2px 0px -20px">
-        <div class="legend mt-2" id="pixi-legend-color"></div> 
-        <div class="legend" id="pixi-legend-label"></div> 
-    </div>
-    <div id="pixi-legend-title" align="center" class="legend content mt-1" style="border-top:2px solid grey">Degrees</div>
-</div>
-  </div> <!-- legend -->
+             <div class="main-legend geometry top center" style="bottom:10%;background-color: rgba(255,255,255,0.5);">
+               <div class="col">
+                  <div class="row" style="margin:0px 2px 0px -20px">
+                    <div class="legend mt-2" id="pixi-legend-color"></div> 
+                    <div class="legend" id="pixi-legend-label"></div> 
+                  </div>
+                  <div id="pixi-legend-title" align="center" class="legend content mt-1" style="border-top:2px solid grey">Degrees</div>
+               </div>
+             </div> <!-- legend -->
 
           </div>
        </div>

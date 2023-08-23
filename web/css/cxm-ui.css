@@ -161,7 +161,7 @@ div.main-legend label:hover {
     line-height: 1.2em;
 }   
 
-#plot-range-label {
+#plot-range-title {
     z-index: 8000;
     position: absolute;
     right: 50px;
@@ -188,18 +188,6 @@ div.main-legend label:hover {
 
 #plot-range-key div {
     padding:0;
-}
-
-#plot-range-key span.min {
-    display: inline-flex;
-    width: 1ch;
-    margin-right:3px;
-}
-
-#plot-range-key span.max {
-    display: inline-flex;
-    width: 1ch;
-    margin-left:3px;
 }
 
 /* cxm viewer required styles */

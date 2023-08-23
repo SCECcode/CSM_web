@@ -259,6 +259,7 @@ let tmp=$(".leaflet-control-attribution");
 let v= document.getElementsByClassName("leaflet-control-attribution")[0];
 v.style.right="1.5rem";
 v.style.height="1.4rem";
+v.style.width="35rem";
 
 
 // finally,
