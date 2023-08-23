@@ -22,6 +22,7 @@ $('#top-intro').css("display", "none");
 $('#CSM_plot').css("height", h);
 //$('#metricData').removeClass('col-5').addClass('col-0');
 $('#metricData').css("display", "none");
+$('.leaflet-control-attribution').css("width", "70rem");
 $('#top-map').removeClass('col-7').addClass('row');
 $('#top-map').removeClass('pl-1').addClass('pl-0');
 $('#mapDataBig').addClass('col-12').removeClass('row');
@@ -37,6 +38,7 @@ $('#top-control').css("display", "none");
 $('#top-select').css("display", "none");
 $('.navbar').css("margin-bottom", "0px");
 $('.container').css("max-width", "100%");
+$('.leaflet-control-attribution').css("width", "100rem");
 $('.container').css("padding-left", "0px");
 $('.container').css("padding-right", "0px");
 // minus the height of the container top 
@@ -59,6 +61,7 @@ $('#CSM_plot').css("height", "576px");
 $('#CSM_plot').css("width", "635px");
 $('.navbar').css("margin-bottom", "20px");
 $('.container').css("max-width", "1140px");
+$('.leaflet-control-attribution').css("width", "35rem");
 $('.container').css("padding-left", "15px");
 $('.container').css("padding-right", "15px");
 
