@@ -121,11 +121,6 @@ function setup_viewer()
   var osm_streets_relief= L.esri.Vector.vectorBasemapLayer("OSM:StreetsRelief", {apikey: esri_apiKey});
   var esri_terrain = L.esri.Vector.vectorBasemapLayer("ArcGIS:Terrain", {apikey: esri_apiKey});
 
-//  var esri_topographic = L.esri.basemapLayer("Topographic");
-//  var esri_imagery = L.esri.basemapLayer("Imagery");
-//var esri_ng = L.esri.basemapLayer("NationalGeographic");
-//var shaded_relief =  L.esri.basemapLayer("ShadedRelief");
-
 // otm topo
   var topoURL='https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png';
   var topoAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreeMap</a> contributors,<a href=http://viewfinderpanoramas.org"> SRTM</a> | &copy; <a href="https://www.opentopomap.org/copyright">OpenTopoMap</a>(CC-BY-SA)';
@@ -167,7 +162,6 @@ function setup_viewer()
 
 
 // ==> mymap <==
-// mymap = L.map('CSM_plot', { zoomSnap: 0.25, drawControl:false, layers: [esri_topographic, basemap], zoomControl:true} );
   mymap = L.map('CSM_plot', { zoomSnap: 0.25, drawControl:false, zoomControl:true} );
 
   mymap.setView(init_map_coordinates, init_map_zoom_level);
