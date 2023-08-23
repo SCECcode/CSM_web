@@ -35,7 +35,7 @@ $header = getHeader("User Guide");
 
 		<p>The CSM Viewer provides interactive map-based views of the 
                    <a href="https://doi.org/10.5281/zenodo.8270631">CSM v2023</a> 
-		   contributed models. The viewer allows users to select the model of interest, a 
+		   contributed models.  The viewer allows users to select the model of interest, a 
 		   scalar stress metric to display, and a depth of interest (using drop down menus 
 		   at the left of the interface).  Users can add additional data overlays of 
 		   Borehole SHmax azimuths (from Luttrell & Hardebeck, 2021), Community Fault Model 
@@ -48,10 +48,10 @@ $header = getHeader("User Guide");
                    a <a href="contact">contact information</a> page.</p>
 
 		 <p>The interactive map on the right displays the geographic extent of the selected 
-		    model, using the selected metric at the selected depth. The color scale at the 
+		    model, using the selected metric at the selected depth.  The color scale at the 
 		    bottom left indicates the range of values associated with each color in the 
 		    current view.  In the top right corner of the interactive map, there is a 
-		    pull-down menu that allows the base map to be changed. By default, the map shown 
+		    pull-down menu that allows the base map to be changed.  By default, the map shown 
 		    is 
 		    <a href="https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer">ESRI Topographic</a>.
                     The other map types are: 
@@ -64,8 +64,8 @@ $header = getHeader("User Guide");
 
 		 <p>The map interface has a small default size, but the map interface can be resized 
 		    by clicking on the black dashed square icon located in the bottom right corner 
-		    of the interface. Three size options are available, small (default), medium, and 
-		    full-screen. The medium and full-screen sizes hide some of the tools, so these 
+		    of the interface.  Three size options are available, small (default), medium, and 
+		    full-screen.  The medium and full-screen sizes hide some of the tools, so these 
 		    options are provided for visualization and data comparison purposes and are not 
                     intended to be used when querying the model for download.</p>
 
@@ -82,7 +82,7 @@ $header = getHeader("User Guide");
 		 <p>The “Select CSM Model” dropdown menu lists the short name of each contributed model, and 
 		    whether it is a model of stress or stressing rate.  For details about contributed models,
 		    see the <a href="https://www.scec.org/research/csm">CSM homepage</a> or the 
-                    <a href="https://doi.org/10.5281/zenodo.8270631">CSM archive</a></p>.
+                    <a href="https://doi.org/10.5281/zenodo.8270631">CSM archive</a>.</p>
 
 		 <p>The “Select Model Metric” dropdown menu lists available scalar metrics, a brief description,
 		    and whether the metric gives an indication of stress orientation or magnitude.  See below for
@@ -103,7 +103,7 @@ $header = getHeader("User Guide");
 		 <p>A brief explanation of the selected model and metric appears at the bottom left, updated 
 		    each time a new model or metric is selected.  For further details about each model,
 		    see the <a href="https://www.scec.org/research/csm">CSM homepage</a> or the 
-		    <a href="https://doi.org/10.5281/zenodo.8270631">CSM archive</a>. For additional stress 
+		    <a href="https://doi.org/10.5281/zenodo.8270631">CSM archive</a>.  For additional stress 
 		    metrics indicating orientation and magnitude, see the
                     <a href="https://doi.org/10.5281/zenodo.8270631">CSM archive</a>.</p>
 
@@ -116,24 +116,21 @@ $header = getHeader("User Guide");
 		    is north/south (0), east/west (+/-90), northeast/southwest (positive), or 
                     northwest/southeast (negative).</p>
 
-		 <p><>Aphi</p> combines the shape parameter ratio of principal stresses with the expected 
-		    faulting regime based on which principal stress is most vertical. Fault regime is normal
+		 <p><b>Aphi</b> combines the shape parameter ratio of principal stresses with the expected 
+		    faulting regime based on which principal stress is most vertical.  Fault regime is normal
                     faulting (0-1), strike-slip faulting (1-2), or reverse faulting (2-3).</p>
 
 		 <p><b>Isotropic stress</b> indicates the mean of the principal stresses (S1+S2+S3)/3 is 
-		    tensional (positive) or compressional (negative). For easier visualization, the display
+		    tensional (positive) or compressional (negative).  For easier visualization, the display
                     range excludes the highest and lowest 0.1% of values.</p>
 
-		 <p></b>Differential stress</b> is the difference between the most tensional and most
-		    compressional principal stresses S1-S3. It is always positive. For easier visualization,
+		 <p><b>Differential stress</b> is the difference between the most tensional and most
+		    compressional principal stresses S1-S3.  It is always positive.  For easier visualization,
 		    the display range excludes the highest and lowest 0.1% of values.</p>
 
 		 <p>Other scalar metrics of both orientation and magnitude are available from the 
-                    <a href="https://doi.org/10.5281/zenodo.8270631">CSM archive</a>.</p>
-                    See 
-CSM archive metadata
-
-for details.</p>
+		    <a href="https://doi.org/10.5281/zenodo.8270631">CSM archive</a>.  See 
+                    <b style="color:green">CSM archive metadata</b> for details.</p>
 
 	    <h4><strong>Select Region to Download Data Subset</strong></h4>
 
@@ -174,26 +171,26 @@ for details.</p>
 		 <p>Borehole SHmax adds SHmax data from Table 1 of 
                     <a href="https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2020JB020817">Luttrell and Hardebeck (2021)</a>.
 		    SHmax azimuth is indicated both by a black bar centered at the borehole location and 
-		    by a circle at the borehole location colored by SHmax value. This data can be downloaded
+		    by a circle at the borehole location colored by SHmax value.  This data can be downloaded
 		    in .csv format <a href="https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2020JB020817">here</a>
                     or by clicking the red down arrow button.</p>
 
 		 <p>CFM6.0 adds the surface traces of version 6.0 of the 
                     <a href="https://www.scec.org/research/cfm">Community Fault Model</a>
-		    faults, with blind faults indicated by a dashed line. Click on each individual fault to
+		    faults, with blind faults indicated by a dashed line.  Click on each individual fault to
 		    see a popup of its name.</p>
 
 		 <p>GFM adds the <a href="https://www.scec.org/research/gfm">Geologic Framework Model</a>
 		    regions defined as a component of the
-		    <a href="https://www.scec.org/research/crm">Community Rheology Model</a>. Click each 
+		    <a href="https://www.scec.org/research/crm">Community Rheology Model</a>.  Click each 
                     polygon to see a popup of the region’s name.</p>
 
 	    <h4><strong>KML/KMZ Uploader</strong></h4>
 
 		 <p>Users can upload their own Google Earth kml/kmz files for display on the map interface.
-		    This is intended to allow users to compare their own data to the CSM. The kml/kmz uploader
-		    currently supports point/line data (kml/kmz) and image overlays (kmz only). kml/kmz files
-		    with remote links are currently not supported. If you discover a kml/kmz file that will 
+		    This is intended to allow users to compare their own data to the CSM.  The kml/kmz uploader
+		    currently supports point/line data (kml/kmz) and image overlays (kmz only).  kml/kmz files
+		    with remote links are currently not supported.  If you discover a kml/kmz file that will 
 		    not display correctly, please contact us using the information on the 
                     <a href="contact">contact page</a>.</p>
 

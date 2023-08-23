@@ -144,7 +144,7 @@ $csm = new CSM();
 The <a href="<?php echo $host_site_actual_path; ?>">SCEC Community Stress Model (CSM)</a> is
 a suite of contributed models of stress and stressing rate in the southern California lithosphere.
 For more information about the CSM, see the <a href="https://www.scec.org/research/csm">CSM homepage</a>
-or the <a href="zenodo">CSM archive</a>.
+or the  <a href="https://doi.org/10.5281/zenodo.8270631">CSM archive</a>.
 </p>
    </div>
 
@@ -377,7 +377,7 @@ or the <a href="zenodo">CSM archive</a>.
            <p><b>You Selected:</b></p>
            <p id="csm-model-description"></p>
            <p id="csm-metric-description"></p>
-           <p>For more model details and metrics, see [LINK TO ZENODO ARCHIVE]</p>
+           <p>For more model details and metrics, see  <a href="https://doi.org/10.5281/zenodo.8270631">CSM archive</a></p>
          </div>
 
 <!-- result parking location -->
