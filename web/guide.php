@@ -141,7 +141,7 @@ $header = getHeader("User Guide");
 		    in the boxes at left and click the “get data” button.  The selected region will be 
 		    displayed as a gray box on the interactive map.</p>
 
-		 <p>Once a user selects a region the table at the bottom of the interface will populate with
+		 <p>Once a user selects a region, the table at the bottom of the interface will populate with
 		    the name and depth of the current model view, along with an indication of how many data 
                     points of the current model and depth are contained in the region.</p>
 
