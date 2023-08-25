@@ -122,8 +122,10 @@ var csm_boreholes_tips=[];
 var csm_boreholes_colors=[];
 
 function downloadBorehole() {
-  saveAsURLFile('./csm_data/LuttrellHardebeckJGR2021_Table1.csv');
+//  saveAsURLFile('./csm_data/LuttrellHardebeckJGR2021_Table1.csv');
+  saveAsURLFile('https://files.scec.org/s3fs-public/LuttrellHardebeckJGR2021_Table1.csv');
 }
+
 
 function calc_ends(i,lat_s,lon_s,shmax_s,zoom) {
 
