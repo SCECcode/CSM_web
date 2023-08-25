@@ -130,14 +130,14 @@ $header = getHeader("User Guide");
 
 		 <p>Other scalar metrics of both orientation and magnitude are available from the 
 		    <a href="https://doi.org/10.5281/zenodo.8270631">CSM archive</a>.  See 
-                    <b style="color:green">CSM archive metadata</b> for details.</p>
+		    <a href="https://doi.org/10.5281/zenodo.8270631">CSM archive metadata</a> for details.</p>
 
 	    <h4><strong>Select Region to Download Data Subset</strong></h4>
 
 		 <p>The “Select Region” mode, accessed by the rectangular button at the top left, allows 
 		    users to download data from a single contributed model over a single selected subregion.
 		    Users can draw a box around their region of interest, or enter 
-                    <b style="color:green">longitude and latitude bounds</b>
+		    longitude and latitude bounds
 		    in the boxes at left and click the “get data” button.  The selected region will be 
 		    displayed as a gray box on the interactive map.</p>
 
