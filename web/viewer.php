@@ -1,7 +1,7 @@
 <?php
 require_once("php/navigation.php");
 require_once("php/CSM.php");
-$header = getHeader("Viewer");
+$header = getHeader("Tool");
 
 $csm = new CSM();
 
