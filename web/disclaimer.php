@@ -18,7 +18,7 @@ $header = getHeader("Disclaimer");
     <script type='text/javascript' src='js/vendor/jquery.min.js'></script>
     <script type='text/javascript' src='js/vendor/bootstrap.min.js'></script>
     <script type='text/javascript' src='js/vendor/jquery-ui.js'></script>
-    <title>SCEC Community Stress Model Web Viewer: Disclaimer</title>
+    <title>SCEC Community Stress Model Viewer: Disclaimer</title>
 </head>
 <body>
 <?php echo $header; ?>
@@ -27,7 +27,7 @@ $header = getHeader("Disclaimer");
 
     <h1>Disclaimer</h1>
     <div>
-       <p>The Community Stress Model (CSM) Web Viewer is provided “as is” and without warranties 
+       <p>The Community Stress Model (CSM) Viewer is provided “as is” and without warranties 
           of any kind. While <a href="https://www.scec.org">SCEC</a> and
 	  <a href="https://www.scec.org/research/csm">the CSM development team</a> have made every
 	  effort to provide data from reliable sources or methodologies, SCEC and the CSM development

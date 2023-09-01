@@ -18,24 +18,24 @@ $header = getHeader("User Guide");
     <script type='text/javascript' src='js/vendor/jquery.min.js'></script>
     <script type='text/javascript' src='js/vendor/bootstrap.min.js'></script>
     <script type='text/javascript' src='js/vendor/jquery-ui.js'></script>
-    <title>Community Stress Model Web Viewer: User Guide</title>
+    <title>Community Stress Model Viewer: User Guide</title>
 </head>
 <body>
 <?php echo $header; ?>
 
 <div class="container info-page-container scec-main-container guide">
 
-    <h1>CSM Web Viewer User Guide</h1>
+    <h1>CSM Viewer User Guide</h1>
         <div class="col-12">
             <figure class="cxm-interface figure float-lg-right">
-                <img src="img/csm-viewer.png" class="figure-img img-fluid" alt="Screen capture of CSM web viewer interface">
-                <figcaption class="figure-caption">Screen capture of CSM web viewer interface</figcaption>
+                <img src="img/csm-viewer.png" class="figure-img img-fluid" alt="Screen capture of CSM viewer interface">
+                <figcaption class="figure-caption">Screen capture of CSM viewer interface</figcaption>
             </figure>
-            <h4><strong>Community Stress Model (CSM) Web Viewer Overview</strong></h4>
+            <h4><strong>Community Stress Model (CSM) Viewer Overview</strong></h4>
 
-		<p>The CSM web viewer provides interactive map-based views of the 
+		<p>The CSM viewer provides interactive map-based views of the 
                    <a href="https://doi.org/10.5281/zenodo.8270631">CSM v2023</a> 
-		   contributed models.  The web viewer allows users to select the model of interest, a 
+		   contributed models.  The viewer allows users to select the model of interest, a 
 		   scalar stress metric to display, and a depth of interest (using drop down menus 
 		   at the left of the interface).  Users can add additional data overlays of 
 		   Borehole SHmax azimuths (from Luttrell & Hardebeck, 2021), Community Fault Model 
@@ -43,7 +43,7 @@ $header = getHeader("User Guide");
 		   Rheology Model), or upload their own data in kml or kmz format.  Users can also 
 		   download selected model data without having to download the entire CSM model archive.
 		   The pages on this site include the 
-		   <a href="<?php echo $host_site_actual_path; ?>">CSM web viewer page</a>, this user guide,
+		   <a href="<?php echo $host_site_actual_path; ?>">CSM viewer page</a>, this user guide,
 		   <a href="disclaimer">a disclaimer</a>, and 
                    a <a href="contact">contact information</a> page.</p>
 
@@ -72,7 +72,7 @@ $header = getHeader("User Guide");
                  <p><i>To report any bugs or issues, please see the <a href="contact">contact page</a>.</i></p>
 
             <h4><strong>Explore CSM models</strong></h4>
-		 <p>The CSM web viewer has two modes: “Explore Models”, and “Select Region”, accessed by the 
+		 <p>The CSM viewer has two modes: “Explore Models”, and “Select Region”, accessed by the 
 		    rectangular buttons at the top left.  “Explore Models” is the default mode and allows 
 		    users to select a model contribution, a stress metric, and a depth using dropdown menus.
 		    The interactive map at right updates with each selection.  Users can adjust the transparency
@@ -88,16 +88,16 @@ $header = getHeader("User Guide");
 		    and whether the metric gives an indication of stress orientation or magnitude.  See below for
 		    a summary of available metrics.  Note that not all metrics are applicable to every model 
 		    (unavailable metrics/depths are shown in light gray).  If you select a metric that is not 
-		    available for the selected model, the web viewer will display the notification “switching to a 
+		    available for the selected model, the viewer will display the notification “switching to a 
                     different metric/depth for this model” and revert to the default metric for that model.</p>
 
 		 <p>Users can select the depth of interest using the “Select Model Depth” dropdown menu.  Note 
 		    that not all depths are applicable to every model (unavailable metrics/depths are shown in 
-		    light gray).  If you select a depth that is not available for the selected model, the web viewer 
+		    light gray).  If you select a depth that is not available for the selected model, the viewer 
 		    will display the notification “switching to a different metric/depth for this model” and 
 		    revert to the default depth for that model.  Note that some models do not vary with depth,
 		    even though they may be applicable to multiple depths.  If you select a different depth for 
-		    a model that does not vary with depth, the interactive web viewer will update but the image will 
+		    a model that does not vary with depth, the interactive viewer will update but the image will 
                     not change.</p>
  
 		 <p>A brief explanation of the selected model and metric appears at the bottom left, updated 
