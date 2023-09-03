@@ -9,7 +9,7 @@ $csm = new CSM();
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Community Stress Model (Provisional)</title>
+    <title>Community Stress Model</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/vendor/font-awesome.min.css">
