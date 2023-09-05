@@ -282,7 +282,7 @@ function setupOpacitySlider(alpha) {
     var handle = $( "#opacitySlider-handle" );
 
     $( "#opacitySlider" ).slider({
-      value:alpha,
+      value:0.8,
       min: 0,
       max: 1,
       step: 0.1, 
@@ -297,6 +297,7 @@ function setupOpacitySlider(alpha) {
 }
 
 function setOpacitySliderHandle(alpha) {
+//window.console.log("calling opacitySliderHandle..");
     $( "#opacitySlider" ).slider( "option", "value", alpha);
 }
 

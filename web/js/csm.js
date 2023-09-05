@@ -1340,8 +1340,6 @@ window.console.log("change ModelMetric with ..",v);
           csvblob +='\n';
         }
   
-window.console.log("HERE");
-
 // grab rest of the data
         for(let i=0; i< len; i++) {
             meta=mlist[i];

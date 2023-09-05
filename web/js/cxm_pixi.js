@@ -494,7 +494,7 @@ window.console.log("        redraw adding into group--(",uid,") >>", particleGro
 window.console.log(" >>>   PIXI: add event");
 
           if (_foundOverlay(uid)) { // only add it first time
-            return;
+            return null;
           }
   
           let mapcenter=viewermap.getCenter();
@@ -566,12 +566,10 @@ window.console.log(" >>>   PIXI: add event");
 
     PIXI_pixiOverlayList.push({ "visible":true, "active_uid":uid, "active_opacity":opacity, "overlay":pixiOverlay,
                            "top":pixiContainer, "groups": particleGroups });
+window.console.log(">>> PIXI..Make new layer into poxiOverlayList with uid of:",uid);
    }
 
-window.console.log(">>> PIXI..Make new layer into poxiOverlayList with uid of:",uid);
-
-    let tmp=PIXI_pixiOverlayList[0];
-    return uid;
+   return uid;
 }
 
 
@@ -589,6 +587,7 @@ function pixiFindPixiWithUid(uid) {
           }
         }
     }
+window.console.log(" did not find pix with this uid ("+uid+")");
     return null;
 }
 
@@ -776,7 +775,8 @@ function pixiShowPixiOverlay(uid) {
 // from a overlay that has this uid 
 function pixiGetPixiOverlayOpacity(uid) {
     let ret=pixiFindPixiWithUid(uid);
-    if(ret == null) return;
+//window.console.log("calling pixiGetPixiOverlayOpacity--"+ret);
+    if(ret == null) return PIXI_DEFAULT_OPACITY;
     let pidx=ret.pidx; 
     let pixi=ret.pixi;
 
