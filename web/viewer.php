@@ -125,7 +125,9 @@ $csm = new CSM();
 <body>
 <?php echo $header; ?>
 
-<div class="container main" id="csmMain">
+<div class="container">
+
+<div class="main" id="csmMain">
 
 <!-- trace dumping buttons 
     <div style="display:none">
@@ -471,10 +473,12 @@ or the  <a href="https://doi.org/10.5281/zenodo.8270631">CSM archive</a>.
   </div>
 </div> <!--Modal: modalnotify-->
 
+</div> <!-- container -->
+
 <!--call php directly-->
-    <script type="text/javascript">
+<script type="text/javascript">
             csm_meta_data = <?php print $csm->getAllMetaData()->outputJSON(); ?>;
-    </script>
+</script>
 
 </body>
 </html>
