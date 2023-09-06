@@ -3,9 +3,9 @@ version: '2.2'
 services:
 
   db:
-    mem_limit: 1g
+    mem_limit: 1500m
     cpus: 1
 
   web:
-    mem_limit: 1g
+    mem_limit: 500m
     cpus: 1
