@@ -1,7 +1,7 @@
 <?php
 require_once("php/navigation.php");
 require_once("php/CSM.php");
-$header = getHeader("Viewer");
+$header = getHeader("explorer");
 
 $csm = new CSM();
 
@@ -121,6 +121,11 @@ $csm = new CSM();
 
     </script>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+</head>
+
 </head>
 <body>
 <?php echo $header; ?>
@@ -141,8 +146,14 @@ $csm = new CSM();
     </div>
 
 <!-- top-intro -->
-   <div id="top-intro" style="display:">
-<p>
+   <div id="top-intro" class="row">
+       <div class="col-1 links d-none d-md-block align-self-end">
+             <div>
+                <a href="https://www.scec.org/about">About SCEC</a>
+                <a href="https://www.scec.org/science/cem">About CEM</a>
+            </div>
+       </div>
+<p class="col-11 intro-text">
 The <a href="<?php echo $host_site_actual_path; ?>">SCEC Community Stress Model (CSM)</a> is
 a suite of contributed models of stress and stressing rate in the southern California lithosphere.
 For more information about the CSM, see the <a href="https://www.scec.org/research/csm">CSM homepage</a>
@@ -374,7 +385,7 @@ or the  <a href="https://doi.org/10.5281/zenodo.8270631">CSM archive</a>.
          </div>
 
 <!-- description page -->
-         <div id="csm-description" class="col-12 pr-0" style="display:;font-size:14px; background-color:rgb(245,245,245); max-width:450px" >
+         <div id="csm-description" class="col-12 pr-0" style="" >
            <br>
            <p><b>You Selected:</b></p>
            <p id="csm-model-description"></p>
