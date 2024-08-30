@@ -154,10 +154,10 @@ $csm = new CSM();
             </div>
        </div>
 <p class="col-11 intro-text">
-The <a href="<?php echo $host_site_actual_path; ?>">SCEC Community Stress Model (CSM)</a> is
+The <a href="https://www.scec.org/research/csm" target="_blank">SCEC Community Stress Model (CSM)</a> is
 a suite of contributed models of stress and stressing rate in the southern California lithosphere.
-For more information about the CSM, see the <a href="https://www.scec.org/research/csm">CSM homepage</a>
-or the  <a href="https://doi.org/10.5281/zenodo.8270631">CSM archive</a>.
+For more information about the CSM, see the <a target="_blank" href="https://www.scec.org/research/csm">CSM homepage</a>
+or the  <a target="_blank" href="https://doi.org/10.5281/zenodo.8270631">CSM archive</a>.
 </p>
    </div>
 
