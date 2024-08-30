@@ -5,9 +5,9 @@
 
 ### https://www.scec.org/research/csm
 
-## CSM viewer
+## CSM Explorer
 
-A 2D viewer based on Leaflet, an open-source JavaScript library for interactive maps,
+A 2D explorer based on Leaflet, an open-source JavaScript library for interactive maps,
 https://leafletjs.com, map data services from OpenStreetMap, https://www.openstreetmap.org,
 OpenTopoMap, https://www.opentopomap.org and leaflet esri plugin,
 https://esri.github.io/esri-leaflet, for Ersi basemap from ArcGIS and the CSM
@@ -15,9 +15,9 @@ from https://www.scec.org/research/csm.
 
 ### Screen Capture
 
-Website URL: https://www.scec.org/research/csm-viewer/
+Website URL: https://www.scec.org/research/csm-explorer/
 
-![](doc/csm-viewer.png)
+![](web/img/csm-explorer.jpg)
 
 
 ## CSM data service
