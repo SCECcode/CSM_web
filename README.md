@@ -17,7 +17,7 @@ from https://www.scec.org/research/csm.
 
 Website URL: https://www.scec.org/research/csm-explorer/
 
-![](doc/csm-viewer.png)
+![](web/img/csm-explorer.jpg)
 
 
 ## CSM data service

@@ -28,7 +28,7 @@ $header = getHeader("User Guide");
     <h1>CSM Explorer User Guide</h1>
         <div class="col-12">
             <figure class="cxm-interface figure float-lg-right">
-                <img src="img/csm-explorer.png" class="figure-img img-fluid" alt="Screen capture of CSM explorer interface">
+                <img src="img/csm-explorer.jpg" class="figure-img img-fluid" alt="Screen capture of CSM explorer interface">
                 <figcaption class="figure-caption">Screen capture of CSM explorer interface</figcaption>
             </figure>
             <h4><strong>Community Stress Model (CSM) Explorer Overview</strong></h4>
