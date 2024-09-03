@@ -21,7 +21,7 @@ let h=576+c_height;
 //$('#top-intro').css("display", "none");
 //$('#CSM_plot').css("height", h);
 $('#metricData').css("display", "none");
-$('.leaflet-control-attribution').css("width", "70rem");
+$('.leaflet-control-attribution').css("width", "50rem");
 $('#top-map').removeClass('col-7').addClass('row');
 $('#top-map').removeClass('pl-1').addClass('pl-0');
 $('#mapDataBig').addClass('col-12').removeClass('row');
@@ -42,7 +42,7 @@ $('#top-control').css("display", "none");
 $('#top-select').css("display", "none");
 $('.navbar').css("margin-bottom", "0px");
 $('.container').css("max-width", "100%");
-$('.leaflet-control-attribution').css("width", "100rem");
+$('.leaflet-control-attribution').css("width", "70rem");
 $('.container').css("padding-left", "2px");
 $('.container').css("padding-right", "2px");
 

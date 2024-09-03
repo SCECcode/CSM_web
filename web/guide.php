@@ -28,7 +28,7 @@ $header = getHeader("User Guide");
     <h1>CSM Explorer User Guide</h1>
         <div class="col-12">
             <figure class="cxm-interface figure float-lg-right">
-                <img src="img/csm-explorer.jpg" class="figure-img img-fluid" alt="Screen capture of CSM explorer interface">
+                <img src="img/csm-explorer.png" class="figure-img img-fluid" alt="Screen capture of CSM explorer interface">
                 <figcaption class="figure-caption">Screen capture of CSM explorer interface</figcaption>
             </figure>
             <h4><strong>Community Stress Model (CSM) Explorer Overview</strong></h4>
@@ -175,7 +175,7 @@ $header = getHeader("User Guide");
 		    in .csv format <a href="https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2020JB020817">here</a>
                     or by clicking the red down arrow button.</p>
 
-		 <p>CFM6.0 adds the surface traces of version 6.0 of the 
+		 <p>CFM7.0 adds the surface traces of version 7.0 of the 
                     <a href="https://www.scec.org/research/cfm">Community Fault Model</a>
 		    faults, with blind faults indicated by a dashed line.  Click on each individual fault to
 		    see a popup of its name.</p>
