@@ -112,8 +112,9 @@ function get_map()
 
 function setup_viewer()
 {
+
+
 // esri
-	
 // web@scec.org  - ArcGIS apiKey, https://leaflet-extras.github.io/leaflet-providers/preview/
 // https://www.esri.com/arcgis-blog/products/developers/developers/open-source-developers-time-to-upgrade-to-the-new-arcgis-basemap-layer-service/
 

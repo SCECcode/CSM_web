@@ -411,7 +411,7 @@ or the  <a href="https://doi.org/10.5281/zenodo.8270631">CSM archive</a>.
              </div> <!-- legend -->
 
           </div>
-       </div>
+       </div> <!-- top-map -->
 
     </div> <!-- mapDataBig -->
 

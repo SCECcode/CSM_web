@@ -904,7 +904,7 @@ function _loadup_data_url(uid,url) {
       rawlist.push([vel,lat,lon]);
       if(data_max_v == null) {
           data_max_v = vel;
-       data_min_v = vel;  
+          data_min_v = vel;  
           } else {
               if(vel > data_max_v)
                 data_max_v=vel;
@@ -938,6 +938,9 @@ function _loadup_data_url(uid,url) {
    pixiLatlngList= {"uid":uid,"data":datalist} ; 
 
    window.console.log("PIXI: FILE:"+url+" total data:"+DATA_count+"("+data_min_v+","+data_max_v+")");
+
+n_time= Math.floor(Date.now()/1000);
+window.console.log("PIXI: LOAD_FILE :wrap up "+(n_time - cur_time));
    return pixiLatlngList;
 }
 

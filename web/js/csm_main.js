@@ -2,7 +2,7 @@
    csm_main.js
 ***/
 
-var initial_page_load = true;
+var initial_page_load = false;
 var csm_site_data=null;
 var viewermap;
 
@@ -21,7 +21,7 @@ jQuery(document).ready(function() {
 //if (navigator.userAgentData.mobile) { // do something }
 
   if( screen.width <= 480 ) {
-    window.console.log("OH NO.. I am on Mini.."+screen_width);
+    window.console.log("OH NO.. I am on Mini.."+screen.width);
     //location.href = '/mobile.html';
   }
 
@@ -86,8 +86,6 @@ window.console.log("Calling toReset..");
       }
   });
 
-  $.event.trigger({ type: "page-ready", "message": "completed", });
-
 
 // MAIN SETUP
 
@@ -100,6 +98,8 @@ window.console.log("Calling toReset..");
   CSM.setupCSMInterface();
 
 window.console.log("DONE initialize from  Main");
+
+  $.event.trigger({ type: "page-ready", "message": "completed", });
 
 }); // end of MAIN
 

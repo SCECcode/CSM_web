@@ -3,7 +3,7 @@
    csm_ui.js
 
    specific to csm's viewer.php to 
-      expand the leaflet map view
+      expabigMapBtn and the leaflet map view
       manage the boreholes
       manage the opacity slider
 ***/
