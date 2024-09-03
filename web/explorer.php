@@ -198,11 +198,11 @@ or the  <a target="_blank" href="https://doi.org/10.5281/zenodo.8270631">CSM arc
               </div>
               <div class="form-check form-check-inline">
                 <label class='form-check-label ml-1 mini-option'
-                       title="Show Community Fault Model v6.0 traces on map"
+                       title="Show Community Fault Model v7.0 traces on map"
                        for="cxm-model-cfm">
                 <input class='form-check-inline mr-1'
                        type="checkbox"
-                       id="cxm-model-cfm" value="1" />CFM6.0
+                       id="cxm-model-cfm" value="1" />CFM7.0
                 </label>
               </div>
               <div class="form-check form-check-inline">

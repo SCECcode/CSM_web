@@ -18,9 +18,8 @@ let celt = document.getElementById('top-intro');
 let c_height = elt.clientHeight+(celt.clientHeight/2);
 let h=576+c_height;
 
-$('#top-intro').css("display", "none");
-$('#CSM_plot').css("height", h);
-//$('#metricData').removeClass('col-5').addClass('col-0');
+//$('#top-intro').css("display", "none");
+//$('#CSM_plot').css("height", h);
 $('#metricData').css("display", "none");
 $('.leaflet-control-attribution').css("width", "70rem");
 $('#top-map').removeClass('col-7').addClass('row');
@@ -34,18 +33,23 @@ function _toMinView()
 let height=window.innerHeight;
 let width=window.innerWidth;
 
+let belt = document.getElementById('banner-container');
+let b_height = belt.clientHeight;
+let telt = document.getElementById('top-intro');
+let t_height = telt.clientHeight;
+
 $('#top-control').css("display", "none");
 $('#top-select').css("display", "none");
 $('.navbar').css("margin-bottom", "0px");
 $('.container').css("max-width", "100%");
 $('.leaflet-control-attribution').css("width", "100rem");
-$('.container').css("padding-left", "0px");
-$('.container').css("padding-right", "0px");
+$('.container').css("padding-left", "2px");
+$('.container').css("padding-right", "2px");
+
 // minus the height of the container top 
-let elt = document.getElementById('banner-container');
-let c_height = elt.clientHeight;
-let h = height - c_height-4.5;
-let w = width - 15;
+let h = height - b_height - t_height - 80; 
+
+let w = width - 100;
 //window.console.log( "height: %d, %d > %d \n",height, c_height,h);
 //window.console.log( "width: %d, %d  \n",width, w);
 $('#CSM_plot').css("height", h);
@@ -65,7 +69,7 @@ $('.leaflet-control-attribution').css("width", "35rem");
 $('.container').css("padding-left", "15px");
 $('.container').css("padding-right", "15px");
 
-$('#top-intro').css("display", "");
+//$('#top-intro').css("display", "");
 //$('#metricData').addClass('col-5').removeClass('col-0');
 $('#metricData').css("display","");
 $('#top-map').removeClass('row').addClass('col-7');
