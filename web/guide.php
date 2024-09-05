@@ -43,8 +43,8 @@ $header = getHeader("User Guide");
 		   Rheology Model), or upload their own data in kml or kmz format.  Users can also 
 		   download selected model data without having to download the entire CSM model archive.
 		   The pages on this site include the 
-		   <a href="<?php echo $host_site_actual_path; ?>">CSM explorer page</a>, this user guide,
-		   <a href="disclaimer">a disclaimer</a>, and 
+		   <a href="<?php echo $host_site_actual_path; ?>">CSM explorer page</a>, this user guide, <a href="cite">citing usage of this dataset</a>,
+		   <a href="disclaimer">disclaimer</a>, and
                    a <a href="contact">contact information</a> page.</p>
 
 		 <p>The interactive map on the right displays the geographic extent of the selected 
