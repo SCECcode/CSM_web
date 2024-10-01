@@ -388,8 +388,8 @@ or the  <a target="_blank" href="https://doi.org/10.5281/zenodo.8270631">CSM arc
          <div id="csm-description" class="col-12 pr-0" style="" >
            <br>
            <p><b>You Selected:</b></p>
-           <p id="csm-model-description"></p>
-           <p id="csm-metric-description"></p>
+           <p id="csm-model-description" style="margin-right:1rem"></p>
+           <p id="csm-metric-description" style="margin-right:1rem"></p>
            <p>For more model details and metrics, see  <a href="https://doi.org/10.5281/zenodo.8270631">CSM archive</a></p>
          </div>
 
