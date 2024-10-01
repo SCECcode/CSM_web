@@ -9,9 +9,10 @@ COPY . /app
 
 ## bring in the csm model data in (321M)
 ## and build up the data/sql directory
-#  old: wget -nv https://g-c662a6.a78b8.36fe.data.globus.org/cxm/models/csm/csm_data.tar.gz && \
+##  old: wget -nv https://g-c662a6.a78b8.36fe.data.globus.org/cxm/models/csm/csm_data.tar.gz && \
+#   wget -nv https://files.scec.org/s3fs-public/projects/csm/csm_data.tar.gz && \
 RUN cd /app/schema && \
-    wget -nv https://files.scec.org/s3fs-public/projects/csm/csm_data.tar.gz && \
+    wget -nv https://g-c662a6.a78b8.36fe.data.globus.org/cxm/models/csm/csm_data.tar.gz && \
     tar zxvf csm_data.tar.gz
 
 RUN mkdir /home/postgres

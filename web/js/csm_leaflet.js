@@ -4,8 +4,16 @@
 This is leaflet specific utilities for CSM
 ***/
 
-var init_map_zoom_level = 6.75;
-var init_map_coordinates =  [34.0, -118.2];
+//var init_map_zoom_level = 5.5;
+//var init_map_coordinates = [38, -122.0];
+//
+var init_map_zoom_level = 5.75;
+var init_map_coordinates = [36.8, -120.0];
+
+/* original
+var init_south_map_zoom_level = 6.75;
+var init_south_map_coordinates =  [34.0, -118.2];
+*/
 var drawing_rectangle = false;
 
 var default_color = "black";
@@ -107,6 +115,8 @@ function get_map()
       center=viewermap.getCenter();
       zoom=viewermap.getZoom();
   }
+
+window.console.log("XXX",center,zoom);
   return [center, zoom];
 }
 

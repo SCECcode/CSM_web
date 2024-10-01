@@ -50,8 +50,8 @@ var CSM = new function () {
     };
 
     this.defaultMapView = {
-        coordinates: [34.0, -118.2],
-        zoom: 6.75 
+        coordinates: [36.8, -120.0],
+        zoom: 5.75 
     };
 
     this.searchType = {
@@ -127,6 +127,7 @@ var csm_csv_keys= {
             let nidx=blist.indexOf(tnm);
             let bterm=base_models[nidx];
             let blabel=bterm.label;
+            window.console.log("found blabel", blabel);
             let jblob = JSON.parse(tmp.jblob);
             let term = {
                     idx:nidx,

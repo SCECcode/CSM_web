@@ -8,8 +8,10 @@
 
 . ./common.sh
 
-rm -rf ../data
-mkdir ../data
+#rm -rf ../data
+#mkdir ../data
+#
+echo $CSMPATH/*csv
 
 for file in $CSMPATH/*csv ; do
     [ -e "$file" ] || continue
@@ -25,7 +27,7 @@ for file in $CSMPATH/*csv ; do
 ## put in the csv header row 
 
     cp ./csv_header ../data/$nfilename
-    awk 'NR > 48' $file | sed "s/NaN//g" >> ../data/$nfilename
-    awk 'NR <= 48' $file | cat >> ../data/$sfilename
+    awk '!/^#/' $file | sed "s/NaN//g" >> ../data/$nfilename
+    awk '/^#/' $file | cat >> ../data/$sfilename
 
 done
