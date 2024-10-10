@@ -293,7 +293,7 @@ window.console.log("calling --->> clearSearch.");
       let tidx=parseInt($("#modelType").val());
       let model=this.csm_models[tidx];
       let tmodel=model['table_name'];
-//window.console.log("SPEC: model name is ", model['table_name']);
+window.console.log("SPEC: model name is ", model['table_name']);
 
       let d=model['jblob']['meta'];
       let dd=d['dataByDEP'];
@@ -353,11 +353,13 @@ window.console.log("calling --->> clearSearch.");
         }
       }
 
+// XX special case, if diplaying model data is different from download model data
       let spec = [ tmodel, ddepth, mmetric ];
+
       let spec_idx = [ tidx,midx,didx ];
       let spec_data = [datamin, datamax];
 
-//window.console.log("spec is: ",spec);
+window.console.log("using: spec is >> ",spec);
 //window.console.log("spec_idx is: ",spec_idx);
 
       return [spec, spec_idx, spec_data];

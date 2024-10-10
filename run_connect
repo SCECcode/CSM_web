@@ -1,2 +1,6 @@
-#docker container exec -it csm_web_web_1 /bin/bash
-docker container exec -it 94c3af0d2cf2 /bin/bash
+
+pid=`docker ps | grep csm_web_db | cut -f 1 -d ' '`
+
+docker container exec -it $pid /bin/bash
+
+
