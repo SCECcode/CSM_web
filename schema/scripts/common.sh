@@ -9,7 +9,6 @@
 
 PWD=`pwd`
 
-#CSMPATH=${PWD}"/../all_CSM_csv_files"
-#CSMPATH=${PWD}"/../NorCal_stress_models_0712"
-BOREHOLEPATH=${PWD}"/../borehole_csv_files"
+CSMPATH=${PWD}"/../all_CSM_csv_files"
+#BOREHOLEPATH=${PWD}"/../borehole_csv_files"
 
