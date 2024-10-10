@@ -1,10 +1,10 @@
-# CSM model "H2020_Ridgecrest" contributed by author J. Hardebeck.
-# Reference: Hardebeck (2020), doi:10.1785/0120200015.
-# Last revised on 11 Jun 2024, this *.csv version assembled by K. Luttrell on 08 Oct 2024.
+# CSM model "Kreemer-Hearn" contributed by author C. Kreemer, Z. Young, and E. Hearn.
+# Reference: Kreemer and Young (2022), doi:10.1785/0220220153.
+# Last revised on 12 Aug 2024, this *.csv version assembled by K. Luttrell on 08 Oct 2024.
 #
-# This is a stress model.
+# This is a stressing_rate model.
 # Tension is taken as positive (physics convention).
-# This model provides orientation only.  Magnitude information is not meaningful.
+# This model provides both meaningful orientation and meaningful magnitude.
 # It is defined for depths from 1 km to 15 km.
 # These model values do not vary with depth.
 #
@@ -12,23 +12,23 @@
 # 1) Longitude in degrees, WGS84 (California has negative LON)
 # 2) Latitude in degrees, WGS84
 # 3) Depth in km relative to mean sea level (positive: below sea-level; negative: above sea-level)
-# 4) See stress tensor component in MPa
-# 5) Sen stress tensor component in MPa
-# 6) Seu stress tensor component in MPa
-# 7) Snn stress tensor component in MPa
-# 8) Snu stress tensor component in MPa
-# 9) Suu stress tensor component in MPa
-# 10) SHmax angle in degrees East of North (provided by the author)
+# 4) See stressing rate tensor component in MPa/yr
+# 5) Sen stressing rate tensor component in MPa/yr
+# 6) Seu stressing rate tensor component in MPa/yr
+# 7) Snn stressing rate tensor component in MPa/yr
+# 8) Snu stressing rate tensor component in MPa/yr
+# 9) Suu stressing rate tensor component in MPa/yr
+# 10) SHmax angle in degrees East of North (calculated from tensor using Lund and Townend [2007] eqn. 11)
 # 11) SHmax angle uncertainty in degrees (if provided by the author, NaN otherwise)
 # 12) phi shape parameter (S1-S2)/(S1-S3) for positive tension (calculated from tensor as in Angelier [1979])
 # 13) R stress ratio (S2-S3)/(S1-S3) for positive tension (calculated from tensor as in Gephart and Forsyth [1984])
 # 14) Aphi Anderson modified shape parameter (calculated from tensor as in Simpson [1997])
-# 15) isotropic pressure (S1+S2+S3)/3 in MPa (calculated from tensor)
-# 16) differential stress (S1-S3) in MPa (calculated from tensor)
-# 17) maximum shear stress or "Von Mises stress" (S1-S3)/2 in MPa (calculated from tensor)
-# 18) S1 most tensional principal stress in MPa (eigenvalues calculated from tensor)
-# 19) S2 intermediate principal stress in MPa
-# 20) S3 most compressional principal stress in MPa
+# 15) isotropic pressure rate (S1+S2+S3)/3 in MPa/yr (calculated from tensor)
+# 16) differential stressing rate (S1-S3) in MPa/yr (calculated from tensor)
+# 17) maximum shear stressing rate "Von Mises stressing rate" (S1-S3)/2 in MPa/yr (calculated from tensor)
+# 18) S1 most tensional principal stress rate in MPa/yr (eigenvalues calculated from tensor)
+# 19) S2 intermediate principal stress rate in MPa/yr
+# 20) S3 most compressional principal stress rate in MPa/yr
 # 21) V1x unit vector component of most tensional principal axis (eigenvectors calculated from tensor)
 # 22) V1y unit vector component of most tensional principal axis (NOTE: principal axes are bi-directional)
 # 23) V1z unit vector component of most tensional principal axis (unit vector given for above-horizontal end)

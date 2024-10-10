@@ -1,11 +1,6 @@
-# CSM model "Provost & Houston: SAF Creeping Section, Table 1" (Provost, A. S., & Houston, H. (2001). Orientation 
-# of the stress field surrounding the creeping section of the San Andreas Fault: Evidence for a narrow mechanically 
-# weak fault zone. Journal of Geophysical Research: Solid Earth, 106(B6), 11373-11386. Table 1.)
-#
-# Last revised on June 11, 2024
-# this *.csv version assembled by Jeanne Hardebeck on June 11, 2024.
-# Original data is the trend and plunge of principal axes and R, all other metrics are derived.  
-# Inversion of focal mechanisms from January 1968 to September 1999
+# CSM model "PH01_Creeping_Table1" contributed by author A. Provost and H. Houston.
+# Reference: Provost and Houston (2001), doi:10.1029/2001JB900007.
+# Last revised on 11 Jun 2024, this *.csv version assembled by K. Luttrell on 08 Oct 2024.
 #
 # This is a stress model.
 # Tension is taken as positive (physics convention).
@@ -23,7 +18,7 @@
 # 7) Snn stress tensor component in MPa
 # 8) Snu stress tensor component in MPa
 # 9) Suu stress tensor component in MPa
-# 10) SHmax angle in degrees East of North (provided by the author)
+# 10) SHmax angle in degrees East of North (calculated from tensor using Lund and Townend [2007] eqn. 11)
 # 11) SHmax angle uncertainty in degrees (if provided by the author, NaN otherwise)
 # 12) phi shape parameter (S1-S2)/(S1-S3) for positive tension (calculated from tensor as in Angelier [1979])
 # 13) R stress ratio (S2-S3)/(S1-S3) for positive tension (calculated from tensor as in Gephart and Forsyth [1984])

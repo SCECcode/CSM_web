@@ -1,13 +1,6 @@
-# CSM model "Prejean: Long Valley" (Prejean, S., W. Ellsworth, M. Zoback, and F. Waldhauser, Fault structure and kinematics 
-# of the Long Valley Caldera region, California, revealed by high-accuracy earthquake hypocenters and focal mechanism stress 
-# inversions, J. Geophys. Res., 107(B12), 2355, doi:10.1029/2001JB001168, 2002. Table 4.)
-#
-# Last revised on August 14, 2024
-# this *.csv version assembled by Jeanne Hardebeck on August 14, 2024.
-# Original data is the trend and plunge of principal axes, all other metrics are derived.  
-# The value of R is not considered reliable by the authors, so is not reported.
-# Nor are other values (tensor, SHmax) that would require knowing R.
-# Inversion of focal mechanisms 1980-2000
+# CSM model "PEZW02_LongValley" contributed by author S. Prejean, W. Ellsworth, M. Zoback, and F. Waldhauser.
+# Reference: Prejean et al. (2002) doi:10.1029/2001JB001168.
+# Last revised on 14 Aug 2024, this *.csv version assembled by K. Luttrell on 08 Oct 2024.
 #
 # This is a stress model.
 # Tension is taken as positive (physics convention).
@@ -25,7 +18,7 @@
 # 7) Snn stress tensor component in MPa
 # 8) Snu stress tensor component in MPa
 # 9) Suu stress tensor component in MPa
-# 10) SHmax angle in degrees East of North (provided by the author)
+# 10) SHmax angle in degrees East of North (calculated from tensor using Lund and Townend [2007] eqn. 11)
 # 11) SHmax angle uncertainty in degrees (if provided by the author, NaN otherwise)
 # 12) phi shape parameter (S1-S2)/(S1-S3) for positive tension (calculated from tensor as in Angelier [1979])
 # 13) R stress ratio (S2-S3)/(S1-S3) for positive tension (calculated from tensor as in Gephart and Forsyth [1984])

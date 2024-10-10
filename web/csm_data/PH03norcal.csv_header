@@ -1,13 +1,6 @@
-# CSM model "Provost & Houston: Northern California" (Provost, A. S., & Houston, H. (2003). Stress 
-# orientations in northern and central California: Evidence for the evolution of frictional strength 
-# along the San Andreas plate boundary system. Journal of Geophysical Research: Solid Earth, 108(B3).)
-#
-# Last revised on June 11, 2024
-# this *.csv version assembled by Jeanne Hardebeck on June 11, 2024.
-# Original data is the trend and plunge of principal axes and R, all other metrics are derived.  
-# For bin NCA48 in Table 1, the S3 axis is not orthogonal to the other two axes and does not appear consistent 
-# with Figure 6.  I believe this is a typo in Table 1 and I created a new S3 axis that is orthogonal to S1 & S2.
-# Inversion of focal mechanisms from January 1969 to October 2000
+# CSM model "PH03_NorCal" contributed by author A. Provost and H. Houston.
+# Reference: Provost and Houston (2003), doi:10.1029/2001JB001123.
+# Last revised on 11 Jun 2024, this *.csv version assembled by K. Luttrell on 08 Oct 2024.
 #
 # This is a stress model.
 # Tension is taken as positive (physics convention).

@@ -1,11 +1,6 @@
-# CSM model "Skoumal et al: Mt Lewis" (Skoumal, R. J., Hardebeck, J. L., & Shelly, D. R. (2023). Using corrected and 
-# imputed polarity measurements to improve focal mechanisms in a regional earthquake catalog near the Mt. Lewis Fault  
-# Zone, California. Journal of Geophysical Research: Solid Earth, 128(2), e2022JB025660.)
-#
-# Last revised on June 11, 2024
-# this *.csv version assembled by Jeanne Hardebeck on June 11, 2024.
-# Original data is the trend and plunge of principal axes and phi, all other metrics are derived.  
-# Inversion of focal mechanisms from 1984 to 2021
+# CSM model "SHS23_MtLewis" contributed by author R. Skoumal, J. Hardebeck, and D. Shelly.
+# Reference: Skoumal et al. (2023), doi.org/10.1029/2022JB025660.
+# Last revised on 11 Jun 2024, this *.csv version assembled by K. Luttrell on 08 Oct 2024.
 #
 # This is a stress model.
 # Tension is taken as positive (physics convention).
@@ -23,7 +18,7 @@
 # 7) Snn stress tensor component in MPa
 # 8) Snu stress tensor component in MPa
 # 9) Suu stress tensor component in MPa
-# 10) SHmax angle in degrees East of North (provided by the author)
+# 10) SHmax angle in degrees East of North (calculated from tensor using Lund and Townend [2007] eqn. 11)
 # 11) SHmax angle uncertainty in degrees (if provided by the author, NaN otherwise)
 # 12) phi shape parameter (S1-S2)/(S1-S3) for positive tension (calculated from tensor as in Angelier [1979])
 # 13) R stress ratio (S2-S3)/(S1-S3) for positive tension (calculated from tensor as in Gephart and Forsyth [1984])

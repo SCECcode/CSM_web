@@ -8,10 +8,10 @@
 
 . ./common.sh
 
-#rm -rf ../data
-#mkdir ../data
+rm -rf ../data
+mkdir ../data
 #
-echo $CSMPATH/*csv
+ls $CSMPATH/*csv
 
 for file in $CSMPATH/*csv ; do
     [ -e "$file" ] || continue
