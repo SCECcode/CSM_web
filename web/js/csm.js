@@ -234,7 +234,7 @@ var csm_csv_keys= {
 	
 // reset just the search only
     this.resetSearch = function (){
-window.console.log("calling --->> resetSearch.");
+//window.console.log("calling --->> resetSearch.");
 
 	pixiResetAllOverlayOpacity();
         pixiClearAllPixiOverlay();
@@ -249,7 +249,7 @@ window.console.log("calling --->> resetSearch.");
     };
 
     this.clearSearch = function (){
-window.console.log("calling --->> clearSearch.");
+//window.console.log("calling --->> clearSearch.");
 	pixiClearAllPixiOverlay();
 
         this.clearModel();
@@ -296,9 +296,6 @@ window.console.log("calling --->> clearSearch.");
       let tidx=parseInt($("#modelType").val());
       let model=this.csm_models[tidx];
       let tmodel=model['table_name'];
-
-window.console.log(" getSpec: model found ", model);
-window.console.log(" getSpec: for", this.searchingType);
 
       if( (this.searchingType ==this.searchType.latlon) && 
         	          (model['data'] != undefined) ) { 
@@ -369,7 +366,7 @@ window.console.log(" getSpec: for", this.searchingType);
       let spec_idx = [ tidx,midx,didx ];
       let spec_data = [datamin, datamax];
 
-window.console.log("using: spec is >> ",spec);
+//window.console.log("using: spec is >> ",spec);
 //window.console.log("spec_idx is: ",spec_idx);
 
       return [spec, spec_idx, spec_data];
@@ -393,7 +390,7 @@ window.console.log("using: spec is >> ",spec);
 
     this.freshSearch = function (){
 
-window.console.log("calling, new freshSearch...");
+//window.console.log("calling, new freshSearch...");
 
      // retrieve model's database table name
      // depth value  
@@ -408,7 +405,7 @@ window.console.log("calling, new freshSearch...");
 // wait for a region 
 
       if(this.searchingType == this.searchType.model) {
-window.console.log("in freshSearch --model");
+//window.console.log("in freshSearch --model");
         pixiClearAllPixiOverlay();
         CSM.setupPixiSegmentDebug(0,{});
 
@@ -430,7 +427,7 @@ window.console.log("in freshSearch --model");
       }
 
       if(this.searchingType == this.searchType.latlon) {
-window.console.log("in freshSearch --latlon");
+//window.console.log("in freshSearch --latlon");
 
 // in freshSearch/latlon, might need to clear the map");
         pixiClearAllPixiOverlay();
@@ -626,8 +623,8 @@ window.console.log("calling togglePixiSegment.. with ",n,"on pixiuid ",pixiuid);
 
         let dataset=this.lookupDataset(spec[0]);
 
-window.console.log(" ===> dataset used for search..", dataset);
-window.console.log(" ===> spec used..", spec);
+//window.console.log(" ===> dataset used for search..", dataset);
+//window.console.log(" ===> spec used..", spec);
 
         $.ajax({
             url: "php/search.php",
@@ -637,7 +634,6 @@ window.console.log(" ===> spec used..", spec);
             let lonlist;
             let vallist;
             if(search_result === "[]") {
-window.console.log("Did not find any PHP result");
                 notify(" No data in the marked area!! ");
                 //alert(" No data in the marked area!! "); 
                 CSM.removeWaitSpin();
@@ -735,7 +731,7 @@ window.console.log("Did not find any PHP result");
 
     // make sure the displayed background is correct,
     this._redrawModel = function() {
-window.console.log("calling redrawModel..");
+//window.console.log("calling redrawModel..");
 
         if( this.model_initialized == false ) return;     
 
@@ -764,7 +760,7 @@ window.console.log("calling redrawModel..");
     // fromWhere=0 is from text
     // fromWhere=1 from drawRectangle call
     this.searchLatlon = function (fromWhere, rect) {
-window.console.log("calling searchLatlon..");
+//window.console.log("calling searchLatlon..");
         let criteria = [];
 
         let spec = [];
@@ -907,13 +903,11 @@ window.console.log("calling searchLatlon..");
        this.removeFromDownloads(gid); 
     };
     this.mouseoverRegion = function(gid) {
-window.console.log("highlight box ",gid);
 	highlight_bounding_rectangle_layer(gid);
 	this.highlight_metadata_row(gid);
     };
     // mouseout the entry
     this.mouseoutRegion = function(gid) {
-window.console.log("unhighlight box ",gid);
 	unhighlight_bounding_rectangle_layer(gid);
 	this.unhighlight_metadata_row(gid);
     };
@@ -937,7 +931,7 @@ window.console.log("unhighlight box ",gid);
     }
 
     var generateMetadataTable = function (results) {
-window.console.log("generateMetadataTable..");
+//window.console.log("generateMetadataTable..");
             var html = "";
             html+=`
 <thead>
@@ -1251,7 +1245,7 @@ window.console.log("generateMetadataTable..");
 
 
    this.changeModelDepth = function(v) {
-window.console.log("change ModelDepth with ..",v);
+//window.console.log("change ModelDepth with ..",v);
         this._redrawModel();
         //special case, if in 'select region' mode, trigger a selection
         if(this.searchingType == this.searchType.latlon) {
@@ -1259,7 +1253,7 @@ window.console.log("change ModelDepth with ..",v);
         }
    };
    this.changeModelMetric = function(v) {
-window.console.log("change ModelMetric with ..",v);
+//window.console.log("change ModelMetric with ..",v);
         this.refreshMetricDescription(v);
         this._redrawModel();
    };
@@ -1311,7 +1305,7 @@ window.console.log("change ModelMetric with ..",v);
           if(tmp_gid == gid) {
             let mlist = tmp.jblob;
             let hdata=getModelHeader(tmp.scec_properties.dataset);
-window.console.log("-- header file..", tmp.scec_properties.dataset);
+//window.console.log("-- header file..", tmp.scec_properties.dataset);
             let data="";
             if(hdata != "") {
               data=getCSVFromMeta(0,mlist);

@@ -6,7 +6,6 @@
 
  optional:
     skip   not to show up in 'select CSM Models' pull down
-    label_meta  to use in option of modelType
     data   to use different table_name for retrieving download data
 ****/
 
@@ -76,7 +75,6 @@ models: [
      description: '<b>PEZW02_LongValley</b> model contributed by S. Prejean, W. Ellsworth, M. Zoback, and F. Waldhauser. This is a stress orientation model based on earthquake focal mechanism inversion (orientation only). Model values do not vary with depth.  Model gives principal stress axis orientation only. Visualized SHmax values are approximate (±15º) and Aphi values represent faulting regime only.'}, 
     {name: 'PEZW02LongValleyforplottingonly', stress_type:0,
      label: 'PEZW02LongValley - stress',
-     label_meta: 'XXPEZW02LongValley',
      data: 'pezw02longvalley_tb',
      author: 'S. Prejean, W. Ellsworth, M. Zoback, and F. Waldhauser',
      description: '<b>PEZW02LongValleyforplottingonly</b> model contributed by S. Prejean, W. Ellsworth, M. Zoback, and F. Waldhauser. This is a stress orientation model based on earthquake focal mechanism inversion (orientation only). Model values do not vary with depth.  Model gives principal stress axis orientation only. Visualized SHmax values are approximate (±15º) and Aphi values represent faulting regime only.'}, 
