@@ -944,12 +944,12 @@ window.console.log("generateMetadataTable..");
 <tr>
         <th class="text-center button-container" style="width:2rem">
         </th>
-        <th class="hoverColor" style="width:12rem" >Id&nbsp<span></span></th>
-        <th class="hoverColor" onClick="sortMetadataTableByRow(2,'a')">Model&nbsp<span id='sortCol_2' class="fas fa-angle-down"></span></th>
+        <th class="hoverColor" style="width:10rem" >Id&nbsp<span></span></th>
+        <th class="hoverColor" style="width:15rem" onClick="sortMetadataTableByRow(2,'a')">Model&nbsp<span id='sortCol_2' class="fas fa-angle-down"></span></th>
         <th class="hoverColor">Metric</span></th>
         <th class="hoverColor" onClick="sortMetadataTableByRow(4,'n')">Depth (km)<span id='sortCol_4' class="fas fa-angle-down"></span></th>
         <th class="hoverColor">Num Data Points</th>
-        <th style="width:20%;"><div class="col text-center">Downloads<span id="download-counter"></div>
+        <th style="width:0%;"><div class="col text-center">Downloads<span id="download-counter"></div>
 <!--download all
                 <div class="btn-group download-now">
                     <button id="download-all" type="button" class="btn btn-dark" value="metadata"
