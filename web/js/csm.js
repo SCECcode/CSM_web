@@ -127,7 +127,6 @@ var csm_csv_keys= {
             let nidx=blist.indexOf(tnm);
             let bterm=base_models[nidx];
             let blabel=bterm.label;
-            window.console.log("found blabel", blabel);
             let jblob = JSON.parse(tmp.jblob);
             let term = {
                     idx:nidx,
@@ -135,10 +134,13 @@ var csm_csv_keys= {
                     model_name: tmp.model_name,
                     table_name: tmp.table_name,
                     model_label: bterm.label,
+		    skip: bterm.skip,
+		    label_meta: bterm.label_meta,
+		    data: bterm.data,
 		    model_stress_type: bterm.stress_type,
                     jblob: jblob,
             };
-           tmplist.push(term);
+            tmplist.push(term);
           }
         }
 // might need to resort the list 
@@ -290,11 +292,19 @@ window.console.log("calling --->> clearSearch.");
 // spec_idx = [ tidx,midx,didx ];
 // spec_data = [ data_min, data_max ]; a range specific to model and metric
     this.getSpec = function() {
+
       let tidx=parseInt($("#modelType").val());
       let model=this.csm_models[tidx];
       let tmodel=model['table_name'];
-window.console.log("SPEC: model name is ", model['table_name']);
 
+window.console.log(" getSpec: model found ", model);
+window.console.log(" getSpec: for", this.searchingType);
+
+      if( (this.searchingType ==this.searchType.latlon) && 
+        	          (model['data'] != undefined) ) { 
+          tmodel=model['data'];
+      }
+         
       let d=model['jblob']['meta'];
       let dd=d['dataByDEP'];
 
@@ -353,7 +363,7 @@ window.console.log("SPEC: model name is ", model['table_name']);
         }
       }
 
-// XX special case, if diplaying model data is different from download model data
+// special case, if diplaying model data is different from download model data
       let spec = [ tmodel, ddepth, mmetric ];
 
       let spec_idx = [ tidx,midx,didx ];
@@ -597,6 +607,11 @@ window.console.log("calling togglePixiSegment.. with ",n,"on pixiuid ",pixiuid);
     // expect at most 80k lat/lon/val
     // criteria is lat,lon,lat2,lon2 for searching with LatLon
     //              is tidx,midx,didx for storing the pixi into a list     
+    //
+    // special case, if a model has a 'actual' data tb that needs to
+    // be searched instead of the one showing on the viewer, then needs 
+    // to swap out the 'dataset' field ie. LongValley when searching for latlon
+    //
     this.search = function(type, spec, criteria, spec_data) {
 
         CSM.startWaitSpin();
@@ -606,8 +621,13 @@ window.console.log("calling togglePixiSegment.. with ",n,"on pixiuid ",pixiuid);
         if (!Array.isArray(tmp)) { tmp = [tmp]; }
 
         let JSON_criteria = JSON.stringify(tmp);
+
         let JSON_spec = JSON.stringify(spec);
+
         let dataset=this.lookupDataset(spec[0]);
+
+window.console.log(" ===> dataset used for search..", dataset);
+window.console.log(" ===> spec used..", spec);
 
         $.ajax({
             url: "php/search.php",
@@ -1037,15 +1057,21 @@ window.console.log("generateMetadataTable..");
                     gid: tmp.gid,
                     model_name: tmp.model_name,
                     table_name: tmp.table_name,
+		    skip:undefined,
+		    label_meta:undefined,
                     jblob: jblob,
               */
+               if(term.skip != undefined) {
+                 window.console.log("skipping this one..", term.model_label);
+	         continue;	     
+               }
                
-            var elt=document.getElementById('modelType');
-                let option = document.createElement("option");
-                option.text = term.model_name;
-                option.label = term.model_label;
-                option.value= term.idx;
-                elt.add(option);
+               var elt=document.getElementById('modelType');
+               let option = document.createElement("option");
+               option.text = term.model_name;
+               option.label = term.model_label;
+               option.value= term.idx;
+               elt.add(option);
             }
 
             let mblob=CSM_tb['metrics'];
@@ -1285,6 +1311,7 @@ window.console.log("change ModelMetric with ..",v);
           if(tmp_gid == gid) {
             let mlist = tmp.jblob;
             let hdata=getModelHeader(tmp.scec_properties.dataset);
+window.console.log("-- header file..", tmp.scec_properties.dataset);
             let data="";
             if(hdata != "") {
               data=getCSVFromMeta(0,mlist);

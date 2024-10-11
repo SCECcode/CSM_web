@@ -3,6 +3,11 @@
   csm_model.js
 
 "For more model details and metrics, see [LINK TO ZENODO ARCHIVE]"
+
+ optional:
+    skip   not to show up in 'select CSM Models' pull down
+    label_meta  to use in option of modelType
+    data   to use different table_name for retrieving download data
 ****/
 
 // stress_type: 0 = stress, 1 = stress rate
@@ -66,12 +71,15 @@ models: [
      description: '<b>HM04_NorCal_FaultBased</b> model contributed by J. Hardebeck and A. Michael. This is a stress orientation model based on earthquake focal mechanism inversion (orientation only). Model values do not vary with depth.'},
     {name: 'PEZW02LongValley', stress_type:0,
      label: 'PEZW02_LongValley - stress',
+     skip: 1,
      author: 'S. Prejean, W. Ellsworth, M. Zoback, and F. Waldhauser',
      description: '<b>PEZW02_LongValley</b> model contributed by S. Prejean, W. Ellsworth, M. Zoback, and F. Waldhauser. This is a stress orientation model based on earthquake focal mechanism inversion (orientation only). Model values do not vary with depth.  Model gives principal stress axis orientation only. Visualized SHmax values are approximate (±15º) and Aphi values represent faulting regime only.'}, 
     {name: 'PEZW02LongValleyforplottingonly', stress_type:0,
-     label: 'PEZW02LongValleyforplottingonly - stress',
+     label: 'PEZW02LongValley - stress',
+     label_meta: 'XXPEZW02LongValley',
+     data: 'pezw02longvalley_tb',
      author: 'S. Prejean, W. Ellsworth, M. Zoback, and F. Waldhauser',
-     description: '<b>PEZW02LongValleyforplottingonly</b> ....'}, 
+     description: '<b>PEZW02LongValleyforplottingonly</b> model contributed by S. Prejean, W. Ellsworth, M. Zoback, and F. Waldhauser. This is a stress orientation model based on earthquake focal mechanism inversion (orientation only). Model values do not vary with depth.  Model gives principal stress axis orientation only. Visualized SHmax values are approximate (±15º) and Aphi values represent faulting regime only.'}, 
     {name: 'PH01CreepingTable1', stress_type:0,
      label: 'PH01_Creeping_Table1 - stress',
      author: 'A.S. Provost and H. Houston',
@@ -91,11 +99,11 @@ models: [
     {name: 'JohnsonHearn', stress_type:0,
      label: 'Johnson-Hearn - stress rate',
      author: 'K. Johnson and E. Hearn',
-     description: '<b><Johnson-Hearn/b> model contributed by K. Johnson and E. Hearn.  This is a stressing-rate model based on geodetically inferred strain rates. Model values do not vary with depth.'},
+     description: '<b>Johnson-Hearn</b> model contributed by K. Johnson and E. Hearn.  This is a stressing-rate model based on geodetically inferred strain rates. Model values do not vary with depth.'},
     {name: 'KreemerHearn', stress_type:0,
      label: 'Kreemer-Hearn - stress rate',
      author: 'C. Kreemer, Z. Young and E. Hearn',
-     description: '<b><Kreemer-Hearn/b> model contributed by C. Kreemer, Z. Young, and E. Hearn. This is a stressing-rate model based on combined geologically and geodetically inferred strain rates. Model values do not vary with depth.'}],
+     description: '<b>Kreemer-Hearn</b> model contributed by C. Kreemer, Z. Young, and E. Hearn. This is a stressing-rate model based on combined geologically and geodetically inferred strain rates. Model values do not vary with depth.'}],
 metrics: [
     {name: 'SHmax', range: [90, -90], 
      short: 'SHmax [orientation]', label: 'SHmax - horizontal compression azimuth [orientation]',
