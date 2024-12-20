@@ -77,7 +77,7 @@ models: [
      label: 'PEZW02LongValley - stress',
      data: 'pezw02longvalley_tb',
      author: 'S. Prejean, W. Ellsworth, M. Zoback, and F. Waldhauser',
-     description: '<b>PEZW02LongValleyforplottingonly</b> model contributed by S. Prejean, W. Ellsworth, M. Zoback, and F. Waldhauser. This is a stress orientation model based on earthquake focal mechanism inversion (orientation only). Model values do not vary with depth.  Model gives principal stress axis orientation only. Visualized SHmax values are approximate (±15º) and Aphi values represent faulting regime only.'}, 
+     description: '<b>PEZW02LongValleyforplottingonly</b> model contributed by S. Prejean, W. Ellsworth, M. Zoback, and F. Waldhauser. This is a stress orientation model based on earthquake focal mechanism inversion (orientation only). Model values do not vary with depth. Downloaded model gives principal stress axis only.
     {name: 'PH01CreepingTable1', stress_type:0,
      label: 'PH01_Creeping_Table1 - stress',
      author: 'A.S. Provost and H. Houston',
@@ -101,7 +101,12 @@ models: [
     {name: 'KreemerHearn', stress_type:0,
      label: 'Kreemer-Hearn - stress rate',
      author: 'C. Kreemer, Z. Young and E. Hearn',
-     description: '<b>Kreemer-Hearn</b> model contributed by C. Kreemer, Z. Young, and E. Hearn. This is a stressing-rate model based on combined geologically and geodetically inferred strain rates. Model values do not vary with depth.'}],
+     description: '<b>Kreemer-Hearn</b> model contributed by C. Kreemer, Z. Young, and E. Hearn. This is a stressing-rate model based on combined geologically and geodetically inferred strain rates. Model values do not vary with depth.'},
+    {name: 'ZengHearn', stress_type:0,
+     label: 'Zeng-Hearn - stress rate',
+     author: 'Y. Zeng and E. Hearn',
+     description: '<b>Zeng-Hearn</b> model contributed by Y. Zeng and E. Hearn.  This is a stressing-rate model based on fault-informed geodetically inferred strain rates.  Model values do not vary with depth.'}
+],
 metrics: [
     {name: 'SHmax', range: [90, -90], 
      short: 'SHmax [orientation]', label: 'SHmax - horizontal compression azimuth [orientation]',

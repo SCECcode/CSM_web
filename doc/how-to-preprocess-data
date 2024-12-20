@@ -1,6 +1,7 @@
 
 1) Processing the csv data files
 
+
 put all csv files into schema/all_CSM_csv_files directory
 cd scripts
   
@@ -15,6 +16,6 @@ tar up the data and sql directory.
 
 move to discovery's /project/scec_608/public/cxm/models/csm
 
-2) Update web/js/csm_model's table to include descriptions for new stress or stress rate models 
+2) Update model table in web/js/csm_model.js to include descriptions for new stress or stress rate models 
 
-3) Add the csv header for models to web/csm_data
+3) Move the csv header for models from schema/data to web/csm_data
