@@ -77,7 +77,7 @@ models: [
      label: 'PEZW02LongValley - stress',
      data: 'pezw02longvalley_tb',
      author: 'S. Prejean, W. Ellsworth, M. Zoback, and F. Waldhauser',
-     description: '<b>PEZW02LongValleyforplottingonly</b> model contributed by S. Prejean, W. Ellsworth, M. Zoback, and F. Waldhauser. This is a stress orientation model based on earthquake focal mechanism inversion (orientation only). Model values do not vary with depth. Downloaded model gives principal stress axis only.
+     description: '<b>PEZW02LongValleyforplottingonly</b> model contributed by S. Prejean, W. Ellsworth, M. Zoback, and F. Waldhauser. This is a stress orientation model based on earthquake focal mechanism inversion (orientation only). Model values do not vary with depth. Downloaded model gives principal stress axis only.'},
     {name: 'PH01CreepingTable1', stress_type:0,
      label: 'PH01_Creeping_Table1 - stress',
      author: 'A.S. Provost and H. Houston',
