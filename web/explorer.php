@@ -483,6 +483,26 @@ or the  <a target="_blank" href="https://doi.org/10.5281/zenodo.8270631">CSM arc
   </div>
 </div> <!--Modal: modalnotify-->
 
+
+<!--Modal: Model(modalmodelinfo) -->
+<div class="modal" id="modalmodelinfo" tabindex="-1" style="z-index:9999" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" id="modalmodelinfoDialog" role="document">
+    <!--Content-->
+    <div class="modal-content" id="modalmodelinfoContent">
+      <!--Body-->
+      <div class="modal-body" id="modalmodelinfoBody">
+        <div class="row col-md-12 ml-auto" style="overflow:hidden;">
+          <div class="col-12" style="font-size:14pt">
+            <p id="model-info-popup">MODEL info here..</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+    </div> <!--Content-->
+  </div>
+</div> <!--Modal: modalnotify-->
 </div> <!-- container -->
 
 <!--call php directly-->

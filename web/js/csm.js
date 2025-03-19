@@ -1115,6 +1115,11 @@ window.console.log("calling togglePixiSegment.. with ",n,"on pixiuid ",pixiuid);
          if(term['name'] == target_name) {
            let descript=term['description'];
            $("#csm-model-description").html(descript);
+           if( "modelinfo" in term ) {
+             let modelinfo=term['modelinfo'];
+               $("#model-info-popup").html(modelinfo);
+             // enable button 
+           }
            break;
          }
        }

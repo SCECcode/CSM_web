@@ -1,5 +1,26 @@
 /* csm */
 
+.csm-small-btn {
+          background: transparent;
+          padding: 6px 6px;
+          font-size: 14px;
+          color: black;
+          display: inline-block;
+
+          outline: none;
+          -webkit-box-shadow: none !important;
+          box-shadow: none !important;
+          border: none !important;
+          }
+
+.csm-small-btn:hover {
+          color: #DC3545;
+          outline:0 !important;
+          border: none;
+          box-shadow: none;
+          display: inline-block;
+          }
+
 .csm-latlon-item {
   height: calc(2rem);
 }

@@ -9,7 +9,7 @@
     data   to use different table_name for retrieving download data
 ****/
 
-// stress_type: 0 = stress, 1 = stress rate
+// stress_type: 0 = stress, 1 = stressing rate
 var CSM_tb={
 models: [
     {name: 'FlatMaxwell', stress_type:0,
@@ -74,10 +74,11 @@ models: [
      author: 'S. Prejean, W. Ellsworth, M. Zoback, and F. Waldhauser',
      description: '<b>PEZW02_LongValley</b> model contributed by S. Prejean, W. Ellsworth, M. Zoback, and F. Waldhauser. This is a stress orientation model based on earthquake focal mechanism inversion (orientation only). Model values do not vary with depth.  Model gives principal stress axis orientation only. Visualized SHmax values are approximate (±15º) and Aphi values represent faulting regime only.'}, 
     {name: 'PEZW02LongValleyforplottingonly', stress_type:0,
-     label: 'PEZW02LongValley - stress',
+     label: 'PEZW02_LongValley - stress',
      data: 'pezw02longvalley_tb',
      author: 'S. Prejean, W. Ellsworth, M. Zoback, and F. Waldhauser',
-     description: '<b>PEZW02LongValleyforplottingonly</b> model contributed by S. Prejean, W. Ellsworth, M. Zoback, and F. Waldhauser. This is a stress orientation model based on earthquake focal mechanism inversion (orientation only). Model values do not vary with depth. Downloaded model gives principal stress axis only.'},
+     modelinfo: '<b>PEZW02_LongValley</b><b style="display:none">PEZW02LongValleyforplottingonly</b> model contributed by S. Prejean, W. Ellsworth, M. Zoback, and F. Waldhauser is a stress orientation model based on earthquake focal mechanism inversion (orientation only). Model values do not vary with depth. Downloaded model gives principal stress axis only. Visualized SHmax values are approximate (±15º) and Aphi values represent faulting regime only. See model metadata in CSM archive for more information.',
+     description: '<b>PEZW02_LongValley</b><b style="display:none">PEZW02LongValleyforplottingonly</b> model contributed by S. Prejean, W. Ellsworth, M. Zoback, and F. Waldhauser. This is a stress orientation model based on earthquake focal mechanism inversion (orientation only). Model values do not vary with depth. Downloaded model gives principal stress axis only.<button class="btn csm-small-btn" style="display:" data-toggle="modal" data-target="#modalmodelinfo"><span class="glyphicon glyphicon-info-sign"></span></button>'},
     {name: 'PH01CreepingTable1', stress_type:0,
      label: 'PH01_Creeping_Table1 - stress',
      author: 'A.S. Provost and H. Houston',
@@ -94,16 +95,16 @@ models: [
      label: 'SHS23_MtLewis - stress',
      author: 'R.J. Skoumal, J.L. Hardebeck and D.R. Shelly',
      description: '<b>SHS23_MtLewis</b> model contributed by R. Skoumal, J. Hardebeck, and D. Shelly. This is a stress orientation model based on earthquake focal mechanism inversion (orientation only). Model values do not vary with depth.'},
-    {name: 'JohnsonHearn', stress_type:0,
-     label: 'Johnson-Hearn - stress rate',
+    {name: 'JohnsonHearn', stress_type:1,
+     label: 'Johnson-Hearn - stressing rate',
      author: 'K. Johnson and E. Hearn',
      description: '<b>Johnson-Hearn</b> model contributed by K. Johnson and E. Hearn.  This is a stressing-rate model based on geodetically inferred strain rates. Model values do not vary with depth.'},
-    {name: 'KreemerHearn', stress_type:0,
-     label: 'Kreemer-Hearn - stress rate',
+    {name: 'KreemerHearn', stress_type:1,
+     label: 'Kreemer-Hearn - stressing rate',
      author: 'C. Kreemer, Z. Young and E. Hearn',
      description: '<b>Kreemer-Hearn</b> model contributed by C. Kreemer, Z. Young, and E. Hearn. This is a stressing-rate model based on combined geologically and geodetically inferred strain rates. Model values do not vary with depth.'},
-    {name: 'ZengHearn', stress_type:0,
-     label: 'Zeng-Hearn - stress rate',
+    {name: 'ZengHearn', stress_type:1,
+     label: 'Zeng-Hearn - stressing rate',
      author: 'Y. Zeng and E. Hearn',
      description: '<b>Zeng-Hearn</b> model contributed by Y. Zeng and E. Hearn.  This is a stressing-rate model based on fault-informed geodetically inferred strain rates.  Model values do not vary with depth.'}
 ],
