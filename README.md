@@ -3,7 +3,7 @@
 # Community Stress Model
 
 
-### https://www.scec.org/research/csm
+### https://www.scec.org/science/csm
 
 ## CSM Explorer
 
@@ -11,11 +11,11 @@ A 2D explorer based on Leaflet, an open-source JavaScript library for interactiv
 https://leafletjs.com, map data services from OpenStreetMap, https://www.openstreetmap.org,
 OpenTopoMap, https://www.opentopomap.org and leaflet esri plugin,
 https://esri.github.io/esri-leaflet, for Ersi basemap from ArcGIS and the CSM
-from https://www.scec.org/research/csm.
+from https://www.scec.org/science/csm.
 
 ### Screen Capture
 
-Website URL: https://www.scec.org/research/csm-explorer/
+Website URL: https://www.scec.org/science/csm-explorer/
 
 ![](web/img/csm-explorer.jpg)
 

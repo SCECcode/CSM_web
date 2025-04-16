@@ -1,6 +1,10 @@
 <?php
 require_once("php/navigation.php");
 $header = getHeader("User Guide");
+
+/**
+ * @var string $host_site_actual_path from navigation.php
+ */
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -34,7 +38,7 @@ $header = getHeader("User Guide");
             <h4><strong>Community Stress Model (CSM) Explorer Overview</strong></h4>
 
 		<p>The CSM explorer provides interactive map-based views of the 
-                   <a href="https://doi.org/10.5281/zenodo.8270631">CSM v2023</a> 
+                   <a href="https://doi.org/10.5281/zenodo.15171026">CSM v2024</a>
 		   contributed models.  The explorer allows users to select the model of interest, a 
 		   scalar stress metric to display, and a depth of interest (using drop down menus 
 		   at the left of the interface).  Users can add additional data overlays of 
@@ -81,8 +85,8 @@ $header = getHeader("User Guide");
 
 		 <p>The “Select CSM Model” dropdown menu lists the short name of each contributed model, and 
 		    whether it is a model of stress or stressing rate.  For details about contributed models,
-		    see the <a href="https://www.scec.org/research/csm">CSM homepage</a> or the 
-                    <a href="https://doi.org/10.5281/zenodo.8270631">CSM archive</a>.</p>
+		    see the <a href="https://www.scec.org/science/csm">CSM homepage</a> or the
+                    <a href="https://doi.org/10.5281/zenodo.15171026">CSM archive</a>.</p>
 
 		 <p>The “Select Model Metric” dropdown menu lists available scalar metrics, a brief description,
 		    and whether the metric gives an indication of stress orientation or magnitude.  See below for
@@ -101,11 +105,11 @@ $header = getHeader("User Guide");
                     not change.</p>
  
 		 <p>A brief explanation of the selected model and metric appears at the bottom left, updated 
-		    each time a new model or metric is selected.  For further details about each model,
-		    see the <a href="https://www.scec.org/research/csm">CSM homepage</a> or the 
-		    <a href="https://doi.org/10.5281/zenodo.8270631">CSM archive</a>.  For additional stress 
+             each time a new model or metric is selected. A few models also include an "information button" (<span class="glyphicon glyphicon-info-sign"></span>) with further details about the visualization.  For further details about each model,
+		    see the <a href="https://www.scec.org/science/csm">CSM homepage</a> or the 
+		    <a href="https://doi.org/10.5281/zenodo.15171026">CSM archive</a>.  For additional stress 
 		    metrics indicating orientation and magnitude, see the
-                    <a href="https://doi.org/10.5281/zenodo.8270631">CSM archive</a>.</p>
+                    <a href="https://doi.org/10.5281/zenodo.15171026">CSM archive</a>.</p>
 
 	    <h4><strong>Stress Metrics Available for Viewing</strong></h4>
 
@@ -129,8 +133,8 @@ $header = getHeader("User Guide");
 		    the display range excludes the highest and lowest 0.1% of values.</p>
 
 		 <p>Other scalar metrics of both orientation and magnitude are available from the 
-		    <a href="https://doi.org/10.5281/zenodo.8270631">CSM archive</a>.  See 
-		    <a href="https://doi.org/10.5281/zenodo.8270631">CSM archive metadata</a> for details.</p>
+		    <a href="https://doi.org/10.5281/zenodo.15171026">CSM archive</a>.  See 
+		    <a href="https://doi.org/10.5281/zenodo.15171026">CSM archive metadata</a> for details.</p>
 
 	    <h4><strong>Select Region to Download Data Subset</strong></h4>
 
@@ -146,7 +150,7 @@ $header = getHeader("User Guide");
                     points of the current model and depth are contained in the region.</p>
 
 		 <p>When the user is satisfied with their model, depth, and region selections, use the red 
-		    download button (red down arrow in circle at right end of table) to download a file in
+             download button (<span class="glyphicon glyphicon-download"></span>) to download a file in
 		    .csv format containing only the points from the selected model, depth, and subregion.
 		    The downloaded file contains the full record for each point, including the cartesian
                     stress tensor components and all available scalar metrics.</p>
@@ -162,7 +166,7 @@ $header = getHeader("User Guide");
 
 		 <p>The complete set of CSM model contributions, including cartesian stress tensor components,
 		    additional scalar metrics, and associated metadata are available from the 
-                    <a href="https://doi.org/10.5281/zenodo.8270631">CSM archive</a>.</p>
+                    <a href="https://doi.org/10.5281/zenodo.15171026">CSM archive</a>.</p>
 
 	    <h4><strong>Additional Data Overlays</strong></h4>
 		 <p>At the top of the interface, there are checkboxes that turn on or off additional data 
@@ -172,8 +176,8 @@ $header = getHeader("User Guide");
                     <a href="https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2020JB020817">Luttrell and Hardebeck (2021)</a>.
 		    SHmax azimuth is indicated both by a black bar centered at the borehole location and 
 		    by a circle at the borehole location colored by SHmax value.  This data can be downloaded
-		    in .csv format <a href="https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2020JB020817">here</a>
-                    or by clicking the red down arrow button.</p>
+		    in .csv format <a target="_blank" href="https://files.scec.org/s3fs-public/LuttrellHardebeckJGR2021_Table1.csv">here</a>
+                    or by clicking the red down arrow button (<span class="glyphicon glyphicon-download"></span>).</p>
 
 		 <p>CFM7.0 adds the surface traces of version 7.0 of the 
                     <a href="https://www.scec.org/research/cfm">Community Fault Model</a>
@@ -203,7 +207,7 @@ $header = getHeader("User Guide");
                     <a href="https://www.apple.com/safari/">Safari</a>.</p>
 
 		 <p>More information, including a complete model archive, can be found at: 
-                    <a href="https://www.scec.org/research/csm">https://www.scec.org/research/csm</a>.</p>
+                    <a href="https://www.scec.org/science/csm">https://www.scec.org/science/csm</a>.</p>
 
 </div>
 </body>

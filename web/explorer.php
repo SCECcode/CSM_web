@@ -154,10 +154,10 @@ $csm = new CSM();
             </div>
        </div>
 <p class="col-11 intro-text">
-The <a href="https://www.scec.org/research/csm" target="_blank">SCEC Community Stress Model (CSM)</a> is
-a suite of contributed models of stress and stressing rate in the southern California lithosphere.
-For more information about the CSM, see the <a target="_blank" href="https://www.scec.org/research/csm">CSM homepage</a>
-or the  <a target="_blank" href="https://doi.org/10.5281/zenodo.8270631">CSM archive</a>. For detailed instructions, refer to the  <a href="guide">user guide</a>.
+The <a href="https://www.scec.org/science/csm" target="_blank">SCEC Community Stress Model (CSM)</a> is
+a suite of contributed models of stress and stressing rate in the California lithosphere.
+For more information about the CSM, see the <a target="_blank" href="https://www.scec.org/science/csm">CSM homepage</a>
+or the  <a target="_blank" href="https://doi.org/10.5281/zenodo.15171026">CSM archive</a>. For detailed instructions, refer to the  <a href="guide">user guide</a>.
 </p>
    </div>
 
@@ -389,7 +389,7 @@ or the  <a target="_blank" href="https://doi.org/10.5281/zenodo.8270631">CSM arc
            <p style="margin-top:1rem;margin-bottom:0.75rem;"><b>You Selected:</b></p>
            <p id="csm-model-description" style="margin-right:1rem"></p>
            <p id="csm-metric-description" style="margin-right:1rem"></p>
-           <p>For more model details and metrics, see  <a href="https://doi.org/10.5281/zenodo.8270631">CSM archive</a></p>
+           <p>For more model details and metrics, see  <a href="https://doi.org/10.5281/zenodo.15171026">CSM archive</a></p>
          </div>
 
 <!-- result parking location -->
