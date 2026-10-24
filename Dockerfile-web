@@ -1,17 +1,30 @@
-FROM amazonlinux:2
+FROM amazonlinux:2023
 
 WORKDIR /app
 
 COPY . /app
 
+RUN dnf upgrade -y --releasever=latest && \
+    dnf install -y \
+        tar sudo which git wget \
+        php8.2 php8.2-cli php8.2-pgsql php8.2-fpm && \
+    dnf clean all && \
+    rm -rf /var/cache/dnf && \
+    php -v
+
+RUN mkdir -p /run/php-fpm && chown -R apache:apache /run/php-fpm
+
+RUN sed -i 's/^listen.acl_users =.*/;listen.acl_users =/' /etc/php-fpm.d/www.conf && \
+    sed -i 's/^;listen.owner =.*/listen.owner = apache/' /etc/php-fpm.d/www.conf && \
+    sed -i 's/^;listen.group =.*/listen.group = apache/' /etc/php-fpm.d/www.conf && \
+    sed -i 's/^;listen.mode =.*/listen.mode = 0660/' /etc/php-fpm.d/www.conf
+
 COPY ./doc/csm.conf /etc/httpd/conf.d/
 COPY ./custom-php.ini /etc/php.d/custom-php.ini
 
-RUN yum install -y tar mkdir sudo which git wget
+RUN echo -e '#!/bin/bash\nphp-fpm -D\nexec /usr/sbin/httpd -D FOREGROUND' > /usr/local/bin/entrypoint.sh && chmod +x /usr/local/bin/entrypoint.sh
 
-RUN yum install -y httpd && \
-	amazon-linux-extras install -y php7.2 && \
-	yum install -y php php-pgsql 
+EXPOSE 80
 
-CMD ["apachectl", "-D", "FOREGROUND"]
+CMD ["/usr/local/bin/entrypoint.sh"]
 
