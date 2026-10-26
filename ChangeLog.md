@@ -1,3 +1,6 @@
+## 2026-10-26  Mei-Hui Su <mei@usc.edu>
+* Release 2026.10, update to amazonlinux2023 and php 8+
+
 ## 2024-09-04  Mei-Hui Su <mei@usc.edu>
 * New Statewide styling edric@usc.edu
 
